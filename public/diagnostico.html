@@ -653,9 +653,52 @@ function archOf(dim,o){
 }
 
 /* ===================== submit + reveal ===================== */
+function persistDiag(dim, overall, ak){
+  if (!A.consent) return Promise.resolve(); // LGPD: só grava com consentimento
+  const lvl = levelOf(overall);
+  const optOf = (k) => {
+    const s = SCREENS.find(x => x.key === k);
+    return (s && A[k]!=null) ? s.opts[A[k]] : null;
+  };
+  const payload = {
+    nome: (A.name||"").slice(0,200),
+    negocio: (A.biz||"").slice(0,200) || null,
+    whatsapp: (A.wa||"").slice(0,50),
+    consentimento: true,
+    papel: optOf("papel"),
+    segmento: optOf("segmento"),
+    aspiracao: optOf("aspiracao"),
+    equipe: optOf("equipe"),
+    barreira: optOf("barreira"),
+    impacto: optOf("impacto"),
+    ferramentas: Array.isArray(A.tools) ? A.tools : [],
+    desafios: Array.isArray(A.challenges) ? A.challenges : [],
+    reflexao: (A.reflexao||"").slice(0,4000) || null,
+    score_geral: overall,
+    nivel: lvl.name,
+    arquetipo: ak,
+    score_usar_ia: dim.lit|0,
+    score_oportunidades: dim.vis|0,
+    score_automacao: dim.exe|0,
+    score_gente: dim.pes|0,
+    score_dados: dim.dad|0,
+    respostas_brutas: A
+  };
+  return fetch(CONFIG.SUPABASE_URL + "/rest/v1/diagnostico_respostas", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": CONFIG.SUPABASE_KEY,
+      "Authorization": "Bearer " + CONFIG.SUPABASE_KEY,
+      "Prefer": "return=minimal"
+    },
+    body: JSON.stringify(payload)
+  }).catch(e => { console.warn("persist failed", e); });
+}
 function submitDiag(){
   const {dim,overall}=score();
   const ak=archOf(dim,overall);
+  persistDiag(dim, overall, ak); // fire-and-forget, não bloqueia o relatório
   const personas=[
     ["Analista do Diagnóstico","Lendo as suas 5 áreas e o padrão das suas respostas..."],
     ["Estrategista de Negócios","Identificando onde está a maior chance de retorno no seu negócio..."],
