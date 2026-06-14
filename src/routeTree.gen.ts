@@ -13,6 +13,7 @@ import { Route as DiagnosticoRouteImport } from './routes/diagnostico'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedPainelRouteImport } from './routes/_authenticated/painel'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedPainelIndexRouteImport } from './routes/_authenticated/painel.index'
 import { Route as AuthenticatedPainelDiagnosticoRouteImport } from './routes/_authenticated/painel.diagnostico'
@@ -36,6 +37,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedPainelRoute = AuthenticatedPainelRouteImport.update({
+  id: '/painel',
+  path: '/painel',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -43,15 +49,15 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
 } as any)
 const AuthenticatedPainelIndexRoute =
   AuthenticatedPainelIndexRouteImport.update({
-    id: '/painel/',
-    path: '/painel/',
-    getParentRoute: () => AuthenticatedRouteRoute,
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedPainelRoute,
   } as any)
 const AuthenticatedPainelDiagnosticoRoute =
   AuthenticatedPainelDiagnosticoRouteImport.update({
-    id: '/painel/diagnostico',
-    path: '/painel/diagnostico',
-    getParentRoute: () => AuthenticatedRouteRoute,
+    id: '/diagnostico',
+    path: '/diagnostico',
+    getParentRoute: () => AuthenticatedPainelRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/diagnostico': typeof DiagnosticoRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/painel': typeof AuthenticatedPainelRouteWithChildren
   '/painel/diagnostico': typeof AuthenticatedPainelDiagnosticoRoute
   '/painel/': typeof AuthenticatedPainelIndexRoute
 }
@@ -77,6 +84,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/diagnostico': typeof DiagnosticoRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/painel': typeof AuthenticatedPainelRouteWithChildren
   '/_authenticated/painel/diagnostico': typeof AuthenticatedPainelDiagnosticoRoute
   '/_authenticated/painel/': typeof AuthenticatedPainelIndexRoute
 }
@@ -87,6 +95,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/diagnostico'
     | '/admin'
+    | '/painel'
     | '/painel/diagnostico'
     | '/painel/'
   fileRoutesByTo: FileRoutesByTo
@@ -104,6 +113,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/diagnostico'
     | '/_authenticated/admin'
+    | '/_authenticated/painel'
     | '/_authenticated/painel/diagnostico'
     | '/_authenticated/painel/'
   fileRoutesById: FileRoutesById
@@ -145,6 +155,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/painel': {
+      id: '/_authenticated/painel'
+      path: '/painel'
+      fullPath: '/painel'
+      preLoaderRoute: typeof AuthenticatedPainelRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -154,31 +171,42 @@ declare module '@tanstack/react-router' {
     }
     '/_authenticated/painel/': {
       id: '/_authenticated/painel/'
-      path: '/painel'
+      path: '/'
       fullPath: '/painel/'
       preLoaderRoute: typeof AuthenticatedPainelIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      parentRoute: typeof AuthenticatedPainelRoute
     }
     '/_authenticated/painel/diagnostico': {
       id: '/_authenticated/painel/diagnostico'
-      path: '/painel/diagnostico'
+      path: '/diagnostico'
       fullPath: '/painel/diagnostico'
       preLoaderRoute: typeof AuthenticatedPainelDiagnosticoRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      parentRoute: typeof AuthenticatedPainelRoute
     }
   }
 }
 
-interface AuthenticatedRouteRouteChildren {
-  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+interface AuthenticatedPainelRouteChildren {
   AuthenticatedPainelDiagnosticoRoute: typeof AuthenticatedPainelDiagnosticoRoute
   AuthenticatedPainelIndexRoute: typeof AuthenticatedPainelIndexRoute
 }
 
-const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+const AuthenticatedPainelRouteChildren: AuthenticatedPainelRouteChildren = {
   AuthenticatedPainelDiagnosticoRoute: AuthenticatedPainelDiagnosticoRoute,
   AuthenticatedPainelIndexRoute: AuthenticatedPainelIndexRoute,
+}
+
+const AuthenticatedPainelRouteWithChildren =
+  AuthenticatedPainelRoute._addFileChildren(AuthenticatedPainelRouteChildren)
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedPainelRoute: typeof AuthenticatedPainelRouteWithChildren
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedPainelRoute: AuthenticatedPainelRouteWithChildren,
 }
 
 const AuthenticatedRouteRouteWithChildren =
