@@ -24,6 +24,7 @@ import {
 import WhatsAppFAB, { WHATSAPP_URL } from "./WhatsAppFAB";
 import ProcessCycle from "./ProcessCycle";
 import DiagnosticChart from "./DiagnosticChart";
+import TrackRecord from "./TrackRecord";
 
 const EMAIL = "felipesmsena@gmail.com";
 const LINKEDIN = "https://linkedin.com/in/senafelipe";
