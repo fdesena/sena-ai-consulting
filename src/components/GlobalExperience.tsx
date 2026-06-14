@@ -197,7 +197,7 @@ export default function GlobalExperience() {
               target="_blank"
               rel="noopener noreferrer"
               className="group flex shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-card transition hover:border-primary/60 hover:shadow-lg"
-              style={{ width: `calc(${100 / itemsPerView}% - ${(6 * (itemsPerView - 1)) / itemsPerView}px)` }}
+              style={{ width: `calc(${100 / itemsPerView}% - ${(24 * (itemsPerView - 1)) / itemsPerView}px)` }}
             >
               {exp.image ? (
                 <div className="relative aspect-[16/10] overflow-hidden bg-muted">
