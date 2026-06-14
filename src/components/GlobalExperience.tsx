@@ -2,6 +2,11 @@ import { useState, useRef, useEffect } from "react";
 import { ExternalLink, Linkedin, ChevronLeft, ChevronRight } from "lucide-react";
 import selectUsaAsset from "@/assets/felipe-selectusa.png.asset.json";
 import miamiAsset from "@/assets/felipe-miami-goglobal.png.asset.json";
+import myllenniumAsset from "@/assets/felipe-myllennium.png.asset.json";
+import hultChallengeAsset from "@/assets/felipe-hult-challenge.png.asset.json";
+import mitSolveAsset from "@/assets/felipe-mit-solve.png.asset.json";
+import bostonBeyondAsset from "@/assets/felipe-boston-beyond.png.asset.json";
+import epicMalasiaAsset from "@/assets/felipe-epic-malasia.png.asset.json";
 
 type Experience = {
   title: string;
@@ -80,7 +85,8 @@ const EXPERIENCES: Experience[] = [
       "Conduzi programa de aceleração de negócios para empreendedores vencedores do prêmio italiano.",
     location: "Itália · Estados Unidos",
     tag: "Aceleração",
-    link: "https://www.linkedin.com/feed/update/urn:li:ugcPost:7211738960128032768",
+    image: myllenniumAsset.url,
+    link: "https://www.linkedin.com/posts/senafelipe_lesperienza-del-boston-innovation-gateway-activity-7176944036270784513-87zo",
     linkLabel: "Ver post",
   },
   {
@@ -90,7 +96,8 @@ const EXPERIENCES: Experience[] = [
       "Co-conduzi um Business Challenge sobre IA aplicada à estratégia com um dos especialistas em IA da Hult.",
     location: "Estados Unidos",
     tag: "Estratégia & IA",
-    link: "https://www.linkedin.com/feed/update/urn:li:ugcPost:7143594499804459008",
+    image: hultChallengeAsset.url,
+    link: "https://www.linkedin.com/posts/senafelipe_it-was-a-distinct-pleasure-to-participate-activity-7143594499804459008-T8Co",
     linkLabel: "Ver post",
   },
   {
@@ -100,7 +107,8 @@ const EXPERIENCES: Experience[] = [
       "Acompanhei discussões no MIT sobre uso estratégico da IA, produtividade e agentes contextuais.",
     location: "Estados Unidos · Jordânia",
     tag: "MIT · IA estratégica",
-    link: "https://www.linkedin.com/feed/update/urn:li:ugcPost:7123746921839493120",
+    image: mitSolveAsset.url,
+    link: "https://www.linkedin.com/posts/senafelipe_digitaltransformation-artificialintelligence-activity-7123746921839493120-ePnZ",
     linkLabel: "Ver post",
   },
   {
@@ -110,6 +118,7 @@ const EXPERIENCES: Experience[] = [
       "Programa executivo conectando o Sistema FIEC ao MIT, com imersão em IA aplicada e deep learning.",
     location: "Brasil · Estados Unidos",
     tag: "Executivo · IA aplicada",
+    image: bostonBeyondAsset.url,
     link: "https://www.linkedin.com/feed/update/urn:li:ugcPost:7121963915718074368",
     linkLabel: "Ver post",
   },
@@ -120,7 +129,8 @@ const EXPERIENCES: Experience[] = [
       "Acompanhei lideranças de Academy of Sciences Malaysia, MOSTI e PETRONAS em expedição de inovação e IA.",
     location: "Malásia · Estados Unidos",
     tag: "Inovação corporativa",
-    link: "https://www.linkedin.com/feed/update/urn:li:ugcPost:7068354948282871808",
+    image: epicMalasiaAsset.url,
+    link: "https://www.linkedin.com/posts/senafelipe_epicboston-innovationmanagement-collaboration-activity-7068354948282871808-K--8",
     linkLabel: "Ver post",
   },
 ];
