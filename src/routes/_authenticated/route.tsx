@@ -6,7 +6,6 @@ import {
   LogOut,
   Menu as MenuIcon,
   X,
-  User,
   Shield,
   Users,
   Settings,
@@ -169,20 +168,6 @@ function AuthedShell() {
 
         {/* Bottom section */}
         <div className={`p-3 border-t space-y-1 ${borderC} ${collapsed ? "px-2" : ""}`}>
-          {!inAdmin && (
-            <Link
-              to="/painel/perfil"
-              onClick={() => setOpen(false)}
-              title={collapsed ? "Perfil" : undefined}
-              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition ${
-                pathname === "/painel/perfil" ? activeCls : hoverBg
-              } ${collapsed ? "justify-center px-2" : ""}`}
-            >
-              <User className="h-4 w-4 shrink-0" />
-              {!collapsed && "Perfil"}
-            </Link>
-          )}
-
           {/* Mode toggle */}
           {isAdmin && !inAdmin && (
             <Link
@@ -205,13 +190,6 @@ function AuthedShell() {
               <ArrowLeftRight className="h-4 w-4 shrink-0" />
               {!collapsed && "Painel do Usuário"}
             </Link>
-          )}
-
-          {!collapsed && (
-            <div className="px-3 pt-2">
-              <div className={`text-[10px] uppercase tracking-widest font-mono ${mutedTxt}`}>Logado</div>
-              <div className="text-sm truncate">{email || "—"}</div>
-            </div>
           )}
           <button
             onClick={signOut}
