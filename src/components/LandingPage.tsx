@@ -384,7 +384,7 @@ export default function LandingPage() {
 
       {/* SOBRE */}
       <Section id="sobre" className="border-t border-border">
-        <div className="grid gap-12 md:grid-cols-[auto_1fr] md:items-start">
+        <div className="grid gap-12 md:grid-cols-[auto_1fr] md:items-center">
           <div className="flex flex-col items-center gap-6 md:items-start">
             <div className="relative">
               <div
