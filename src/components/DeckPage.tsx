@@ -82,24 +82,14 @@ export default function DeckPage() {
     };
     document.addEventListener("keydown", onKey);
 
-    let touchY = 0;
-    const onTouchStart = (e: TouchEvent) => {
-      touchY = e.touches[0].clientY;
-    };
-    const onTouchEnd = (e: TouchEvent) => {
-      const dy = touchY - e.changedTouches[0].clientY;
-      if (Math.abs(dy) > 50) goTo(dy > 0 ? currentIdx + 1 : currentIdx - 1);
-    };
-    deck.addEventListener("touchstart", onTouchStart, { passive: true });
-    deck.addEventListener("touchend", onTouchEnd);
+    // Touch swipe disabled — native fluid scrolling instead.
+
 
     const hintTimer = window.setTimeout(() => setHintFaded(true), 4000);
 
     return () => {
       deck.removeEventListener("scroll", onScroll);
       document.removeEventListener("keydown", onKey);
-      deck.removeEventListener("touchstart", onTouchStart);
-      deck.removeEventListener("touchend", onTouchEnd);
       window.clearTimeout(hintTimer);
     };
   }, []);
