@@ -1,4 +1,4 @@
-export const WHATSAPP_NUMBER = "5511999999999";
+export const WHATSAPP_NUMBER = "14043079848";
 export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
   "Olá Felipe, vim pelo site da Sena Consulting e gostaria de conversar.",
 )}`;
