@@ -36,8 +36,6 @@ const COUNTRIES = [
   { code: "MY", name: "Malásia" },
   { code: "CN", name: "China (Xangai)" },
   { code: "IT", name: "Itália" },
-  { code: "DE", name: "Alemanha" },
-  { code: "FR", name: "França" },
 ];
 
 function Flag({ code, name }: { code: string; name: string }) {
@@ -386,7 +384,7 @@ export default function LandingPage() {
 
       {/* SOBRE */}
       <Section id="sobre" className="border-t border-border">
-        <div className="grid gap-12 md:grid-cols-[auto_1fr] md:items-start">
+        <div className="grid gap-12 md:grid-cols-[auto_1fr] md:items-center">
           <div className="flex flex-col items-center gap-6 md:items-start">
             <div className="relative">
               <div
@@ -402,14 +400,28 @@ export default function LandingPage() {
                 />
               </div>
             </div>
-            <a
-              href={LINKEDIN}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:border-primary hover:text-primary"
-            >
-              <Linkedin className="h-4 w-4" /> linkedin.com/in/senafelipe
-            </a>
+            <div className="flex items-center gap-3">
+              <a
+                href={LINKEDIN}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-card hover:border-primary hover:text-primary"
+              >
+                <Linkedin className="h-5 w-5" />
+              </a>
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-card hover:border-[#25D366] hover:text-[#25D366]"
+              >
+                <svg viewBox="0 0 32 32" className="h-5 w-5" fill="currentColor" aria-hidden="true">
+                  <path d="M19.11 17.27c-.27-.14-1.6-.79-1.85-.88-.25-.09-.43-.14-.61.14-.18.27-.7.88-.86 1.06-.16.18-.32.2-.59.07-.27-.14-1.14-.42-2.17-1.34-.8-.71-1.34-1.59-1.5-1.86-.16-.27-.02-.42.12-.55.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47l-.52-.01c-.18 0-.48.07-.73.34s-.96.94-.96 2.29.99 2.66 1.13 2.84c.14.18 1.95 2.98 4.72 4.18.66.29 1.17.46 1.57.59.66.21 1.26.18 1.74.11.53-.08 1.6-.65 1.83-1.28.23-.63.23-1.18.16-1.28-.07-.11-.25-.18-.52-.32zM16.02 5.33c-5.86 0-10.62 4.76-10.62 10.62 0 1.87.49 3.69 1.42 5.29L5.4 26.67l5.55-1.46a10.6 10.6 0 0 0 5.07 1.29h.01c5.85 0 10.61-4.76 10.62-10.61 0-2.84-1.1-5.5-3.11-7.51a10.55 10.55 0 0 0-7.52-3.05zm0 19.4h-.01a8.78 8.78 0 0 1-4.48-1.23l-.32-.19-3.29.86.88-3.21-.21-.33a8.77 8.77 0 0 1-1.34-4.68c0-4.85 3.94-8.79 8.78-8.79 2.35 0 4.55.92 6.21 2.58a8.74 8.74 0 0 1 2.57 6.22c0 4.84-3.94 8.77-8.79 8.77z" />
+                </svg>
+              </a>
+            </div>
           </div>
 
           <div>
@@ -418,23 +430,22 @@ export default function LandingPage() {
               Estratégia, dados e execução — em escala global.
             </h2>
             <p className="mt-5 text-lg text-muted-foreground">
-              <span className="font-medium text-foreground">Product Owner &amp; Gestor de Projetos Globais</span> da plataforma{" "}
+              <span className="font-medium text-foreground">Gestor de Produto e Projetos Globais</span> da plataforma{" "}
               <span className="font-medium text-foreground">Think-Big</span> pela{" "}
-              <span className="font-medium text-foreground">Boston Innovation Gateway</span>. Mais de uma década entregando produtos digitais, dados e IA para clientes em 4 continentes.
+              <span className="font-medium text-foreground">Boston Innovation Gateway</span>. Mais de uma década entregando produtos digitais, dados e IA para empresas em 4 continentes.
             </p>
 
             <ul className="mt-8 space-y-3 text-muted-foreground">
               <li className="flex gap-3">
                 <Target className="mt-1 h-5 w-5 shrink-0 text-primary" strokeWidth={1.6} />
                 <span>
-                  <span className="font-medium text-foreground">PO &amp; PM Global</span> — Think-Big / Boston Innovation Gateway.
+                  <span className="font-medium text-foreground">Liderança de Produto e Projetos Digitais Globais</span> — Think-Big / Boston Innovation Gateway.
                 </span>
               </li>
               <li className="flex gap-3">
                 <TrendingUp className="mt-1 h-5 w-5 shrink-0 text-primary" strokeWidth={1.6} />
                 <span>
-                  Analytics na <span className="font-medium text-foreground">Sicredi</span> (R$50B AuM), CPO na{" "}
-                  <span className="font-medium text-foreground">Rivool</span>, consultoria para enterprises e scale-ups.
+                  Passagem por grandes empresas como <span className="font-medium text-foreground">Sicredi</span>, <span className="font-medium text-foreground">XP Investimentos</span> e <span className="font-medium text-foreground">HP Tech Ventures</span>. Empreendeu na <span className="font-medium text-foreground">Rivool Finance</span> como Chefe de Produto (CPO), onde desenvolveu e automatizou a plataforma de tokenização de crédito agrícola.
                 </span>
               </li>
               <li className="flex gap-3">
@@ -453,7 +464,7 @@ export default function LandingPage() {
 
             <div className="mt-8">
               <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                Experiência internacional
+                Experiência internacional trabalhando com clientes globais
               </p>
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 {COUNTRIES.map((c) => (
