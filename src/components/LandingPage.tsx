@@ -175,7 +175,7 @@ export default function LandingPage() {
         <div className="mt-14 grid gap-0 overflow-hidden rounded-3xl border border-border bg-card shadow-sm md:grid-cols-[1fr_1.1fr]">
           <div className="flex flex-col justify-between gap-8 p-8 sm:p-10">
             <div>
-              <Eyebrow>Comece pelo diagnóstico</Eyebrow>
+              <Eyebrow>A OPORTUNIDADE</Eyebrow>
               <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
                 IA sem complicação.
               </h2>
