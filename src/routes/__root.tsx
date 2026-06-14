@@ -83,6 +83,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:site_name", content: "Sena Consulting" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { property: "og:title", content: "Sena Consulting" },
+      { name: "twitter:title", content: "Sena Consulting" },
+      { property: "og:description", content: "Sena Consulting — IA, Automação e Transformação Digital." },
+      { name: "twitter:description", content: "Sena Consulting — IA, Automação e Transformação Digital." },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
