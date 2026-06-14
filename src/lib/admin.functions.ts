@@ -101,3 +101,18 @@ export const adminDeleteUser = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+export const adminResetPasswordToEmail = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => z.object({ userId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: got, error: gErr } = await supabaseAdmin.auth.admin.getUserById(data.userId);
+    if (gErr || !got?.user?.email) throw new Error(gErr?.message ?? "Usuário não encontrado");
+    const email = got.user.email;
+    if (email.length < 6) throw new Error("E-mail muito curto para servir de senha.");
+    const { error } = await supabaseAdmin.auth.admin.updateUserById(data.userId, { password: email });
+    if (error) throw new Error(error.message);
+    return { ok: true, password: email };
+  });
