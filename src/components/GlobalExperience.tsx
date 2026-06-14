@@ -228,7 +228,11 @@ export default function GlobalExperience() {
       </div>
 
       {/* Carousel track */}
-      <div className="mt-10 overflow-hidden">
+      <div
+        className="mt-10 overflow-hidden"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
         <div
           ref={trackRef}
           className="flex gap-6 transition-transform duration-500 ease-out will-change-transform"
