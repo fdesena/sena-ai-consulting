@@ -20,6 +20,7 @@ import {
   MessageSquare,
   Mail,
   Linkedin,
+  Zap,
 } from "lucide-react";
 import WhatsAppFAB, { WHATSAPP_URL } from "./WhatsAppFAB";
 import ProcessCycle from "./ProcessCycle";
@@ -82,24 +83,24 @@ function Section({
 const pillars = [
   {
     n: "01",
-    title: "Capacitar",
-    sub: "Sua equipe usando IA todo dia.",
+    title: "Aumentar produtividade",
+    sub: "Melhoria de processos e escolha de ferramentas mais eficientes com IA.",
     href: "#capacitar",
-    Icon: GraduationCap,
+    Icon: Zap,
   },
   {
     n: "02",
-    title: "Construir",
-    sub: "Sistemas que trabalham por você.",
+    title: "Construir ferramentas",
+    sub: "Soluções customizadas para seu caso, com agilidade e eficiência de custo.",
     href: "#construir",
     Icon: Wrench,
   },
   {
     n: "03",
-    title: "Orientar",
-    sub: "Onde a IA gera ROI no seu negócio.",
+    title: "Orientar estrategicamente",
+    sub: "Decisões baseadas em dados e estratégias que geram ROI no negócio.",
     href: "#orientar",
-    Icon: Compass,
+    Icon: TrendingUp,
   },
 ];
 
@@ -299,23 +300,23 @@ export default function LandingPage() {
       <PillarBlock
         id="capacitar"
         n="01"
-        title="Capacitar"
-        sub="Sua equipe usando IA todo dia."
+        title="Aumentar produtividade"
+        sub="Melhoria de processos e escolha de ferramentas mais eficientes com IA."
         items={capacitarItems}
       />
       <PillarBlock
         id="construir"
         n="02"
-        title="Construir"
-        sub="Sistemas que trabalham por você."
+        title="Construir ferramentas"
+        sub="Soluções customizadas para seu caso, com agilidade e eficiência de custo."
         items={construirItems}
         dark
       />
       <PillarBlock
         id="orientar"
         n="03"
-        title="Orientar"
-        sub="Onde a IA gera ROI no seu negócio."
+        title="Orientar estrategicamente"
+        sub="Decisões baseadas em dados e estratégias que geram ROI no negócio."
         items={orientarItems}
       />
 
