@@ -1,5 +1,29 @@
 import { Link } from "@tanstack/react-router";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  GraduationCap,
+  Wrench,
+  Compass,
+  Bot,
+  Workflow,
+  LayoutDashboard,
+  Presentation,
+  Sparkles,
+  Users,
+  Target,
+  Mic2,
+  TrendingUp,
+  Database,
+  GraduationCap as GradCap,
+  LineChart,
+  MessageSquare,
+  Mail,
+  Linkedin,
+} from "lucide-react";
 import WhatsAppFAB, { WHATSAPP_URL } from "./WhatsAppFAB";
+import ProcessCycle from "./ProcessCycle";
+import DiagnosticChart from "./DiagnosticChart";
 
 const EMAIL = "felipesmsena@gmail.com";
 const LINKEDIN = "https://linkedin.com/in/senafelipe";
@@ -33,102 +57,50 @@ const pillars = [
     title: "Capacitar",
     sub: "Sua equipe usando IA todo dia.",
     href: "#capacitar",
+    Icon: GraduationCap,
   },
   {
     n: "02",
     title: "Construir",
     sub: "Sistemas que trabalham por você.",
     href: "#construir",
+    Icon: Wrench,
   },
   {
     n: "03",
     title: "Orientar",
     sub: "Onde a IA gera ROI no seu negócio.",
     href: "#orientar",
+    Icon: Compass,
   },
 ];
 
 const capacitarItems = [
-  {
-    t: "Treinamento corporativo em IA",
-    d: "Sob medida para operações, vendas, marketing e demais áreas do seu negócio.",
-  },
-  {
-    t: "Palestras de IA",
-    d: "Desperte o time para o que já é possível — eventos, clubes de negócio e empresas.",
-  },
-  {
-    t: "Treinamento em ferramentas de IA",
-    d: "Produtividade real no dia a dia (Claude Cowork, Lovable, entre outras).",
-  },
-  {
-    t: "Cursos com avatares de IA",
-    d: "Conteúdo de treinamento escalável e profissional com HeyGen e Synthesia.",
-  },
+  { t: "Treinamento corporativo em IA", Icon: Users },
+  { t: "Palestras de IA", Icon: Mic2 },
+  { t: "Workshops em ferramentas (Claude, Lovable)", Icon: Sparkles },
+  { t: "Cursos com avatares (HeyGen, Synthesia)", Icon: Presentation },
 ];
 
 const construirItems = [
-  {
-    t: "Assistentes de IA customizados",
-    d: "Assistentes sob medida que trabalham 24h por dia (ex.: Hermes AI, OpenClaw, Custom GPT, Agent Builder).",
-  },
-  {
-    t: "Apps e automações de fluxos",
-    d: "Elimine o trabalho manual repetitivo com aplicações sob medida (Lovable, Antigravity, Cursor, AI Studio).",
-  },
-  {
-    t: "Plataformas, dashboards e LMS",
-    d: "Soluções digitais integradas aos sistemas que você já usa.",
-  },
+  { t: "Assistentes de IA customizados", Icon: Bot },
+  { t: "Apps e automações de fluxos", Icon: Workflow },
+  { t: "Plataformas, dashboards e LMS", Icon: LayoutDashboard },
 ];
 
 const orientarItems = [
-  {
-    t: "Diagnóstico Bússola Digital & IA",
-    d: "Mapeie onde IA e automação geram retorno antes de investir.",
-  },
-  {
-    t: "Consultoria 1:1",
-    d: "Desenvolvimento de soluções específicas para o seu caso.",
-  },
-  {
-    t: "Transformação digital",
-    d: "Redesenho de processos e estrutura operacional para escalar.",
-  },
+  { t: "Diagnóstico Bússola Digital & IA", Icon: Target },
+  { t: "Consultoria 1:1", Icon: MessageSquare },
+  { t: "Transformação digital", Icon: TrendingUp },
 ];
 
 const cases = [
-  {
-    t: "Automação de propostas & e-mails",
-    d: "−80% no tempo de elaboração de propostas para o time comercial.",
-  },
-  {
-    t: "Agentes de IA em conteúdo proprietário",
-    d: "Suporte e decisão em escala, treinados no conhecimento da empresa.",
-  },
-  {
-    t: "Visualização de dados com IA",
-    d: "Gráficos executivos gerados automaticamente a partir dos dados.",
-  },
-  {
-    t: "LMS com gamificação",
-    d: "Vídeos, quizzes, rankings e gestão de usuários em plataforma própria.",
-  },
-  {
-    t: "Plataforma CRM + Funil",
-    d: "Captura de leads, pipeline comercial e analytics integrados.",
-  },
-  {
-    t: "Ferramentas para eventos",
-    d: "Aplicações ao vivo para workshops e palestras imersivas.",
-  },
-];
-
-const processo = [
-  { n: "01", t: "Diagnóstico", d: "Mapeamento de processos, gaps e oportunidades." },
-  { n: "02", t: "Construção", d: "Implementação integrada ao seu stack atual." },
-  { n: "03", t: "Capacitação", d: "Treino das equipes e garantia de adoção real." },
-  { n: "04", t: "Suporte contínuo", d: "Mantemos e evoluímos suas soluções — relação de longo prazo." },
+  { t: "Automação de propostas", d: "−80% no tempo de elaboração.", Icon: Workflow },
+  { t: "Agentes em conteúdo proprietário", d: "Suporte e decisão em escala.", Icon: Bot },
+  { t: "Visualização de dados com IA", d: "Dashboards executivos automáticos.", Icon: LineChart },
+  { t: "LMS gamificado", d: "Vídeos, quizzes e rankings próprios.", Icon: GradCap },
+  { t: "CRM + Funil próprio", d: "Leads, pipeline e analytics integrados.", Icon: Database },
+  { t: "Ferramentas para eventos", d: "Apps ao vivo em palestras imersivas.", Icon: Presentation },
 ];
 
 export default function LandingPage() {
@@ -150,49 +122,73 @@ export default function LandingPage() {
             href={WHATSAPP_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 sm:inline-flex"
+            className="hidden items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 sm:inline-flex"
           >
             Fale comigo
+            <ArrowUpRight className="h-4 w-4" />
           </a>
         </div>
       </header>
 
       {/* HERO */}
       <Section id="top" className="!pt-16 sm:!pt-24">
-        <Eyebrow>Sena Consulting · 2026</Eyebrow>
-        <h1 className="mt-5 text-5xl font-semibold tracking-tight sm:text-7xl">
-          Onde Estratégia <br className="hidden sm:block" />
-          <span className="text-primary">Encontra Execução.</span>
+        <div className="flex items-center gap-2">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
+          <Eyebrow>Sena Consulting · IA &amp; Automação</Eyebrow>
+        </div>
+        <h1 className="mt-6 text-5xl font-semibold tracking-tight sm:text-7xl">
+          Onde estratégia <br className="hidden sm:block" />
+          encontra <span className="text-primary">execução.</span>
         </h1>
-        <p className="mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
-          Consultoria de IA e automação de processos que sai da apresentação e vira sistema rodando.
-          Do diagnóstico à execução — com resultados mensuráveis.
+        <p className="mt-6 max-w-xl text-lg text-muted-foreground sm:text-xl">
+          Da apresentação ao sistema rodando. Consultoria de IA com resultado mensurável.
         </p>
 
-        {/* Primary CTA card */}
-        <div className="mt-12 grid gap-6 rounded-2xl border border-border bg-card p-8 shadow-sm sm:grid-cols-[1.2fr_1fr] sm:p-10">
-          <div>
-            <Eyebrow>CTA Principal</Eyebrow>
-            <h2 className="mt-3 text-3xl font-semibold sm:text-4xl">IA sem complicação.</h2>
-            <p className="mt-4 text-base text-muted-foreground sm:text-lg">
-              Sua empresa quer usar IA, mas não sabe por onde começar? Eu ajudo a identificar
-              oportunidades e implementar ferramentas práticas para economizar tempo, reduzir
-              trabalho manual e gerar resultado real.
-            </p>
+        {/* Hero CTA — diagnostic with chart */}
+        <div className="mt-14 grid gap-0 overflow-hidden rounded-3xl border border-border bg-card shadow-sm md:grid-cols-[1.05fr_1fr]">
+          <div className="flex flex-col justify-between gap-8 p-8 sm:p-10">
+            <div>
+              <Eyebrow>Comece pelo diagnóstico</Eyebrow>
+              <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
+                IA sem complicação.
+              </h2>
+              <p className="mt-4 text-muted-foreground">
+                Mapeio em uma conversa onde sua operação pode ganhar tempo, reduzir trabalho
+                manual e gerar resultado real com IA.
+              </p>
+            </div>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link
+                to="/diagnostico"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+              >
+                Realizar diagnóstico
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <a
+                href="#pilares"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-foreground/15 px-6 py-3.5 text-sm font-medium hover:border-foreground/40"
+              >
+                Ver serviços
+              </a>
+            </div>
           </div>
-          <div className="flex flex-col items-stretch justify-center gap-3 sm:items-end">
-            <Link
-              to="/diagnostico"
-              className="inline-flex items-center justify-center rounded-full bg-primary px-6 py-4 text-base font-medium text-primary-foreground shadow-sm transition hover:opacity-90"
-            >
-              Realize um diagnóstico →
-            </Link>
-            <a
-              href="#pilares"
-              className="inline-flex items-center justify-center rounded-full border border-foreground/20 px-6 py-4 text-base font-medium text-foreground transition hover:border-foreground/40"
-            >
-              Ver o que faço
-            </a>
+          <div className="border-t border-border bg-[var(--paper)] p-6 sm:p-8 md:border-l md:border-t-0">
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                Bússola Digital &amp; IA · Exemplo
+              </span>
+              <Sparkles className="h-4 w-4 text-primary" />
+            </div>
+            <DiagnosticChart />
+            <div className="mt-3 flex items-center justify-center gap-6 text-[11px] font-mono uppercase tracking-wider">
+              <span className="flex items-center gap-2 text-muted-foreground">
+                <span className="h-2 w-2 rounded-full bg-[var(--muted-foreground)]" /> Atual
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-primary" /> Com IA
+              </span>
+            </div>
           </div>
         </div>
       </Section>
@@ -203,25 +199,23 @@ export default function LandingPage() {
         <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
           Entre o discurso da IA e o resultado real, existe um abismo.
         </h2>
-        <div className="mt-12 grid gap-8 sm:grid-cols-2">
+        <div className="mt-12 grid gap-6 sm:grid-cols-2">
           <article className="rounded-2xl border border-border bg-card p-8">
-            <Eyebrow>Da empresa</Eyebrow>
-            <h3 className="mt-3 text-2xl font-semibold">
-              Empresas querem usar IA, mas não sabem por onde começar.
+            <Target className="h-6 w-6 text-primary" strokeWidth={1.6} />
+            <h3 className="mt-5 text-2xl font-semibold">
+              Querem usar IA. Não sabem por onde começar.
             </h3>
-            <p className="mt-4 text-muted-foreground">
-              Muitas empresas querem usar IA, mas travam na prática: não sabem o que priorizar,
-              como implementar ou como gerar resultado real com a tecnologia.
+            <p className="mt-3 text-muted-foreground">
+              Travam na prática: o que priorizar, como implementar, como medir resultado.
             </p>
           </article>
           <article className="rounded-2xl border border-border bg-card p-8">
-            <Eyebrow>Da liderança</Eyebrow>
-            <h3 className="mt-3 text-2xl font-semibold">
-              Todo líder quer usar IA. Poucos sabem transformar isso em gestão e adoção real.
+            <Users className="h-6 w-6 text-primary" strokeWidth={1.6} />
+            <h3 className="mt-5 text-2xl font-semibold">
+              Ferramentas existem. Adoção real, não.
             </h3>
-            <p className="mt-4 text-muted-foreground">
-              Ferramentas já existem. O desafio é aplicar IA nos processos certos, melhorar a
-              gestão da operação e fazer o time usar no dia a dia para ganhar produtividade.
+            <p className="mt-3 text-muted-foreground">
+              O desafio é aplicar IA nos processos certos e fazer o time usar todo dia.
             </p>
           </article>
         </div>
@@ -229,7 +223,7 @@ export default function LandingPage() {
 
       {/* PILARES */}
       <Section id="pilares" className="border-t border-border">
-        <Eyebrow>O que eu vendo</Eyebrow>
+        <Eyebrow>O que eu faço</Eyebrow>
         <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
           Três formas de gerar valor com IA.
         </h2>
@@ -238,20 +232,21 @@ export default function LandingPage() {
             <a
               key={p.n}
               href={p.href}
-              className="group rounded-2xl border border-border bg-card p-8 transition hover:border-primary"
+              className="group relative overflow-hidden rounded-2xl border border-border bg-card p-8 transition hover:border-primary hover:shadow-md"
             >
-              <span className="font-mono text-xs text-primary">{p.n}</span>
-              <h3 className="mt-4 text-2xl font-semibold">{p.title}</h3>
-              <p className="mt-3 text-muted-foreground">{p.sub}</p>
-              <span className="mt-6 inline-block text-sm text-primary opacity-0 transition group-hover:opacity-100">
-                Ver detalhes →
-              </span>
+              <div className="flex items-center justify-between">
+                <p.Icon className="h-7 w-7 text-primary" strokeWidth={1.5} />
+                <span className="font-mono text-xs text-muted-foreground">{p.n}</span>
+              </div>
+              <h3 className="mt-8 text-2xl font-semibold">{p.title}</h3>
+              <p className="mt-2 text-muted-foreground">{p.sub}</p>
+              <ArrowUpRight className="absolute right-6 bottom-6 h-5 w-5 translate-y-1 opacity-0 transition group-hover:translate-y-0 group-hover:opacity-100" />
             </a>
           ))}
         </div>
       </Section>
 
-      {/* PILAR 1 */}
+      {/* PILAR BLOCKS */}
       <PillarBlock
         id="capacitar"
         n="01"
@@ -282,49 +277,43 @@ export default function LandingPage() {
           Não sabe por onde começar?
         </h2>
         <div className="mt-12 grid gap-6 md:grid-cols-2">
-          <div className="rounded-2xl border border-border bg-card p-8">
-            <h3 className="text-2xl font-semibold">Diagnóstico gratuito</h3>
-            <p className="mt-3 text-muted-foreground">
-              Mapeie suas maiores oportunidades com IA em uma conversa estruturada.
+          <div className="group rounded-2xl border border-border bg-card p-8 transition hover:border-primary">
+            <Target className="h-7 w-7 text-primary" strokeWidth={1.5} />
+            <h3 className="mt-6 text-2xl font-semibold">Diagnóstico gratuito</h3>
+            <p className="mt-2 text-muted-foreground">
+              Mapeie suas maiores oportunidades com IA.
             </p>
             <Link
               to="/diagnostico"
-              className="mt-6 inline-flex rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground hover:opacity-90"
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground hover:opacity-90"
             >
-              Fazer diagnóstico →
+              Fazer diagnóstico <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
           <div className="rounded-2xl border border-border bg-[var(--ink)] p-8 text-[var(--paper)]">
-            <h3 className="text-2xl font-semibold">Agende uma palestra</h3>
-            <p className="mt-3 opacity-80">
-              Leve IA prática para o seu time, evento ou clube de negócios.
-            </p>
+            <Mic2 className="h-7 w-7 text-primary" strokeWidth={1.5} />
+            <h3 className="mt-6 text-2xl font-semibold">Palestra de IA</h3>
+            <p className="mt-2 opacity-80">Leve IA prática para o seu time ou evento.</p>
             <a
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-6 inline-flex rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground hover:opacity-90"
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground hover:opacity-90"
             >
-              Falar no WhatsApp →
+              Falar no WhatsApp <ArrowRight className="h-4 w-4" />
             </a>
           </div>
         </div>
       </Section>
 
-      {/* PROCESSO */}
+      {/* PROCESSO — interactive cycle */}
       <Section id="processo" className="border-t border-border">
         <Eyebrow>Como trabalho</Eyebrow>
         <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
           Do mapa ao sistema em produção.
         </h2>
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {processo.map((s) => (
-            <div key={s.n} className="rounded-2xl border border-border bg-card p-6">
-              <span className="font-mono text-xs text-primary">{s.n}</span>
-              <h3 className="mt-3 text-xl font-semibold">{s.t}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{s.d}</p>
-            </div>
-          ))}
+        <div className="mt-16">
+          <ProcessCycle />
         </div>
       </Section>
 
@@ -334,15 +323,12 @@ export default function LandingPage() {
         <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
           Construído. Implantado. Em produção.
         </h2>
-        <p className="mt-4 max-w-2xl text-muted-foreground">
-          Projetos que liderei e implementei em consultoria internacional, na Rivool e em
-          iniciativas próprias.
-        </p>
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
           {cases.map((c) => (
-            <article key={c.t} className="rounded-2xl border border-border bg-card p-6">
-              <h3 className="text-lg font-semibold">{c.t}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{c.d}</p>
+            <article key={c.t} className="group bg-card p-6 transition hover:bg-[var(--paper)]">
+              <c.Icon className="h-6 w-6 text-primary" strokeWidth={1.5} />
+              <h3 className="mt-5 text-lg font-semibold">{c.t}</h3>
+              <p className="mt-1 text-sm text-muted-foreground">{c.d}</p>
             </article>
           ))}
         </div>
@@ -362,22 +348,30 @@ export default function LandingPage() {
           <div>
             <Eyebrow>Sobre o Felipe</Eyebrow>
             <h2 className="mt-4 text-3xl font-semibold sm:text-5xl">
-              Estratégia, dados e execução — no mesmo profissional.
+              Estratégia, dados e execução no mesmo profissional.
             </h2>
-            <ul className="mt-8 space-y-4 text-muted-foreground">
-              <li>
-                <span className="font-medium text-foreground">Mestrado duplo</span> em Negócios
-                Internacionais & Business Analytics.
+            <ul className="mt-8 space-y-3 text-muted-foreground">
+              <li className="flex gap-3">
+                <GraduationCap className="mt-1 h-5 w-5 shrink-0 text-primary" strokeWidth={1.6} />
+                <span>
+                  <span className="font-medium text-foreground">Mestrado duplo</span> em Negócios
+                  Internacionais &amp; Business Analytics.
+                </span>
               </li>
-              <li>
-                Analytics na <span className="font-medium text-foreground">Sicredi</span> (R$50B em
-                AuM), CPO na <span className="font-medium text-foreground">Rivool</span>, programas
-                Go-to-Global no <span className="font-medium text-foreground">Boston Innovation
-                Gateway</span> — 4 continentes, 22 países. Hult Alumni.
+              <li className="flex gap-3">
+                <TrendingUp className="mt-1 h-5 w-5 shrink-0 text-primary" strokeWidth={1.6} />
+                <span>
+                  Analytics na <span className="font-medium text-foreground">Sicredi</span> (R$50B
+                  AuM), CPO na <span className="font-medium text-foreground">Rivool</span>, Hult
+                  Alumni · 4 continentes, 22 países.
+                </span>
               </li>
-              <li>
-                Atuação: <span className="font-medium text-foreground">São Paulo · Boston</span> ·
-                globalmente.
+              <li className="flex gap-3">
+                <Compass className="mt-1 h-5 w-5 shrink-0 text-primary" strokeWidth={1.6} />
+                <span>
+                  <span className="font-medium text-foreground">São Paulo · Boston</span> ·
+                  globalmente.
+                </span>
               </li>
             </ul>
           </div>
@@ -386,7 +380,11 @@ export default function LandingPage() {
 
       {/* CTA FINAL */}
       <Section id="contato" className="border-t border-border">
-        <div className="rounded-3xl bg-[var(--ink)] p-10 text-[var(--paper)] sm:p-16">
+        <div className="relative overflow-hidden rounded-3xl bg-[var(--ink)] p-10 text-[var(--paper)] sm:p-16">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-primary/20 blur-3xl"
+          />
           <Eyebrow>Vamos conversar</Eyebrow>
           <h2 className="mt-4 max-w-3xl text-4xl font-semibold sm:text-6xl">
             Vamos construir algo <span className="text-primary">que funciona.</span>
@@ -396,23 +394,23 @@ export default function LandingPage() {
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground hover:opacity-90"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground hover:opacity-90"
             >
-              WhatsApp
+              <MessageSquare className="h-4 w-4" /> WhatsApp
             </a>
             <a
               href={`mailto:${EMAIL}`}
-              className="rounded-full border border-white/30 px-6 py-3 font-medium text-white hover:bg-white/10"
+              className="inline-flex items-center gap-2 rounded-full border border-white/30 px-6 py-3 font-medium text-white hover:bg-white/10"
             >
-              E-mail
+              <Mail className="h-4 w-4" /> E-mail
             </a>
             <a
               href={LINKEDIN}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full border border-white/30 px-6 py-3 font-medium text-white hover:bg-white/10"
+              className="inline-flex items-center gap-2 rounded-full border border-white/30 px-6 py-3 font-medium text-white hover:bg-white/10"
             >
-              LinkedIn
+              <Linkedin className="h-4 w-4" /> LinkedIn
             </a>
           </div>
         </div>
@@ -420,7 +418,7 @@ export default function LandingPage() {
 
       <footer className="border-t border-border">
         <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 px-6 py-10 text-sm text-muted-foreground sm:flex-row sm:items-center">
-          <span>© {new Date().getFullYear()} Sena Consulting. Felipe Sena.</span>
+          <span>© {new Date().getFullYear()} Sena Consulting · Felipe Sena</span>
           <span>São Paulo · Boston · Global</span>
         </div>
       </footer>
@@ -442,7 +440,7 @@ function PillarBlock({
   n: string;
   title: string;
   sub: string;
-  items: { t: string; d: string }[];
+  items: { t: string; Icon: typeof Bot }[];
   dark?: boolean;
 }) {
   return (
@@ -451,29 +449,40 @@ function PillarBlock({
       className={`border-t border-border ${dark ? "bg-[var(--ink)] text-[var(--paper)]" : ""}`}
     >
       <div className="mx-auto w-full max-w-6xl px-6 py-20 sm:py-28">
-        <div className="flex items-baseline gap-4">
-          <span className={`font-mono text-sm ${dark ? "text-primary" : "text-primary"}`}>
-            Pilar {n}
-          </span>
-        </div>
-        <h2 className="mt-3 text-4xl font-semibold sm:text-6xl">{title}.</h2>
-        <p className={`mt-4 max-w-2xl text-lg ${dark ? "opacity-80" : "text-muted-foreground"}`}>
-          {sub}
-        </p>
-        <div className="mt-12 grid gap-6 sm:grid-cols-2">
-          {items.map((it) => (
-            <article
-              key={it.t}
-              className={`rounded-2xl border p-6 ${
-                dark ? "border-white/15 bg-white/5" : "border-border bg-card"
-              }`}
-            >
-              <h3 className="text-xl font-semibold">{it.t}</h3>
-              <p className={`mt-2 text-sm ${dark ? "opacity-80" : "text-muted-foreground"}`}>
-                {it.d}
-              </p>
-            </article>
-          ))}
+        <div className="grid gap-12 md:grid-cols-[1fr_1.6fr] md:items-start">
+          <div className="md:sticky md:top-28">
+            <span className="font-mono text-xs uppercase tracking-[0.2em] text-primary">
+              Pilar {n}
+            </span>
+            <h2 className="mt-3 text-4xl font-semibold sm:text-6xl">{title}.</h2>
+            <p className={`mt-4 text-lg ${dark ? "opacity-80" : "text-muted-foreground"}`}>
+              {sub}
+            </p>
+          </div>
+          <div className="grid gap-3">
+            {items.map((it) => (
+              <article
+                key={it.t}
+                className={`flex items-center gap-4 rounded-xl border p-5 transition hover:translate-x-1 ${
+                  dark
+                    ? "border-white/15 bg-white/[0.03] hover:border-primary"
+                    : "border-border bg-card hover:border-primary"
+                }`}
+              >
+                <div
+                  className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg ${
+                    dark ? "bg-primary/15 text-primary" : "bg-primary/10 text-primary"
+                  }`}
+                >
+                  <it.Icon className="h-5 w-5" strokeWidth={1.6} />
+                </div>
+                <h3 className="text-base font-medium sm:text-lg">{it.t}</h3>
+                <ArrowUpRight
+                  className={`ml-auto h-4 w-4 ${dark ? "opacity-50" : "text-muted-foreground"}`}
+                />
+              </article>
+            ))}
+          </div>
         </div>
       </div>
     </section>
