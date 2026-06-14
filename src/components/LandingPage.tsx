@@ -186,7 +186,7 @@ export default function LandingPage() {
 
               <div className="mt-8 rounded-2xl border border-border/70 bg-[var(--paper)] p-5">
                 <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                  A oportunidade
+                  COMECE PELO DIAGNÓSTICO
                 </p>
                 <p className="mt-2 text-lg font-semibold leading-snug">
                   A IA já consegue muito mais do que o mercado usa.
