@@ -326,6 +326,88 @@ export default function LandingPage() {
         items={orientarItems}
       />
 
+      {/* COMO POSSO AJUDAR */}
+      <Section id="como-ajudar" className="border-t border-border">
+        <Eyebrow>Como posso ajudar</Eyebrow>
+        <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
+          Três formas de levar IA para a prática no seu negócio.
+        </h2>
+        <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
+          Você pode começar com uma palestra, aprofundar com uma consultoria ou avançar direto para a implementação de agentes, automações e apps sob medida.
+        </p>
+
+        <div className="mt-16 grid divide-y divide-border md:grid-cols-3 md:divide-x md:divide-y-0">
+          {/* 01 */}
+          <div className="flex flex-col p-8 md:p-10">
+            <div className="flex items-center gap-3">
+              <span className="font-mono text-sm text-muted-foreground">01</span>
+              <Presentation className="h-5 w-5 text-primary" strokeWidth={1.5} />
+            </div>
+            <h3 className="mt-6 text-xl font-semibold">Treinamentos e palestras corporativas</h3>
+            <p className="mt-3 text-muted-foreground">
+              Para empresas, eventos e times que precisam entender como usar IA de forma prática, segura e aplicada ao dia a dia.
+            </p>
+            <p className="mt-4 text-sm text-muted-foreground">
+              <span className="font-medium text-foreground">Ideal para:</span> sensibilizar o time, nivelar conhecimento e mostrar casos reais de uso.
+            </p>
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-8 inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-sm font-medium hover:border-primary hover:text-primary"
+            >
+              Levar IA para meu time <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
+
+          {/* 02 */}
+          <div className="flex flex-col p-8 md:p-10">
+            <div className="flex items-center gap-3">
+              <span className="font-mono text-sm text-muted-foreground">02</span>
+              <Compass className="h-5 w-5 text-primary" strokeWidth={1.5} />
+            </div>
+            <h3 className="mt-6 text-xl font-semibold">Consultoria customizada</h3>
+            <p className="mt-3 text-muted-foreground">
+              Para empresas, gestores e profissionais que precisam mapear oportunidades, melhorar processos e definir prioridades claras de aplicação de IA.
+            </p>
+            <p className="mt-4 text-sm text-muted-foreground">
+              <span className="font-medium text-foreground">Ideal para:</span> sair da dúvida, escolher onde começar e estruturar um plano de ação com foco em resultado.
+            </p>
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-8 inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-sm font-medium hover:border-primary hover:text-primary"
+            >
+              Mapear oportunidades <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
+
+          {/* 03 */}
+          <div className="flex flex-col p-8 md:p-10">
+            <div className="flex items-center gap-3">
+              <span className="font-mono text-sm text-muted-foreground">03</span>
+              <Bot className="h-5 w-5 text-primary" strokeWidth={1.5} />
+            </div>
+            <h3 className="mt-6 text-xl font-semibold">Agentes de IA, automações e apps</h3>
+            <p className="mt-3 text-muted-foreground">
+              Para quem já sabe o problema que quer resolver e precisa construir soluções sob medida com agilidade e menor custo.
+            </p>
+            <p className="mt-4 text-sm text-muted-foreground">
+              <span className="font-medium text-foreground">Ideal para:</span> automatizar fluxos, criar assistentes de IA, dashboards, plataformas internas e ferramentas específicas para a operação.
+            </p>
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-8 inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-sm font-medium hover:border-primary hover:text-primary"
+            >
+              Construir uma solução <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
+        </div>
+      </Section>
+
       {/* COMECE AQUI */}
       <Section id="comece" className="border-t border-border">
         <Eyebrow>Comece aqui</Eyebrow>
