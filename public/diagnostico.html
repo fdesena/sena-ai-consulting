@@ -837,7 +837,16 @@ function renderReport(dim,overall,ak){
   <div class="ctacard">
     <span class="label">O próximo passo</span>
     <h3>${nome1?nome1+", vamos":"Vamos"} destravar isso juntos?</h3>
-    <p>Receba um diagnóstico aprofundado e ajuda para colocar a primeira automação de IA para rodar no seu negócio — começando pela área de maior retorno: ${DIMS[low2[0]].nome}.</p>
+    <p>Comece pela área de maior retorno: <b>${DIMS[low2[0]].nome}</b>. Escolha o melhor caminho para falar comigo.</p>
+
+    <div class="note" style="background:#1f1d1a;border-color:#2f2c27;color:#E9E3D6;margin-bottom:16px">
+      🔐 <b>Seu acesso ao painel</b><br>
+      Criamos uma conta para você acompanhar o diagnóstico no site. Use seu e-mail <b>${A.email||""}</b> como <b>login e senha</b>. Acabamos de enviar as instruções por e-mail — recomendamos trocar a senha em <i>Perfil → alterar senha</i> assim que entrar.
+      <div style="margin-top:10px"><a href="/auth" style="color:#C8853A;font-weight:600;text-decoration:none">→ Entrar no painel</a></div>
+    </div>
+
+    <button class="btn accent" onclick="window.open('${CONFIG.AGENDA_URL}','_blank')">📅 Agendar 30 min gratuitos com o Felipe</button>
+    <div style="height:10px"></div>
     <button class="btn wa" onclick="window.open('https://wa.me/${CONFIG.WHATSAPP}?text=${waMsg}','_blank')">Falar com a Sena no WhatsApp</button>
     <div style="height:10px"></div>
     <button class="btn alt" style="color:#fff;border-color:#444" onclick="window.print()">Salvar / imprimir diagnóstico</button>
