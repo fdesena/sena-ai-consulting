@@ -141,7 +141,7 @@ export default function LandingPage() {
       {/* NAV */}
       <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <a href="#top" className="font-display text-lg font-semibold tracking-tight">
+          <a href="#top" className="font-display text-lg font-semibold tracking-tight inline-block min-w-[280px]">
             <TypeWriter />
           </a>
           <nav className="hidden items-center gap-8 text-sm md:flex">
