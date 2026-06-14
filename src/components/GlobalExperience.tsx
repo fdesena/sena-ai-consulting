@@ -7,6 +7,7 @@ import hultChallengeAsset from "@/assets/felipe-hult-challenge.png.asset.json";
 import mitSolveAsset from "@/assets/felipe-mit-solve.png.asset.json";
 import bostonBeyondAsset from "@/assets/felipe-boston-beyond.png.asset.json";
 import epicMalasiaAsset from "@/assets/felipe-epic-malasia.png.asset.json";
+import hultAlumniAsset from "@/assets/felipe-hult-alumni.png.asset.json";
 
 type Experience = {
   title: string;
