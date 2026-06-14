@@ -105,10 +105,9 @@ const pillars = [
 ];
 
 const capacitarItems = [
-  { t: "Treinamento corporativo em IA", Icon: Users },
-  { t: "Palestras de IA", Icon: Mic2 },
-  { t: "Workshops em ferramentas (Claude, Lovable)", Icon: Sparkles },
-  { t: "Cursos com avatares (HeyGen, Synthesia)", Icon: Presentation },
+  { t: "Mapeamento e melhoria de processos", Icon: Workflow },
+  { t: "Seleção e implementação de ferramentas", Icon: Compass },
+  { t: "Capacitação e adoção pelo time", Icon: Users },
 ];
 
 const construirItems = [
