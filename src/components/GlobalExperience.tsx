@@ -7,6 +7,7 @@ import hultChallengeAsset from "@/assets/felipe-hult-challenge.png.asset.json";
 import mitSolveAsset from "@/assets/felipe-mit-solve.png.asset.json";
 import bostonBeyondAsset from "@/assets/felipe-boston-beyond.png.asset.json";
 import epicMalasiaAsset from "@/assets/felipe-epic-malasia.png.asset.json";
+import hultAlumniAsset from "@/assets/felipe-hult-alumni.png.asset.json";
 
 type Experience = {
   title: string;
@@ -70,6 +71,18 @@ const EXPERIENCES: Experience[] = [
     image: selectUsaAsset.url,
     link: "https://portal.agrosummit.com.br/agfintech-brasileira-e-selecionada-para-maior-evento-de-investimento-dos-eua",
     linkLabel: "Ver matéria",
+  },
+  {
+    title: "Encontro Alumni Hult · Boston",
+    context: "Hult International Business School · Alumni Association",
+    description:
+      "Organizei um encontro com alumni globais da Hult em Boston, reunindo profissionais de turmas entre 2015 e 2025. Uma oportunidade para reconectar com a comunidade, trocar experiências e fortalecer uma rede global presente em hubs como Boston, London, Dubai e Singapore.",
+    location: "Estados Unidos",
+    flags: "🇺🇸",
+    tag: "Networking global",
+    image: hultAlumniAsset.url,
+    link: "https://www.linkedin.com/posts/senafelipe_activity-7465827955500367872",
+    linkLabel: "Ver post",
   },
   {
     title: "Business Challenge · Hult Business School",
@@ -149,6 +162,7 @@ const EXPERIENCES: Experience[] = [
 export default function GlobalExperience() {
   const [current, setCurrent] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(3);
+  const [isPaused, setIsPaused] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -167,7 +181,16 @@ export default function GlobalExperience() {
   const canNext = current < maxIndex;
 
   const goPrev = () => setCurrent((p) => Math.max(0, p - 1));
-  const goNext = () => setCurrent((p) => Math.min(maxIndex, p + 1));
+  const goNext = () => setCurrent((p) => (p >= maxIndex ? 0 : p + 1));
+
+  // Autoplay
+  useEffect(() => {
+    if (isPaused) return;
+    const interval = setInterval(() => {
+      setCurrent((p) => (p >= maxIndex ? 0 : p + 1));
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [isPaused, maxIndex]);
 
   return (
     <div>
@@ -205,7 +228,11 @@ export default function GlobalExperience() {
       </div>
 
       {/* Carousel track */}
-      <div className="mt-10 overflow-hidden">
+      <div
+        className="mt-10 overflow-hidden"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
         <div
           ref={trackRef}
           className="flex gap-6 transition-transform duration-500 ease-out will-change-transform"
