@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { LineChart, Sparkles, ArrowUpRight } from "lucide-react";
 
-export const Route = createFileRoute("/_authenticated/painel")({
+export const Route = createFileRoute("/_authenticated/painel/")({
   component: PainelHome,
 });
 
