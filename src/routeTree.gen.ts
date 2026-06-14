@@ -25,6 +25,7 @@ import { Route as AuthenticatedPainelAdminIndexRouteImport } from './routes/_aut
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
+import { Route as ApiPublicDiagnosticoSubmitRouteImport } from './routes/api/public/diagnostico.submit'
 import { Route as AuthenticatedPainelAdminWebsiteRouteImport } from './routes/_authenticated/painel.admin.website'
 import { Route as AuthenticatedPainelAdminUsuariosRouteImport } from './routes/_authenticated/painel.admin.usuarios'
 import { Route as AuthenticatedPainelAdminLeadsRouteImport } from './routes/_authenticated/painel.admin.leads'
@@ -119,6 +120,12 @@ const LovableEmailQueueProcessRoute =
     path: '/lovable/email/queue/process',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicDiagnosticoSubmitRoute =
+  ApiPublicDiagnosticoSubmitRouteImport.update({
+    id: '/api/public/diagnostico/submit',
+    path: '/api/public/diagnostico/submit',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedPainelAdminWebsiteRoute =
   AuthenticatedPainelAdminWebsiteRouteImport.update({
     id: '/website',
@@ -172,6 +179,7 @@ export interface FileRoutesByFullPath {
   '/painel/admin/leads': typeof AuthenticatedPainelAdminLeadsRoute
   '/painel/admin/usuarios': typeof AuthenticatedPainelAdminUsuariosRoute
   '/painel/admin/website': typeof AuthenticatedPainelAdminWebsiteRouteWithChildren
+  '/api/public/diagnostico/submit': typeof ApiPublicDiagnosticoSubmitRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
@@ -192,6 +200,7 @@ export interface FileRoutesByTo {
   '/painel/admin/configuracoes': typeof AuthenticatedPainelAdminConfiguracoesRoute
   '/painel/admin/leads': typeof AuthenticatedPainelAdminLeadsRoute
   '/painel/admin/usuarios': typeof AuthenticatedPainelAdminUsuariosRoute
+  '/api/public/diagnostico/submit': typeof ApiPublicDiagnosticoSubmitRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
@@ -217,6 +226,7 @@ export interface FileRoutesById {
   '/_authenticated/painel/admin/leads': typeof AuthenticatedPainelAdminLeadsRoute
   '/_authenticated/painel/admin/usuarios': typeof AuthenticatedPainelAdminUsuariosRoute
   '/_authenticated/painel/admin/website': typeof AuthenticatedPainelAdminWebsiteRouteWithChildren
+  '/api/public/diagnostico/submit': typeof ApiPublicDiagnosticoSubmitRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
@@ -242,6 +252,7 @@ export interface FileRouteTypes {
     | '/painel/admin/leads'
     | '/painel/admin/usuarios'
     | '/painel/admin/website'
+    | '/api/public/diagnostico/submit'
     | '/lovable/email/queue/process'
     | '/lovable/email/transactional/preview'
     | '/lovable/email/transactional/send'
@@ -262,6 +273,7 @@ export interface FileRouteTypes {
     | '/painel/admin/configuracoes'
     | '/painel/admin/leads'
     | '/painel/admin/usuarios'
+    | '/api/public/diagnostico/submit'
     | '/lovable/email/queue/process'
     | '/lovable/email/transactional/preview'
     | '/lovable/email/transactional/send'
@@ -286,6 +298,7 @@ export interface FileRouteTypes {
     | '/_authenticated/painel/admin/leads'
     | '/_authenticated/painel/admin/usuarios'
     | '/_authenticated/painel/admin/website'
+    | '/api/public/diagnostico/submit'
     | '/lovable/email/queue/process'
     | '/lovable/email/transactional/preview'
     | '/lovable/email/transactional/send'
@@ -301,6 +314,7 @@ export interface RootRouteChildren {
   DiagnosticoRoute: typeof DiagnosticoRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
+  ApiPublicDiagnosticoSubmitRoute: typeof ApiPublicDiagnosticoSubmitRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
   LovableEmailTransactionalSendRoute: typeof LovableEmailTransactionalSendRoute
@@ -418,6 +432,13 @@ declare module '@tanstack/react-router' {
       path: '/lovable/email/queue/process'
       fullPath: '/lovable/email/queue/process'
       preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/diagnostico/submit': {
+      id: '/api/public/diagnostico/submit'
+      path: '/api/public/diagnostico/submit'
+      fullPath: '/api/public/diagnostico/submit'
+      preLoaderRoute: typeof ApiPublicDiagnosticoSubmitRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/painel/admin/website': {
@@ -545,6 +566,7 @@ const rootRouteChildren: RootRouteChildren = {
   DiagnosticoRoute: DiagnosticoRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
+  ApiPublicDiagnosticoSubmitRoute: ApiPublicDiagnosticoSubmitRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
   LovableEmailTransactionalSendRoute: LovableEmailTransactionalSendRoute,
