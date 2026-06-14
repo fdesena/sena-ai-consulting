@@ -450,14 +450,16 @@ function rWelcome(){
   app.innerHTML=`<section class="card">
     <span class="label">Diagnóstico · ~4 minutos</span>
     <h1 style="margin-top:14px">Onde o seu negócio está na <span class="hl">era da IA?</span></h1>
-    <p class="lead">Um diagnóstico direto, para donos de negócio. Em poucos minutos você descobre o nível de maturidade digital da sua empresa e recebe as <b>maiores oportunidades</b> e um <b>plano de 30 dias</b> para crescer com automação e inteligência artificial.</p>
+    <p class="lead">Um diagnóstico direto, para donos de negócio. Em poucos minutos você descobre o nível de maturidade digital da sua empresa e recebe as <b>maiores oportunidades</b> de crescimento com automação e inteligência artificial.</p>
     <div class="meta">
       <div><span class="tick"></span> Perguntas rápidas e objetivas</div>
       <div><span class="tick"></span> Resultado na hora</div>
-      <div><span class="tick"></span> Plano de ação gratuito</div>
+      <div><span class="tick"></span> Acesso ao painel de resultados</div>
     </div>
     <div style="height:20px"></div>
     <button class="btn" onclick="next()">Começar meu diagnóstico →</button>
+    <div style="height:10px"></div>
+    <button class="btn alt" onclick="window.location.href='/'">← Voltar para o site</button>
     <p class="foot">Sena Consulting · Estratégia + Execução com IA</p>
   </section>`;
 }
@@ -616,7 +618,7 @@ function rHalfway(){
   app.innerHTML=`<section class="halfcard">
     <span class="label">Você está na metade</span>
     <h2>Falta pouco — e tem bônus</h2>
-    <p>Ao final você ganha <b>acesso ao painel de resultados</b> (com seu diagnóstico salvo e seu plano de 30 dias) e uma <b>sessão 1:1 de 30 minutos com o Felipe</b> para discutir os resultados. Tudo gratuito.</p>
+    <p>Ao final você ganha <b>acesso ao painel de resultados</b> (com seu diagnóstico salvo) e uma <b>sessão 1:1 de 30 minutos comigo</b> para discutir os resultados. Tudo gratuito.</p>
     <button class="btn" onclick="next()">Continuar →</button>
   </section>`;
 }
@@ -733,7 +735,7 @@ function submitDiag(){
     ["Analista do Diagnóstico","Lendo as suas 5 áreas e o padrão das suas respostas..."],
     ["Estrategista de Negócios","Identificando onde está a maior chance de retorno no seu negócio..."],
     ["Especialista em Automação","Escolhendo as automações de retorno mais rápido para o seu caso..."],
-    ["Mentor Sena","Montando o seu plano de 30 dias e o próximo passo..."]
+    ["Mentor Sena","Montando o próximo passo e o roteiro de ação..."]
   ];
   app.innerHTML=`<section class="card reveal">
     <div class="compass"></div>
@@ -830,7 +832,7 @@ function renderReport(dim,overall,ak){
   </div>
 
   <div class="rsec card">
-    <span class="label">Seu plano de 30 dias</span>
+    <span class="label">Próximos passos</span>
     <div class="weeks">${weeks}</div>
   </div>
 
