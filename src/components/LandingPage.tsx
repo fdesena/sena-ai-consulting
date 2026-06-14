@@ -25,6 +25,7 @@ import WhatsAppFAB, { WHATSAPP_URL } from "./WhatsAppFAB";
 import ProcessCycle from "./ProcessCycle";
 import MarketGapChart from "./MarketGapChart";
 import TrackRecord from "./TrackRecord";
+import GlobalExperience from "./GlobalExperience";
 import felipeAsset from "@/assets/felipe-sena.png.asset.json";
 
 const COUNTRIES = [
@@ -484,7 +485,13 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
+
+        <div className="mt-20 border-t border-border pt-16">
+          <GlobalExperience />
+        </div>
       </Section>
+
+
 
       {/* CTA FINAL */}
       <Section id="contato" className="border-t border-border">
