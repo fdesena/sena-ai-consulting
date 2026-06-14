@@ -39,6 +39,7 @@ export type Database = {
           score_oportunidades: number
           score_usar_ia: number
           segmento: string | null
+          user_id: string | null
           whatsapp: string
         }
         Insert: {
@@ -65,6 +66,7 @@ export type Database = {
           score_oportunidades?: number
           score_usar_ia?: number
           segmento?: string | null
+          user_id?: string | null
           whatsapp: string
         }
         Update: {
@@ -91,6 +93,7 @@ export type Database = {
           score_oportunidades?: number
           score_usar_ia?: number
           segmento?: string | null
+          user_id?: string | null
           whatsapp?: string
         }
         Relationships: []

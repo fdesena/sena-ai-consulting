@@ -16,7 +16,13 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedPainelRouteImport } from './routes/_authenticated/painel'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedPainelIndexRouteImport } from './routes/_authenticated/painel.index'
+import { Route as AuthenticatedPainelPerfilRouteImport } from './routes/_authenticated/painel.perfil'
 import { Route as AuthenticatedPainelDiagnosticoRouteImport } from './routes/_authenticated/painel.diagnostico'
+import { Route as AuthenticatedPainelAdminRouteImport } from './routes/_authenticated/painel.admin'
+import { Route as AuthenticatedPainelAdminIndexRouteImport } from './routes/_authenticated/painel.admin.index'
+import { Route as AuthenticatedPainelAdminUsuariosRouteImport } from './routes/_authenticated/painel.admin.usuarios'
+import { Route as AuthenticatedPainelAdminLeadsRouteImport } from './routes/_authenticated/painel.admin.leads'
+import { Route as AuthenticatedPainelAdminConfiguracoesRouteImport } from './routes/_authenticated/painel.admin.configuracoes'
 
 const DiagnosticoRoute = DiagnosticoRouteImport.update({
   id: '/diagnostico',
@@ -53,11 +59,47 @@ const AuthenticatedPainelIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedPainelRoute,
   } as any)
+const AuthenticatedPainelPerfilRoute =
+  AuthenticatedPainelPerfilRouteImport.update({
+    id: '/perfil',
+    path: '/perfil',
+    getParentRoute: () => AuthenticatedPainelRoute,
+  } as any)
 const AuthenticatedPainelDiagnosticoRoute =
   AuthenticatedPainelDiagnosticoRouteImport.update({
     id: '/diagnostico',
     path: '/diagnostico',
     getParentRoute: () => AuthenticatedPainelRoute,
+  } as any)
+const AuthenticatedPainelAdminRoute =
+  AuthenticatedPainelAdminRouteImport.update({
+    id: '/admin',
+    path: '/admin',
+    getParentRoute: () => AuthenticatedPainelRoute,
+  } as any)
+const AuthenticatedPainelAdminIndexRoute =
+  AuthenticatedPainelAdminIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedPainelAdminRoute,
+  } as any)
+const AuthenticatedPainelAdminUsuariosRoute =
+  AuthenticatedPainelAdminUsuariosRouteImport.update({
+    id: '/usuarios',
+    path: '/usuarios',
+    getParentRoute: () => AuthenticatedPainelAdminRoute,
+  } as any)
+const AuthenticatedPainelAdminLeadsRoute =
+  AuthenticatedPainelAdminLeadsRouteImport.update({
+    id: '/leads',
+    path: '/leads',
+    getParentRoute: () => AuthenticatedPainelAdminRoute,
+  } as any)
+const AuthenticatedPainelAdminConfiguracoesRoute =
+  AuthenticatedPainelAdminConfiguracoesRouteImport.update({
+    id: '/configuracoes',
+    path: '/configuracoes',
+    getParentRoute: () => AuthenticatedPainelAdminRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -66,8 +108,14 @@ export interface FileRoutesByFullPath {
   '/diagnostico': typeof DiagnosticoRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/painel': typeof AuthenticatedPainelRouteWithChildren
+  '/painel/admin': typeof AuthenticatedPainelAdminRouteWithChildren
   '/painel/diagnostico': typeof AuthenticatedPainelDiagnosticoRoute
+  '/painel/perfil': typeof AuthenticatedPainelPerfilRoute
   '/painel/': typeof AuthenticatedPainelIndexRoute
+  '/painel/admin/configuracoes': typeof AuthenticatedPainelAdminConfiguracoesRoute
+  '/painel/admin/leads': typeof AuthenticatedPainelAdminLeadsRoute
+  '/painel/admin/usuarios': typeof AuthenticatedPainelAdminUsuariosRoute
+  '/painel/admin/': typeof AuthenticatedPainelAdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -75,7 +123,12 @@ export interface FileRoutesByTo {
   '/diagnostico': typeof DiagnosticoRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/painel/diagnostico': typeof AuthenticatedPainelDiagnosticoRoute
+  '/painel/perfil': typeof AuthenticatedPainelPerfilRoute
   '/painel': typeof AuthenticatedPainelIndexRoute
+  '/painel/admin/configuracoes': typeof AuthenticatedPainelAdminConfiguracoesRoute
+  '/painel/admin/leads': typeof AuthenticatedPainelAdminLeadsRoute
+  '/painel/admin/usuarios': typeof AuthenticatedPainelAdminUsuariosRoute
+  '/painel/admin': typeof AuthenticatedPainelAdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -85,8 +138,14 @@ export interface FileRoutesById {
   '/diagnostico': typeof DiagnosticoRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/painel': typeof AuthenticatedPainelRouteWithChildren
+  '/_authenticated/painel/admin': typeof AuthenticatedPainelAdminRouteWithChildren
   '/_authenticated/painel/diagnostico': typeof AuthenticatedPainelDiagnosticoRoute
+  '/_authenticated/painel/perfil': typeof AuthenticatedPainelPerfilRoute
   '/_authenticated/painel/': typeof AuthenticatedPainelIndexRoute
+  '/_authenticated/painel/admin/configuracoes': typeof AuthenticatedPainelAdminConfiguracoesRoute
+  '/_authenticated/painel/admin/leads': typeof AuthenticatedPainelAdminLeadsRoute
+  '/_authenticated/painel/admin/usuarios': typeof AuthenticatedPainelAdminUsuariosRoute
+  '/_authenticated/painel/admin/': typeof AuthenticatedPainelAdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -96,8 +155,14 @@ export interface FileRouteTypes {
     | '/diagnostico'
     | '/admin'
     | '/painel'
+    | '/painel/admin'
     | '/painel/diagnostico'
+    | '/painel/perfil'
     | '/painel/'
+    | '/painel/admin/configuracoes'
+    | '/painel/admin/leads'
+    | '/painel/admin/usuarios'
+    | '/painel/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -105,7 +170,12 @@ export interface FileRouteTypes {
     | '/diagnostico'
     | '/admin'
     | '/painel/diagnostico'
+    | '/painel/perfil'
     | '/painel'
+    | '/painel/admin/configuracoes'
+    | '/painel/admin/leads'
+    | '/painel/admin/usuarios'
+    | '/painel/admin'
   id:
     | '__root__'
     | '/'
@@ -114,8 +184,14 @@ export interface FileRouteTypes {
     | '/diagnostico'
     | '/_authenticated/admin'
     | '/_authenticated/painel'
+    | '/_authenticated/painel/admin'
     | '/_authenticated/painel/diagnostico'
+    | '/_authenticated/painel/perfil'
     | '/_authenticated/painel/'
+    | '/_authenticated/painel/admin/configuracoes'
+    | '/_authenticated/painel/admin/leads'
+    | '/_authenticated/painel/admin/usuarios'
+    | '/_authenticated/painel/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -176,6 +252,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPainelIndexRouteImport
       parentRoute: typeof AuthenticatedPainelRoute
     }
+    '/_authenticated/painel/perfil': {
+      id: '/_authenticated/painel/perfil'
+      path: '/perfil'
+      fullPath: '/painel/perfil'
+      preLoaderRoute: typeof AuthenticatedPainelPerfilRouteImport
+      parentRoute: typeof AuthenticatedPainelRoute
+    }
     '/_authenticated/painel/diagnostico': {
       id: '/_authenticated/painel/diagnostico'
       path: '/diagnostico'
@@ -183,16 +266,77 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPainelDiagnosticoRouteImport
       parentRoute: typeof AuthenticatedPainelRoute
     }
+    '/_authenticated/painel/admin': {
+      id: '/_authenticated/painel/admin'
+      path: '/admin'
+      fullPath: '/painel/admin'
+      preLoaderRoute: typeof AuthenticatedPainelAdminRouteImport
+      parentRoute: typeof AuthenticatedPainelRoute
+    }
+    '/_authenticated/painel/admin/': {
+      id: '/_authenticated/painel/admin/'
+      path: '/'
+      fullPath: '/painel/admin/'
+      preLoaderRoute: typeof AuthenticatedPainelAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedPainelAdminRoute
+    }
+    '/_authenticated/painel/admin/usuarios': {
+      id: '/_authenticated/painel/admin/usuarios'
+      path: '/usuarios'
+      fullPath: '/painel/admin/usuarios'
+      preLoaderRoute: typeof AuthenticatedPainelAdminUsuariosRouteImport
+      parentRoute: typeof AuthenticatedPainelAdminRoute
+    }
+    '/_authenticated/painel/admin/leads': {
+      id: '/_authenticated/painel/admin/leads'
+      path: '/leads'
+      fullPath: '/painel/admin/leads'
+      preLoaderRoute: typeof AuthenticatedPainelAdminLeadsRouteImport
+      parentRoute: typeof AuthenticatedPainelAdminRoute
+    }
+    '/_authenticated/painel/admin/configuracoes': {
+      id: '/_authenticated/painel/admin/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/painel/admin/configuracoes'
+      preLoaderRoute: typeof AuthenticatedPainelAdminConfiguracoesRouteImport
+      parentRoute: typeof AuthenticatedPainelAdminRoute
+    }
   }
 }
 
+interface AuthenticatedPainelAdminRouteChildren {
+  AuthenticatedPainelAdminConfiguracoesRoute: typeof AuthenticatedPainelAdminConfiguracoesRoute
+  AuthenticatedPainelAdminLeadsRoute: typeof AuthenticatedPainelAdminLeadsRoute
+  AuthenticatedPainelAdminUsuariosRoute: typeof AuthenticatedPainelAdminUsuariosRoute
+  AuthenticatedPainelAdminIndexRoute: typeof AuthenticatedPainelAdminIndexRoute
+}
+
+const AuthenticatedPainelAdminRouteChildren: AuthenticatedPainelAdminRouteChildren =
+  {
+    AuthenticatedPainelAdminConfiguracoesRoute:
+      AuthenticatedPainelAdminConfiguracoesRoute,
+    AuthenticatedPainelAdminLeadsRoute: AuthenticatedPainelAdminLeadsRoute,
+    AuthenticatedPainelAdminUsuariosRoute:
+      AuthenticatedPainelAdminUsuariosRoute,
+    AuthenticatedPainelAdminIndexRoute: AuthenticatedPainelAdminIndexRoute,
+  }
+
+const AuthenticatedPainelAdminRouteWithChildren =
+  AuthenticatedPainelAdminRoute._addFileChildren(
+    AuthenticatedPainelAdminRouteChildren,
+  )
+
 interface AuthenticatedPainelRouteChildren {
+  AuthenticatedPainelAdminRoute: typeof AuthenticatedPainelAdminRouteWithChildren
   AuthenticatedPainelDiagnosticoRoute: typeof AuthenticatedPainelDiagnosticoRoute
+  AuthenticatedPainelPerfilRoute: typeof AuthenticatedPainelPerfilRoute
   AuthenticatedPainelIndexRoute: typeof AuthenticatedPainelIndexRoute
 }
 
 const AuthenticatedPainelRouteChildren: AuthenticatedPainelRouteChildren = {
+  AuthenticatedPainelAdminRoute: AuthenticatedPainelAdminRouteWithChildren,
   AuthenticatedPainelDiagnosticoRoute: AuthenticatedPainelDiagnosticoRoute,
+  AuthenticatedPainelPerfilRoute: AuthenticatedPainelPerfilRoute,
   AuthenticatedPainelIndexRoute: AuthenticatedPainelIndexRoute,
 }
 
@@ -221,13 +365,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
