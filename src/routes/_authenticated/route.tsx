@@ -6,7 +6,6 @@ import {
   LogOut,
   Menu as MenuIcon,
   X,
-  User,
   Shield,
   Users,
   Settings,
