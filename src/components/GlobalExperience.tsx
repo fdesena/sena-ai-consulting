@@ -27,7 +27,7 @@ const EXPERIENCES: Experience[] = [
     title: "Gestor de Projetos · Programa Go Global",
     context: "University of Miami · Boston Innovation Gateway",
     description:
-      "Liderei projetos com mais de 30 alunos do mestrado, mentorando a internacionalização de empresas do Brasil e Panamá.",
+      "Liderei projetos de internacionalização para múltiplas empresas no Brasil e no Panamá, coordenando mais de 40 pessoas entre empresas, universidades, estudantes de MBA e consultores seniores.",
     location: "Estados Unidos · Brasil · Panamá",
     flags: "🇺🇸 🇧🇷 🇵🇦",
     tag: "Internacionalização",
