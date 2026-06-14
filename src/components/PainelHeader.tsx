@@ -78,7 +78,7 @@ export function PainelHeader({ title, dark = false }: Props) {
             className={`relative grid place-items-center h-9 w-9 rounded-full transition ${bellBtn}`}
             aria-label="Notificações"
           >
-            <Bell className="h-4.5 w-4.5" />
+            <Bell className="h-[18px] w-[18px]" />
             <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-bronze" />
           </button>
           {openBell && (
