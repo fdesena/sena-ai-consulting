@@ -1,4 +1,6 @@
 import { Link } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { trackEvent, trackPageview } from "@/lib/track";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -198,6 +200,7 @@ export default function LandingPage() {
             <div className="flex flex-col gap-3 sm:flex-row">
               <Link
                 to="/diagnostico"
+                onClick={() => trackEvent("click_diagnostico_cta", { source: "hero" })}
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
               >
                 Realizar diagnóstico
@@ -336,6 +339,7 @@ export default function LandingPage() {
             </p>
             <Link
               to="/diagnostico"
+              onClick={() => trackEvent("click_diagnostico_cta", { source: "comece" })}
               className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground hover:opacity-90"
             >
               Fazer diagnóstico <ArrowRight className="h-4 w-4" />
