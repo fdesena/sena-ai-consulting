@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import "@/deck.css";
 import { DECK_HTML } from "@/lib/deck-html";
+import { DECK_CSS } from "@/lib/deck-css";
 import { TRANSLATIONS, HINTS, type Lang } from "@/lib/translations";
 
 const DARK_SLIDES = new Set([0, 10]);
