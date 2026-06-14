@@ -140,11 +140,11 @@ export default function LandingPage() {
     <main className="min-h-screen bg-background text-foreground">
       {/* NAV */}
       <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <div className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <a href="#top" className="font-display text-lg font-semibold tracking-tight inline-block min-w-[280px]">
             <TypeWriter />
           </a>
-          <nav className="hidden items-center gap-8 text-sm md:flex">
+          <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 text-sm md:flex">
             <a href="#pilares" className="hover:text-primary">O que faço</a>
             <a href="#processo" className="hover:text-primary">Processo</a>
             <a href="#cases" className="hover:text-primary">Cases</a>
