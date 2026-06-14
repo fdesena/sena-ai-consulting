@@ -53,15 +53,23 @@ function AuthedShell() {
   const inAdmin = pathname.startsWith("/painel/admin");
 
   useEffect(() => {
-    (async () => {
+    const load = async () => {
       const { data } = await supabase.auth.getUser();
       const uid = data.user?.id;
       setEmail(data.user?.email ?? "");
       if (!uid) return;
       try { await supabase.rpc("claim_seed_admin"); } catch {}
       const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", uid);
-      setIsAdmin((roles ?? []).some((r: any) => r.role === "admin"));
-    })();
+      let admin = (roles ?? []).some((r: any) => r.role === "admin");
+      if (!admin) {
+        const { data: hr } = await supabase.rpc("has_role", { _user_id: uid, _role: "admin" });
+        admin = !!hr;
+      }
+      setIsAdmin(admin);
+    };
+    load();
+    const { data: sub } = supabase.auth.onAuthStateChange(() => { load(); });
+    return () => { sub.subscription.unsubscribe(); };
   }, []);
 
   // Block non-admins from admin routes
