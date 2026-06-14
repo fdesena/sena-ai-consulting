@@ -87,6 +87,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:title", content: "Sena Consulting" },
       { property: "og:description", content: "Sena Consulting — IA, Automação e Transformação Digital." },
       { name: "twitter:description", content: "Sena Consulting — IA, Automação e Transformação Digital." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/cf534c12-18f3-46bb-a3fb-24f782d82249/id-preview-a139f3d4--88496c08-49a1-46f2-85dc-9ca829dc750a.lovable.app-1781453935344.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/cf534c12-18f3-46bb-a3fb-24f782d82249/id-preview-a139f3d4--88496c08-49a1-46f2-85dc-9ca829dc750a.lovable.app-1781453935344.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
