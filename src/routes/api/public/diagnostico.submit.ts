@@ -122,26 +122,46 @@ export const Route = createFileRoute("/api/public/diagnostico/submit")({
           console.error("insert diagnostico failed", ins.error);
         }
 
-        // Enfileira o email de credenciais
+        // Enfileira o email de credenciais via rota interna /lovable/email/transactional/send.
+        // Para autenticar, fazemos sign-in como o próprio usuário recém-criado.
         try {
-          const enq = await supabaseAdmin.rpc("enqueue_email", {
-            p_queue: "transactional_emails",
-            p_template_name: "diagnostico-credenciais",
-            p_recipient_email: email,
-            p_template_data: {
-              nome: data.nome.split(" ")[0] || data.nome,
-              email,
-              senha,
-              loginUrl: `${SiteOrigin}/auth`,
-              perfilUrl: `${SiteOrigin}/painel/perfil`,
-              agendaUrl: AgendaUrl,
-              whatsappUrl: WhatsappUrl,
-            },
-            p_idempotency_key: `diag-cred-${email}-${data.score_geral}`,
-          });
-          if (enq.error) console.error("enqueue_email error", enq.error);
+          const { createClient } = await import("@supabase/supabase-js");
+          const supaUrl = import.meta.env.VITE_SUPABASE_URL as string;
+          const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
+          const userClient = createClient(supaUrl, anonKey);
+          const signIn = await userClient.auth.signInWithPassword({ email, password: senha });
+          const token = signIn.data.session?.access_token;
+          if (token) {
+            const origin = new URL(request.url).origin;
+            const resp = await fetch(`${origin}/lovable/email/transactional/send`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                templateName: "diagnostico-credenciais",
+                recipientEmail: email,
+                idempotencyKey: `diag-cred-${email}-${data.score_geral}-${Date.now()}`,
+                templateData: {
+                  nome: data.nome.split(" ")[0] || data.nome,
+                  email,
+                  senha,
+                  loginUrl: `${SiteOrigin}/auth`,
+                  perfilUrl: `${SiteOrigin}/painel/perfil`,
+                  agendaUrl: AgendaUrl,
+                  whatsappUrl: WhatsappUrl,
+                },
+              }),
+            });
+            if (!resp.ok) {
+              console.error("send email failed", resp.status, await resp.text());
+            }
+          } else {
+            console.error("could not get user token to send email", signIn.error);
+          }
         } catch (e) {
-          console.error("enqueue_email throw", e);
+          console.error("send email throw", e);
         }
 
         return Response.json(
