@@ -14,6 +14,7 @@ import {
   ArrowLeftRight,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { PainelHeader } from "@/components/PainelHeader";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -188,6 +189,7 @@ function AuthedShell() {
           <span className="font-semibold">Sena<span className="text-bronze">.</span></span>
           <div className="w-6" />
         </header>
+        <PainelHeader title={inAdmin ? "Administrador" : "Painel"} dark={inAdmin} />
         <main className="flex-1 p-6 sm:p-8">
           <Outlet />
         </main>
