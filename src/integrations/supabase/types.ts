@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      blog_posts: {
+        Row: {
+          body: string | null
+          context: string | null
+          cover_url: string | null
+          created_at: string
+          excerpt: string | null
+          flags: string | null
+          id: string
+          link_label: string | null
+          link_url: string | null
+          location: string | null
+          published: boolean
+          slug: string | null
+          sort_order: number
+          tag: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string | null
+          context?: string | null
+          cover_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          flags?: string | null
+          id?: string
+          link_label?: string | null
+          link_url?: string | null
+          location?: string | null
+          published?: boolean
+          slug?: string | null
+          sort_order?: number
+          tag?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string | null
+          context?: string | null
+          cover_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          flags?: string | null
+          id?: string
+          link_label?: string | null
+          link_url?: string | null
+          location?: string | null
+          published?: boolean
+          slug?: string | null
+          sort_order?: number
+          tag?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       diagnostico_respostas: {
         Row: {
           arquetipo: string
@@ -95,6 +152,42 @@ export type Database = {
           segmento?: string | null
           user_id?: string | null
           whatsapp?: string
+        }
+        Relationships: []
+      }
+      page_events: {
+        Row: {
+          created_at: string
+          event: string
+          id: string
+          meta: Json
+          path: string | null
+          referrer: string | null
+          session_id: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event: string
+          id?: string
+          meta?: Json
+          path?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event?: string
+          id?: string
+          meta?: Json
+          path?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
