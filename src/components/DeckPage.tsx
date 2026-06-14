@@ -160,7 +160,11 @@ export default function DeckPage() {
       </div>
 
       {/* Deck content (preserved from original HTML) */}
-      <div ref={containerRef} dangerouslySetInnerHTML={{ __html: `<div class="deck">${DECK_HTML.replace(/<div class="lang-selector"[\s\S]*?<\/div>\s*/, "").replace(/<div class="deck">/, "").replace(/<\/div>\s*$/, "")}</div>` }} />
+      <div
+        ref={containerRef}
+        className="deck"
+        dangerouslySetInnerHTML={{ __html: DECK_HTML }}
+      />
 
       {/* Chrome: progress bar, dots, counter, hints */}
       <div className="deck-progress" style={{ width: `${progress}%` }} />
