@@ -90,8 +90,6 @@ export default function DeckPage() {
     return () => {
       deck.removeEventListener("scroll", onScroll);
       document.removeEventListener("keydown", onKey);
-      deck.removeEventListener("touchstart", onTouchStart);
-      deck.removeEventListener("touchend", onTouchEnd);
       window.clearTimeout(hintTimer);
     };
   }, []);
