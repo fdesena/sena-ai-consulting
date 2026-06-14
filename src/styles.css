@@ -143,10 +143,3 @@
   }
 }
 
-/* ─── SENA CONSULTING DECK ─── */
-:root {
-  --font-body: 'Bricolage Grotesque', system-ui, sans-serif;
-  --font-mono: 'Fragment Mono', 'SF Mono', Consolas, monospace;
-  --deck-bg:        #F8F7F4;
-  --deck-surface:   #FFFFFF;
-}
