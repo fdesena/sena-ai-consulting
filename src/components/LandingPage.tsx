@@ -36,6 +36,7 @@ const COUNTRIES = [
   { code: "MY", name: "Malásia" },
   { code: "CN", name: "China (Xangai)" },
   { code: "IT", name: "Itália" },
+  { code: "JO", name: "Jordânia" },
 ];
 
 function Flag({ code, name }: { code: string; name: string }) {
