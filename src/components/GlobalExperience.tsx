@@ -13,6 +13,7 @@ type Experience = {
   context: string;
   description: string;
   location: string;
+  flags: string;
   tag: string;
   image?: string;
   link: string;
@@ -21,38 +22,16 @@ type Experience = {
 
 const EXPERIENCES: Experience[] = [
   {
-    title: "Pitch no SelectUSA Investment Summit",
-    context: "Rivool Finance · Washington, D.C.",
-    description:
-      "Representei a Rivool Finance no maior evento de investimento dos EUA, apresentando tokenização de crédito agrícola.",
-    location: "Estados Unidos",
-    tag: "Captação internacional",
-    image: selectUsaAsset.url,
-    link: "https://portal.agrosummit.com.br/agfintech-brasileira-e-selecionada-para-maior-evento-de-investimento-dos-eua",
-    linkLabel: "Ver matéria",
-  },
-  {
     title: "Gestor de Projetos · Programa Go Global",
     context: "University of Miami · Boston Innovation Gateway",
     description:
       "Liderei projetos com mais de 30 alunos do mestrado, mentorando a internacionalização de empresas do Brasil e Panamá.",
     location: "Estados Unidos · Brasil · Panamá",
+    flags: "🇺🇸 🇧🇷 🇵🇦",
     tag: "Internacionalização",
     image: miamiAsset.url,
     link: "https://www.linkedin.com/in/senafelipe/",
     linkLabel: "Ver no LinkedIn",
-  },
-  {
-    title: "Teaching Assistant · Business Analytics",
-    context: "Hult International Business School · Boston",
-    description:
-      "Apoiei disciplinas de Business Analytics, IA e Futuro do Trabalho — tutoria e casos de negócios reais.",
-    location: "Estados Unidos",
-    tag: "Ensino & IA",
-    image:
-      "https://media.licdn.com/dms/image/v2/D4D22AQFC_jmUaFdOqQ/feedshare-image-high-res/feedshare-image-high-res/0/1714573503942?e=2147483647&v=beta&t=UgwEEBnkxBBANPnFFMIoWDTfW-Tv73Wj24vO0G4mBe4",
-    link: "https://www.linkedin.com/feed/update/urn:li:ugcPost:7191442511838535680",
-    linkLabel: "Ver post",
   },
   {
     title: "Visita ao escritório da Lovable AI",
@@ -60,10 +39,48 @@ const EXPERIENCES: Experience[] = [
     description:
       "Imersão na Lovable AI, plataforma que utilizo para acelerar construção de produtos e automações.",
     location: "Estados Unidos",
+    flags: "🇺🇸",
     tag: "Ecossistema de IA",
     image:
       "https://media.licdn.com/dms/image/v2/D4D22AQH2TuCoc2iSDg/feedshare-shrink_800/B4DZ5wQR85JcAc-/0/1779999776834?e=2147483647&v=beta&t=0Zo9XjI4HHXu1dRod75VHHDZYRqYyxK8jMehb-6HF6I",
     link: "https://www.linkedin.com/feed/update/urn:li:ugcPost:7465860189200670721",
+    linkLabel: "Ver post",
+  },
+  {
+    title: "Professor assistente em disciplinas de IA",
+    context: "Hult International Business School · Boston",
+    description:
+      "Professor assistente em disciplinas de IA na escola de negócios Hult International Business School em Boston.",
+    location: "Estados Unidos",
+    flags: "🇺🇸",
+    tag: "Ensino & IA",
+    image:
+      "https://media.licdn.com/dms/image/v2/D4D22AQFC_jmUaFdOqQ/feedshare-image-high-res/feedshare-image-high-res/0/1714573503942?e=2147483647&v=beta&t=UgwEEBnkxBBANPnFFMIoWDTfW-Tv73Wj24vO0G4mBe4",
+    link: "https://www.linkedin.com/feed/update/urn:li:ugcPost:7191442511838535680",
+    linkLabel: "Ver post",
+  },
+  {
+    title: "Pitch no SelectUSA Investment Summit",
+    context: "Rivool Finance · Washington, D.C.",
+    description:
+      "Representei a Rivool Finance no maior evento de investimento dos EUA, apresentando tokenização de crédito agrícola.",
+    location: "Estados Unidos",
+    flags: "🇺🇸",
+    tag: "Captação internacional",
+    image: selectUsaAsset.url,
+    link: "https://portal.agrosummit.com.br/agfintech-brasileira-e-selecionada-para-maior-evento-de-investimento-dos-eua",
+    linkLabel: "Ver matéria",
+  },
+  {
+    title: "Business Challenge · Hult Business School",
+    context: "Em parceria com Prof. Patrick Lynch, PhD (IA)",
+    description:
+      "Co-conduzi um Business Challenge sobre IA aplicada à estratégia com um dos especialistas em IA da Hult.",
+    location: "Estados Unidos",
+    flags: "🇺🇸",
+    tag: "Estratégia & IA",
+    image: hultChallengeAsset.url,
+    link: "https://www.linkedin.com/posts/senafelipe_it-was-a-distinct-pleasure-to-participate-activity-7143594499804459008-T8Co",
     linkLabel: "Ver post",
   },
   {
@@ -72,6 +89,7 @@ const EXPERIENCES: Experience[] = [
     description:
       "Recebi alunos da Universidade La Salle de Barcelona em programa imersivo de inovação.",
     location: "Espanha · Estados Unidos",
+    flags: "🇪🇸 🇺🇸",
     tag: "Educação executiva",
     image:
       "https://media.licdn.com/dms/image/v2/D4D22AQGfQ3v0TXIXbg/feedshare-image-high-res/feedshare-image-high-res/0/1719412540093?e=2147483647&v=beta&t=Z3HWh4F6arSeTkHNk-EYUw4FKn7eLQqxyaRmxrEktJQ",
@@ -84,20 +102,10 @@ const EXPERIENCES: Experience[] = [
     description:
       "Conduzi programa de aceleração de negócios para empreendedores vencedores do prêmio italiano.",
     location: "Itália · Estados Unidos",
+    flags: "🇮🇹 🇺🇸",
     tag: "Aceleração",
     image: myllenniumAsset.url,
     link: "https://www.linkedin.com/posts/senafelipe_lesperienza-del-boston-innovation-gateway-activity-7176944036270784513-87zo",
-    linkLabel: "Ver post",
-  },
-  {
-    title: "Business Challenge · Hult Business School",
-    context: "Em parceria com Prof. Patrick Lynch, PhD (IA)",
-    description:
-      "Co-conduzi um Business Challenge sobre IA aplicada à estratégia com um dos especialistas em IA da Hult.",
-    location: "Estados Unidos",
-    tag: "Estratégia & IA",
-    image: hultChallengeAsset.url,
-    link: "https://www.linkedin.com/posts/senafelipe_it-was-a-distinct-pleasure-to-participate-activity-7143594499804459008-T8Co",
     linkLabel: "Ver post",
   },
   {
@@ -106,6 +114,7 @@ const EXPERIENCES: Experience[] = [
     description:
       "Acompanhei discussões no MIT sobre uso estratégico da IA, produtividade e agentes contextuais.",
     location: "Estados Unidos · Jordânia",
+    flags: "🇺🇸 🇯🇴",
     tag: "MIT · IA estratégica",
     image: mitSolveAsset.url,
     link: "https://www.linkedin.com/posts/senafelipe_digitaltransformation-artificialintelligence-activity-7123746921839493120-ePnZ",
@@ -117,6 +126,7 @@ const EXPERIENCES: Experience[] = [
     description:
       "Programa executivo conectando o Sistema FIEC ao MIT, com imersão em IA aplicada e deep learning.",
     location: "Brasil · Estados Unidos",
+    flags: "🇧🇷 🇺🇸",
     tag: "Executivo · IA aplicada",
     image: bostonBeyondAsset.url,
     link: "https://www.linkedin.com/feed/update/urn:li:ugcPost:7121963915718074368",
@@ -128,6 +138,7 @@ const EXPERIENCES: Experience[] = [
     description:
       "Acompanhei lideranças de Academy of Sciences Malaysia, MOSTI e PETRONAS em expedição de inovação e IA.",
     location: "Malásia · Estados Unidos",
+    flags: "🇲🇾 🇺🇸",
     tag: "Inovação corporativa",
     image: epicMalasiaAsset.url,
     link: "https://www.linkedin.com/posts/senafelipe_epicboston-innovationmanagement-collaboration-activity-7068354948282871808-K--8",
@@ -234,7 +245,7 @@ export default function GlobalExperience() {
                 <h4 className="text-base font-semibold leading-snug">{exp.title}</h4>
                 <p className="text-sm text-muted-foreground line-clamp-3">{exp.description}</p>
                 <div className="mt-auto flex items-center justify-between pt-3 text-sm">
-                  <span className="text-muted-foreground text-xs">{exp.location}</span>
+                  <span className="text-muted-foreground text-xs">{exp.flags} {exp.location}</span>
                   <span className="inline-flex items-center gap-1.5 font-medium text-primary text-xs">
                     {exp.linkLabel}
                     <ExternalLink className="h-3.5 w-3.5" />
