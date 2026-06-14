@@ -20,6 +20,7 @@ function AdminUsuarios() {
   const create = useServerFn(adminCreateUser);
   const setRole = useServerFn(adminSetUserRole);
   const del = useServerFn(adminDeleteUser);
+  const resetPwd = useServerFn(adminResetPasswordToEmail);
 
   const [users, setUsers] = useState<U[]>([]);
   const [loading, setLoading] = useState(true);
