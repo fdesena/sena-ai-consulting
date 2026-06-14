@@ -20,9 +20,12 @@ import { Route as AuthenticatedPainelPerfilRouteImport } from './routes/_authent
 import { Route as AuthenticatedPainelDiagnosticoRouteImport } from './routes/_authenticated/painel.diagnostico'
 import { Route as AuthenticatedPainelAdminRouteImport } from './routes/_authenticated/painel.admin'
 import { Route as AuthenticatedPainelAdminIndexRouteImport } from './routes/_authenticated/painel.admin.index'
+import { Route as AuthenticatedPainelAdminWebsiteRouteImport } from './routes/_authenticated/painel.admin.website'
 import { Route as AuthenticatedPainelAdminUsuariosRouteImport } from './routes/_authenticated/painel.admin.usuarios'
 import { Route as AuthenticatedPainelAdminLeadsRouteImport } from './routes/_authenticated/painel.admin.leads'
 import { Route as AuthenticatedPainelAdminConfiguracoesRouteImport } from './routes/_authenticated/painel.admin.configuracoes'
+import { Route as AuthenticatedPainelAdminWebsiteIndexRouteImport } from './routes/_authenticated/painel.admin.website.index'
+import { Route as AuthenticatedPainelAdminWebsiteBlogpostsRouteImport } from './routes/_authenticated/painel.admin.website.blogposts'
 
 const DiagnosticoRoute = DiagnosticoRouteImport.update({
   id: '/diagnostico',
@@ -83,6 +86,12 @@ const AuthenticatedPainelAdminIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedPainelAdminRoute,
   } as any)
+const AuthenticatedPainelAdminWebsiteRoute =
+  AuthenticatedPainelAdminWebsiteRouteImport.update({
+    id: '/website',
+    path: '/website',
+    getParentRoute: () => AuthenticatedPainelAdminRoute,
+  } as any)
 const AuthenticatedPainelAdminUsuariosRoute =
   AuthenticatedPainelAdminUsuariosRouteImport.update({
     id: '/usuarios',
@@ -101,6 +110,18 @@ const AuthenticatedPainelAdminConfiguracoesRoute =
     path: '/configuracoes',
     getParentRoute: () => AuthenticatedPainelAdminRoute,
   } as any)
+const AuthenticatedPainelAdminWebsiteIndexRoute =
+  AuthenticatedPainelAdminWebsiteIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedPainelAdminWebsiteRoute,
+  } as any)
+const AuthenticatedPainelAdminWebsiteBlogpostsRoute =
+  AuthenticatedPainelAdminWebsiteBlogpostsRouteImport.update({
+    id: '/blogposts',
+    path: '/blogposts',
+    getParentRoute: () => AuthenticatedPainelAdminWebsiteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -115,7 +136,10 @@ export interface FileRoutesByFullPath {
   '/painel/admin/configuracoes': typeof AuthenticatedPainelAdminConfiguracoesRoute
   '/painel/admin/leads': typeof AuthenticatedPainelAdminLeadsRoute
   '/painel/admin/usuarios': typeof AuthenticatedPainelAdminUsuariosRoute
+  '/painel/admin/website': typeof AuthenticatedPainelAdminWebsiteRouteWithChildren
   '/painel/admin/': typeof AuthenticatedPainelAdminIndexRoute
+  '/painel/admin/website/blogposts': typeof AuthenticatedPainelAdminWebsiteBlogpostsRoute
+  '/painel/admin/website/': typeof AuthenticatedPainelAdminWebsiteIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -129,6 +153,8 @@ export interface FileRoutesByTo {
   '/painel/admin/leads': typeof AuthenticatedPainelAdminLeadsRoute
   '/painel/admin/usuarios': typeof AuthenticatedPainelAdminUsuariosRoute
   '/painel/admin': typeof AuthenticatedPainelAdminIndexRoute
+  '/painel/admin/website/blogposts': typeof AuthenticatedPainelAdminWebsiteBlogpostsRoute
+  '/painel/admin/website': typeof AuthenticatedPainelAdminWebsiteIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -145,7 +171,10 @@ export interface FileRoutesById {
   '/_authenticated/painel/admin/configuracoes': typeof AuthenticatedPainelAdminConfiguracoesRoute
   '/_authenticated/painel/admin/leads': typeof AuthenticatedPainelAdminLeadsRoute
   '/_authenticated/painel/admin/usuarios': typeof AuthenticatedPainelAdminUsuariosRoute
+  '/_authenticated/painel/admin/website': typeof AuthenticatedPainelAdminWebsiteRouteWithChildren
   '/_authenticated/painel/admin/': typeof AuthenticatedPainelAdminIndexRoute
+  '/_authenticated/painel/admin/website/blogposts': typeof AuthenticatedPainelAdminWebsiteBlogpostsRoute
+  '/_authenticated/painel/admin/website/': typeof AuthenticatedPainelAdminWebsiteIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -162,7 +191,10 @@ export interface FileRouteTypes {
     | '/painel/admin/configuracoes'
     | '/painel/admin/leads'
     | '/painel/admin/usuarios'
+    | '/painel/admin/website'
     | '/painel/admin/'
+    | '/painel/admin/website/blogposts'
+    | '/painel/admin/website/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -176,6 +208,8 @@ export interface FileRouteTypes {
     | '/painel/admin/leads'
     | '/painel/admin/usuarios'
     | '/painel/admin'
+    | '/painel/admin/website/blogposts'
+    | '/painel/admin/website'
   id:
     | '__root__'
     | '/'
@@ -191,7 +225,10 @@ export interface FileRouteTypes {
     | '/_authenticated/painel/admin/configuracoes'
     | '/_authenticated/painel/admin/leads'
     | '/_authenticated/painel/admin/usuarios'
+    | '/_authenticated/painel/admin/website'
     | '/_authenticated/painel/admin/'
+    | '/_authenticated/painel/admin/website/blogposts'
+    | '/_authenticated/painel/admin/website/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -280,6 +317,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPainelAdminIndexRouteImport
       parentRoute: typeof AuthenticatedPainelAdminRoute
     }
+    '/_authenticated/painel/admin/website': {
+      id: '/_authenticated/painel/admin/website'
+      path: '/website'
+      fullPath: '/painel/admin/website'
+      preLoaderRoute: typeof AuthenticatedPainelAdminWebsiteRouteImport
+      parentRoute: typeof AuthenticatedPainelAdminRoute
+    }
     '/_authenticated/painel/admin/usuarios': {
       id: '/_authenticated/painel/admin/usuarios'
       path: '/usuarios'
@@ -301,13 +345,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPainelAdminConfiguracoesRouteImport
       parentRoute: typeof AuthenticatedPainelAdminRoute
     }
+    '/_authenticated/painel/admin/website/': {
+      id: '/_authenticated/painel/admin/website/'
+      path: '/'
+      fullPath: '/painel/admin/website/'
+      preLoaderRoute: typeof AuthenticatedPainelAdminWebsiteIndexRouteImport
+      parentRoute: typeof AuthenticatedPainelAdminWebsiteRoute
+    }
+    '/_authenticated/painel/admin/website/blogposts': {
+      id: '/_authenticated/painel/admin/website/blogposts'
+      path: '/blogposts'
+      fullPath: '/painel/admin/website/blogposts'
+      preLoaderRoute: typeof AuthenticatedPainelAdminWebsiteBlogpostsRouteImport
+      parentRoute: typeof AuthenticatedPainelAdminWebsiteRoute
+    }
   }
 }
+
+interface AuthenticatedPainelAdminWebsiteRouteChildren {
+  AuthenticatedPainelAdminWebsiteBlogpostsRoute: typeof AuthenticatedPainelAdminWebsiteBlogpostsRoute
+  AuthenticatedPainelAdminWebsiteIndexRoute: typeof AuthenticatedPainelAdminWebsiteIndexRoute
+}
+
+const AuthenticatedPainelAdminWebsiteRouteChildren: AuthenticatedPainelAdminWebsiteRouteChildren =
+  {
+    AuthenticatedPainelAdminWebsiteBlogpostsRoute:
+      AuthenticatedPainelAdminWebsiteBlogpostsRoute,
+    AuthenticatedPainelAdminWebsiteIndexRoute:
+      AuthenticatedPainelAdminWebsiteIndexRoute,
+  }
+
+const AuthenticatedPainelAdminWebsiteRouteWithChildren =
+  AuthenticatedPainelAdminWebsiteRoute._addFileChildren(
+    AuthenticatedPainelAdminWebsiteRouteChildren,
+  )
 
 interface AuthenticatedPainelAdminRouteChildren {
   AuthenticatedPainelAdminConfiguracoesRoute: typeof AuthenticatedPainelAdminConfiguracoesRoute
   AuthenticatedPainelAdminLeadsRoute: typeof AuthenticatedPainelAdminLeadsRoute
   AuthenticatedPainelAdminUsuariosRoute: typeof AuthenticatedPainelAdminUsuariosRoute
+  AuthenticatedPainelAdminWebsiteRoute: typeof AuthenticatedPainelAdminWebsiteRouteWithChildren
   AuthenticatedPainelAdminIndexRoute: typeof AuthenticatedPainelAdminIndexRoute
 }
 
@@ -318,6 +395,8 @@ const AuthenticatedPainelAdminRouteChildren: AuthenticatedPainelAdminRouteChildr
     AuthenticatedPainelAdminLeadsRoute: AuthenticatedPainelAdminLeadsRoute,
     AuthenticatedPainelAdminUsuariosRoute:
       AuthenticatedPainelAdminUsuariosRoute,
+    AuthenticatedPainelAdminWebsiteRoute:
+      AuthenticatedPainelAdminWebsiteRouteWithChildren,
     AuthenticatedPainelAdminIndexRoute: AuthenticatedPainelAdminIndexRoute,
   }
 
