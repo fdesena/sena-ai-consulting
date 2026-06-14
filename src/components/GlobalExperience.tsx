@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { ExternalLink, Linkedin, ChevronLeft, ChevronRight } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import selectUsaAsset from "@/assets/felipe-selectusa.png.asset.json";
 import miamiAsset from "@/assets/felipe-miami-goglobal.png.asset.json";
 import myllenniumAsset from "@/assets/felipe-myllennium.png.asset.json";
@@ -163,7 +164,36 @@ export default function GlobalExperience() {
   const [current, setCurrent] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(3);
   const [isPaused, setIsPaused] = useState(false);
+  const [dbPosts, setDbPosts] = useState<Experience[]>([]);
   const trackRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from("blog_posts")
+        .select("title,context,excerpt,cover_url,link_url,link_label,tag,location,flags")
+        .eq("published", true)
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: false });
+      if (data) {
+        setDbPosts(
+          data.map((p: any) => ({
+            title: p.title,
+            context: p.context ?? "",
+            description: p.excerpt ?? "",
+            location: p.location ?? "",
+            flags: p.flags ?? "",
+            tag: p.tag ?? "",
+            image: p.cover_url ?? undefined,
+            link: p.link_url ?? "#",
+            linkLabel: p.link_label ?? "Ver post",
+          }))
+        );
+      }
+    })();
+  }, []);
+
+  const experiences = useMemo(() => [...dbPosts, ...EXPERIENCES], [dbPosts]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -176,7 +206,7 @@ export default function GlobalExperience() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const maxIndex = Math.max(0, EXPERIENCES.length - itemsPerView);
+  const maxIndex = Math.max(0, experiences.length - itemsPerView);
   const canPrev = current > 0;
   const canNext = current < maxIndex;
 
@@ -238,7 +268,7 @@ export default function GlobalExperience() {
           className="flex gap-6 transition-transform duration-500 ease-out will-change-transform"
           style={{ transform: `translateX(-${current * (100 / itemsPerView)}%)` }}
         >
-          {EXPERIENCES.map((exp) => (
+          {experiences.map((exp) => (
             <a
               key={exp.title}
               href={exp.link}

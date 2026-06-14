@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Users, LineChart, ArrowUpRight, Activity, TrendingUp } from "lucide-react";
+import { Users, LineChart, ArrowUpRight, Activity, TrendingUp, Globe } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/painel/admin/")({
   component: AdminHome,
@@ -67,6 +67,19 @@ function AdminHome() {
           <p className="mt-2 text-sm text-zinc-400">Crie contas, defina papéis (admin / user) e gerencie acessos.</p>
           <span className="mt-4 inline-flex items-center gap-1.5 text-sm text-bronze font-medium">
             Gerenciar <ArrowUpRight className="h-4 w-4" />
+          </span>
+        </Link>
+        <Link
+          to="/painel/admin/website"
+          className="group rounded-2xl border border-zinc-800 bg-[#161616] p-6 hover:border-bronze/50 transition"
+        >
+          <div className="h-11 w-11 rounded-xl bg-bronze/15 text-bronze grid place-items-center">
+            <Globe className="h-5 w-5" />
+          </div>
+          <h3 className="mt-5 text-lg font-semibold">Website</h3>
+          <p className="mt-2 text-sm text-zinc-400">Tráfego, cliques no diagnóstico e gestão dos posts da seção Experiências internacionais.</p>
+          <span className="mt-4 inline-flex items-center gap-1.5 text-sm text-bronze font-medium">
+            Abrir <ArrowUpRight className="h-4 w-4" />
           </span>
         </Link>
       </div>

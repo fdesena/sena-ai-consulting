@@ -13,6 +13,7 @@ import {
   ArrowLeftRight,
   PanelLeftClose,
   PanelLeft,
+  Globe,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PainelHeader } from "@/components/PainelHeader";
@@ -37,6 +38,7 @@ const USER_NAV: NavItem[] = [
 const ADMIN_NAV: NavItem[] = [
   { to: "/painel/admin", label: "Visão Geral", Icon: LayoutDashboard, exact: true },
   { to: "/painel/admin/leads", label: "Leads & Diagnósticos", Icon: LineChart },
+  { to: "/painel/admin/website", label: "Website", Icon: Globe },
   { to: "/painel/admin/usuarios", label: "Usuários", Icon: Users },
   { to: "/painel/admin/configuracoes", label: "Configurações", Icon: Settings },
 ];
