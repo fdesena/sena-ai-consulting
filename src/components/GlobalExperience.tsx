@@ -73,6 +73,18 @@ const EXPERIENCES: Experience[] = [
     linkLabel: "Ver matéria",
   },
   {
+    title: "Encontro Alumni Hult · Boston",
+    context: "Hult International Business School · Alumni Association",
+    description:
+      "Organizei um encontro com alumni globais da Hult em Boston, reunindo profissionais de turmas entre 2015 e 2025. Uma oportunidade para reconectar com a comunidade, trocar experiências e fortalecer uma rede global presente em hubs como Boston, London, Dubai e Singapore.",
+    location: "Estados Unidos",
+    flags: "🇺🇸",
+    tag: "Networking global",
+    image: hultAlumniAsset.url,
+    link: "https://www.linkedin.com/posts/senafelipe_activity-7465827955500367872",
+    linkLabel: "Ver post",
+  },
+  {
     title: "Business Challenge · Hult Business School",
     context: "Em parceria com Prof. Patrick Lynch, PhD (IA)",
     description:
