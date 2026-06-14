@@ -25,12 +25,11 @@ export default function DeckPage() {
 
   // Mount: bind slide engine
   useEffect(() => {
-    const root = containerRef.current;
-    if (!root) return;
-    const deck = root.querySelector<HTMLElement>(".deck");
+    const deck = containerRef.current;
     if (!deck) return;
     const slides = Array.from(deck.querySelectorAll<HTMLElement>(".slide"));
     slidesRef.current = slides;
+    setCurrent(0);
 
     const observer = new IntersectionObserver(
       (entries) => {
