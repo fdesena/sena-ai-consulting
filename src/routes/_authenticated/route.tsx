@@ -12,6 +12,8 @@ import {
   Settings,
   LayoutDashboard,
   ArrowLeftRight,
+  PanelLeftClose,
+  PanelLeft,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PainelHeader } from "@/components/PainelHeader";
@@ -46,6 +48,7 @@ function AuthedShell() {
   const [email, setEmail] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
   const [open, setOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   const inAdmin = pathname.startsWith("/painel/admin");
 
@@ -87,35 +90,56 @@ function AuthedShell() {
     ? "bg-bronze/20 text-bronze font-medium"
     : "bg-bronze/10 text-bronze font-medium";
 
+  const isMobileOpen = open;
+  const sidebarWidth = collapsed ? "w-[72px]" : "w-[260px]";
+
   return (
     <div className={`min-h-screen ${shellBg} font-display flex`}>
       <aside
-        className={`fixed md:static z-40 inset-y-0 left-0 w-[260px] border-r flex flex-col transition-transform ${sideBg} ${
-          open ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        className={`fixed md:static z-40 inset-y-0 left-0 ${sidebarWidth} border-r flex flex-col transition-all duration-300 ${sideBg} ${
+          isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
-        <div className={`p-5 border-b flex items-center justify-between ${borderC}`}>
-          <Link to={inAdmin ? "/painel/admin" : "/painel"} className="font-semibold text-lg tracking-tight">
-            Sena<span className="text-bronze">.</span>
-            <span className={`ml-2 text-xs font-mono ${mutedTxt}`}>
-              {inAdmin ? "Admin" : "Painel"}
-            </span>
-          </Link>
-          <button onClick={() => setOpen(false)} className={`md:hidden p-1 ${mutedTxt}`}>
-            <X className="h-5 w-5" />
-          </button>
+        <div className={`p-5 border-b flex items-center justify-between ${borderC} ${collapsed ? "px-3 justify-center" : ""}`}>
+          {!collapsed && (
+            <Link to={inAdmin ? "/painel/admin" : "/painel"} className="font-semibold text-lg tracking-tight">
+              Sena<span className="text-bronze">.</span>
+              <span className={`ml-2 text-xs font-mono ${mutedTxt}`}>
+                {inAdmin ? "Admin" : "Painel"}
+              </span>
+            </Link>
+          )}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setCollapsed((c) => !c)}
+              className={`hidden md:grid p-1.5 rounded-md ${hoverBg} ${mutedTxt} hover:text-current place-items-center`}
+              title={collapsed ? "Expandir menu" : "Recolher menu"}
+            >
+              {collapsed ? <PanelLeft className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+            </button>
+            <button onClick={() => setOpen(false)} className={`md:hidden p-1 ${mutedTxt}`}>
+              <X className="h-5 w-5" />
+            </button>
+          </div>
         </div>
 
-        {inAdmin && (
+        {inAdmin && !collapsed && (
           <div className="mx-3 mt-3 rounded-lg border border-bronze/40 bg-bronze/10 px-3 py-2 flex items-center gap-2 text-xs text-bronze">
             <Shield className="h-3.5 w-3.5" /> Modo administrador
           </div>
         )}
+        {inAdmin && collapsed && (
+          <div className="mx-2 mt-3 flex justify-center" title="Modo administrador">
+            <Shield className="h-4 w-4 text-bronze" />
+          </div>
+        )}
 
         <nav className="p-3 flex-1 space-y-1 overflow-y-auto">
-          <div className={`px-3 py-2 text-[10px] uppercase tracking-widest font-mono ${mutedTxt}`}>
-            {inAdmin ? "Administração" : "Geral"}
-          </div>
+          {!collapsed && (
+            <div className={`px-3 py-2 text-[10px] uppercase tracking-widest font-mono ${mutedTxt}`}>
+              {inAdmin ? "Administração" : "Geral"}
+            </div>
+          )}
           {NAV.map(({ to, label, Icon, exact }) => {
             const active = exact ? pathname === to : pathname === to || pathname.startsWith(to + "/");
             return (
@@ -123,28 +147,31 @@ function AuthedShell() {
                 key={to}
                 to={to as any}
                 onClick={() => setOpen(false)}
+                title={collapsed ? label : undefined}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition ${
                   active ? activeCls : `${hoverBg}`
-                }`}
+                } ${collapsed ? "justify-center px-2" : ""}`}
               >
-                <Icon className="h-4 w-4" />
-                {label}
+                <Icon className="h-4 w-4 shrink-0" />
+                {!collapsed && <span>{label}</span>}
               </Link>
             );
           })}
         </nav>
 
         {/* Bottom section */}
-        <div className={`p-3 border-t space-y-1 ${borderC}`}>
+        <div className={`p-3 border-t space-y-1 ${borderC} ${collapsed ? "px-2" : ""}`}>
           {!inAdmin && (
             <Link
               to="/painel/perfil"
               onClick={() => setOpen(false)}
+              title={collapsed ? "Perfil" : undefined}
               className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition ${
                 pathname === "/painel/perfil" ? activeCls : hoverBg
-              }`}
+              } ${collapsed ? "justify-center px-2" : ""}`}
             >
-              <User className="h-4 w-4" /> Perfil
+              <User className="h-4 w-4 shrink-0" />
+              {!collapsed && "Perfil"}
             </Link>
           )}
 
@@ -153,30 +180,38 @@ function AuthedShell() {
             <Link
               to="/painel/admin"
               onClick={() => setOpen(false)}
-              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition ${hoverBg}`}
+              title={collapsed ? "Painel Admin" : undefined}
+              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition ${hoverBg} ${collapsed ? "justify-center px-2" : ""}`}
             >
-              <Shield className="h-4 w-4" /> Painel Admin
+              <Shield className="h-4 w-4 shrink-0" />
+              {!collapsed && "Painel Admin"}
             </Link>
           )}
           {inAdmin && (
             <Link
               to="/painel"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition bg-zinc-800/60 hover:bg-zinc-700/60 text-zinc-100"
+              title={collapsed ? "Painel do Usuário" : undefined}
+              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition bg-zinc-800/60 hover:bg-zinc-700/60 text-zinc-100 ${collapsed ? "justify-center px-2" : ""}`}
             >
-              <ArrowLeftRight className="h-4 w-4" /> Painel do Usuário
+              <ArrowLeftRight className="h-4 w-4 shrink-0" />
+              {!collapsed && "Painel do Usuário"}
             </Link>
           )}
 
-          <div className="px-3 pt-2">
-            <div className={`text-[10px] uppercase tracking-widest font-mono ${mutedTxt}`}>Logado</div>
-            <div className="text-sm truncate">{email || "—"}</div>
-          </div>
+          {!collapsed && (
+            <div className="px-3 pt-2">
+              <div className={`text-[10px] uppercase tracking-widest font-mono ${mutedTxt}`}>Logado</div>
+              <div className="text-sm truncate">{email || "—"}</div>
+            </div>
+          )}
           <button
             onClick={signOut}
-            className={`flex items-center gap-2 w-full rounded-lg px-3 py-2 text-sm ${mutedTxt} ${hoverBg} hover:text-current`}
+            title={collapsed ? "Sair" : undefined}
+            className={`flex items-center gap-2 w-full rounded-lg px-3 py-2 text-sm ${mutedTxt} ${hoverBg} hover:text-current ${collapsed ? "justify-center px-2" : ""}`}
           >
-            <LogOut className="h-4 w-4" /> Sair
+            <LogOut className="h-4 w-4 shrink-0" />
+            {!collapsed && "Sair"}
           </button>
         </div>
       </aside>
@@ -195,7 +230,7 @@ function AuthedShell() {
         </main>
       </div>
 
-      {open && (
+      {isMobileOpen && (
         <div onClick={() => setOpen(false)} className="fixed inset-0 bg-black/40 z-30 md:hidden" />
       )}
     </div>
