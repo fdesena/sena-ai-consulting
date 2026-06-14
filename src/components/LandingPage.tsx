@@ -25,6 +25,7 @@ import WhatsAppFAB, { WHATSAPP_URL } from "./WhatsAppFAB";
 import ProcessCycle from "./ProcessCycle";
 import MarketGapChart from "./MarketGapChart";
 import TrackRecord from "./TrackRecord";
+import GlobalExperience from "./GlobalExperience";
 import felipeAsset from "@/assets/felipe-sena.png.asset.json";
 
 const COUNTRIES = [
