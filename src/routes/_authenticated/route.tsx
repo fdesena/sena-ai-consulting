@@ -129,8 +129,8 @@ function AuthedShell() {
           </div>
         )}
         {inAdmin && collapsed && (
-          <div className="mx-2 mt-3 flex justify-center">
-            <Shield className="h-4 w-4 text-bronze" title="Modo administrador" />
+          <div className="mx-2 mt-3 flex justify-center" title="Modo administrador">
+            <Shield className="h-4 w-4 text-bronze" />
           </div>
         )}
 
