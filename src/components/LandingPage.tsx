@@ -25,6 +25,33 @@ import WhatsAppFAB, { WHATSAPP_URL } from "./WhatsAppFAB";
 import ProcessCycle from "./ProcessCycle";
 import DiagnosticChart from "./DiagnosticChart";
 import TrackRecord from "./TrackRecord";
+import felipeAsset from "@/assets/felipe-sena.png.asset.json";
+
+const COUNTRIES = [
+  { code: "BR", name: "Brasil" },
+  { code: "US", name: "Estados Unidos" },
+  { code: "GB", name: "Reino Unido" },
+  { code: "PT", name: "Portugal" },
+  { code: "ES", name: "Espanha" },
+  { code: "MY", name: "Malásia" },
+  { code: "CN", name: "China (Xangai)" },
+  { code: "IT", name: "Itália" },
+  { code: "DE", name: "Alemanha" },
+  { code: "FR", name: "França" },
+];
+
+function Flag({ code, name }: { code: string; name: string }) {
+  return (
+    <img
+      src={`https://flagcdn.com/w40/${code.toLowerCase()}.png`}
+      srcSet={`https://flagcdn.com/w80/${code.toLowerCase()}.png 2x`}
+      alt={name}
+      title={name}
+      loading="lazy"
+      className="h-5 w-7 rounded-sm object-cover ring-1 ring-border"
+    />
+  );
+}
 
 const EMAIL = "felipesmsena@gmail.com";
 const LINKEDIN = "https://linkedin.com/in/senafelipe";
