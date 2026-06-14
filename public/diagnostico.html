@@ -512,16 +512,36 @@ function rSingle(s){
     <div class="qtext">${s.q}</div>
     <div style="height:14px"></div>
     <div id="opts"></div>
+    <div id="extra"></div>
   </section>`;
   const box=document.getElementById("opts");
+  const extra=document.getElementById("extra");
+  const renderExtra=()=>{
+    extra.innerHTML="";
+    if(s.key==="segmento" && A.segmento!=null && s.opts[A.segmento]==="Outro"){
+      extra.innerHTML=`
+        <div class="field" style="margin-top:14px"><label>Qual o segmento?</label>
+          <input id="f_seg_outro" value="${(A.segmento_outro||'').replace(/"/g,'&quot;')}" placeholder="Descreva em poucas palavras" maxlength="100"></div>
+        <button class="btn" id="sob" onclick="(function(){A.segmento_outro=val('f_seg_outro');next();})()">Continuar →</button>`;
+      const inp=document.getElementById("f_seg_outro");
+      const btn=document.getElementById("sob");
+      const tog=()=>{btn.disabled=!val("f_seg_outro");};
+      inp.addEventListener("input",tog);tog();inp.focus();
+    }
+  };
   s.opts.forEach((o,i)=>{
     const sel=A[s.key]===i;
     const b=document.createElement("button");
     b.className="opt"+(sel?" sel":"");
     b.innerHTML=`<span style="flex:1">${o}</span>`;
-    b.onclick=()=>{A[s.key]=i; setTimeout(next,170);};
+    b.onclick=()=>{
+      A[s.key]=i;
+      if(s.key==="segmento" && o==="Outro"){ rSingle(s); return; }
+      setTimeout(next,170);
+    };
     box.appendChild(b);
   });
+  renderExtra();
 }
 
 /* ---------- multi ---------- */
