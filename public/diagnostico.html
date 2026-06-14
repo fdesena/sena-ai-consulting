@@ -632,7 +632,7 @@ function rReflections(){
     <div class="label" style="margin-top:18px;color:var(--dim)">Suas reflexões sobre IA</div>
     <textarea id="refl" placeholder="Escreva com suas palavras (ou marque os desafios acima)...">${A.reflexao}</textarea>
     <div class="tcount"><span id="tc">${A.reflexao.length}</span>/1000</div>
-    <button class="btn" onclick="rPanorama()" style="margin-top:6px">Ver meu diagnóstico →</button>
+    <button class="btn" onclick="submitDiag()" style="margin-top:6px">Ver meu diagnóstico →</button>
   </section>`;
   const box=document.getElementById("chips");
   CHALLENGES.forEach(([lab,sent])=>{
