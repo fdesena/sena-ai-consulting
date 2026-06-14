@@ -37,7 +37,7 @@ const ADMIN_NAV: NavItem[] = [
   { to: "/painel/admin/leads", label: "Leads & Diagnósticos", Icon: LineChart },
   { to: "/painel/admin/usuarios", label: "Usuários", Icon: Users },
   { to: "/painel/admin/configuracoes", label: "Configurações", Icon: Settings },
-] as const;
+];
 
 function AuthedShell() {
   const navigate = useNavigate();
