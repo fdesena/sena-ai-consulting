@@ -136,9 +136,14 @@ function AdminUsuarios() {
                     <td className="py-3 px-4 font-mono text-[12px] text-zinc-500">{new Date(u.created_at).toLocaleDateString("pt-BR")}</td>
                     <td className="py-3 px-4 font-mono text-[12px] text-zinc-500">{u.last_sign_in_at ? new Date(u.last_sign_in_at).toLocaleDateString("pt-BR") : "—"}</td>
                     <td className="py-3 px-4 text-right">
-                      <button onClick={() => handleDelete(u)} className="text-zinc-500 hover:text-red-400 p-1">
-                        <Trash2 className="h-4 w-4" />
-                      </button>
+                      <div className="inline-flex items-center gap-1">
+                        <button onClick={() => handleResetPwd(u)} title="Resetar senha para o e-mail" className="text-zinc-500 hover:text-bronze p-1">
+                          <KeyRound className="h-4 w-4" />
+                        </button>
+                        <button onClick={() => handleDelete(u)} title="Excluir usuário" className="text-zinc-500 hover:text-red-400 p-1">
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
