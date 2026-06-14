@@ -85,8 +85,7 @@ export default function DeckPage() {
     };
     const onTouchEnd = (e: TouchEvent) => {
       const dy = touchY - e.changedTouches[0].clientY;
-      const cur = slidesRef.current.findIndex((s) => s.classList.contains("visible"));
-      if (Math.abs(dy) > 50) goTo(dy > 0 ? cur + 1 : cur - 1);
+      if (Math.abs(dy) > 50) goTo(dy > 0 ? currentIdx + 1 : currentIdx - 1);
     };
     deck.addEventListener("touchstart", onTouchStart, { passive: true });
     deck.addEventListener("touchend", onTouchEnd);
