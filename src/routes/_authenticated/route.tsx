@@ -25,12 +25,14 @@ export const Route = createFileRoute("/_authenticated")({
   component: AuthedShell,
 });
 
-const USER_NAV = [
+type NavItem = { to: string; label: string; Icon: any; exact?: boolean };
+
+const USER_NAV: NavItem[] = [
   { to: "/painel", label: "Início", Icon: Home, exact: true },
   { to: "/painel/diagnostico", label: "Meu Diagnóstico", Icon: LineChart },
-] as const;
+];
 
-const ADMIN_NAV = [
+const ADMIN_NAV: NavItem[] = [
   { to: "/painel/admin", label: "Visão Geral", Icon: LayoutDashboard, exact: true },
   { to: "/painel/admin/leads", label: "Leads & Diagnósticos", Icon: LineChart },
   { to: "/painel/admin/usuarios", label: "Usuários", Icon: Users },
