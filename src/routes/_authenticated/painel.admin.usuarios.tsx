@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { UserPlus, Shield, Trash2, RefreshCw, Mail, X } from "lucide-react";
+import { UserPlus, Shield, Trash2, RefreshCw, Mail, X, KeyRound } from "lucide-react";
 import {
-  adminListUsers, adminCreateUser, adminSetUserRole, adminDeleteUser,
+  adminListUsers, adminCreateUser, adminSetUserRole, adminDeleteUser, adminResetPasswordToEmail,
 } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/_authenticated/painel/admin/usuarios")({
@@ -20,6 +20,7 @@ function AdminUsuarios() {
   const create = useServerFn(adminCreateUser);
   const setRole = useServerFn(adminSetUserRole);
   const del = useServerFn(adminDeleteUser);
+  const resetPwd = useServerFn(adminResetPasswordToEmail);
 
   const [users, setUsers] = useState<U[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,6 +63,15 @@ function AdminUsuarios() {
     if (!confirm(`Excluir ${u.email}? Esta ação é permanente.`)) return;
     try { await del({ data: { userId: u.id } }); await load(); }
     catch (e: any) { setErr(e?.message ?? "Erro"); }
+  }
+
+  async function handleResetPwd(u: U) {
+    if (!confirm(`Resetar a senha de ${u.email}?\n\nA nova senha será o próprio e-mail:\n${u.email}`)) return;
+    setErr(null); setMsg(null);
+    try {
+      await resetPwd({ data: { userId: u.id } });
+      setMsg(`Senha de ${u.email} redefinida para o próprio e-mail.`);
+    } catch (e: any) { setErr(e?.message ?? "Erro ao resetar senha"); }
   }
 
   return (
@@ -126,9 +136,14 @@ function AdminUsuarios() {
                     <td className="py-3 px-4 font-mono text-[12px] text-zinc-500">{new Date(u.created_at).toLocaleDateString("pt-BR")}</td>
                     <td className="py-3 px-4 font-mono text-[12px] text-zinc-500">{u.last_sign_in_at ? new Date(u.last_sign_in_at).toLocaleDateString("pt-BR") : "—"}</td>
                     <td className="py-3 px-4 text-right">
-                      <button onClick={() => handleDelete(u)} className="text-zinc-500 hover:text-red-400 p-1">
-                        <Trash2 className="h-4 w-4" />
-                      </button>
+                      <div className="inline-flex items-center gap-1">
+                        <button onClick={() => handleResetPwd(u)} title="Resetar senha para o e-mail" className="text-zinc-500 hover:text-bronze p-1">
+                          <KeyRound className="h-4 w-4" />
+                        </button>
+                        <button onClick={() => handleDelete(u)} title="Excluir usuário" className="text-zinc-500 hover:text-red-400 p-1">
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
