@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import "@/deck.css";
 import { DECK_HTML } from "@/lib/deck-html";
 import { TRANSLATIONS, HINTS, type Lang } from "@/lib/translations";
 
