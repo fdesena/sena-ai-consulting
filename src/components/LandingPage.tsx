@@ -365,44 +365,90 @@ export default function LandingPage() {
 
       {/* SOBRE */}
       <Section id="sobre" className="border-t border-border">
-        <div className="grid gap-12 md:grid-cols-[1fr_1.4fr] md:items-center">
-          <div className="overflow-hidden rounded-2xl border border-border bg-card">
-            <img
-              src="/founder.jpg"
-              alt="Felipe Sena, fundador da Sena Consulting"
-              className="aspect-[4/5] w-full object-cover"
-              loading="lazy"
-            />
+        <div className="grid gap-12 md:grid-cols-[auto_1fr] md:items-start">
+          <div className="flex flex-col items-center gap-6 md:items-start">
+            <div className="relative">
+              <div
+                aria-hidden
+                className="absolute -inset-3 rounded-full bg-gradient-to-br from-primary/30 to-transparent blur-xl"
+              />
+              <div className="relative h-56 w-56 overflow-hidden rounded-full ring-4 ring-primary/20 ring-offset-4 ring-offset-background sm:h-64 sm:w-64">
+                <img
+                  src={felipeAsset.url}
+                  alt="Felipe Sena, fundador da Sena Consulting"
+                  className="h-full w-full object-cover object-[center_15%]"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+            <a
+              href={LINKEDIN}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:border-primary hover:text-primary"
+            >
+              <Linkedin className="h-4 w-4" /> linkedin.com/in/senafelipe
+            </a>
           </div>
+
           <div>
             <Eyebrow>Sobre o Felipe</Eyebrow>
             <h2 className="mt-4 text-3xl font-semibold sm:text-5xl">
-              Estratégia, dados e execução no mesmo profissional.
+              Estratégia, dados e execução — em escala global.
             </h2>
+            <p className="mt-5 text-lg text-muted-foreground">
+              <span className="font-medium text-foreground">Product Owner &amp; Gestor de Projetos Globais</span> da plataforma{" "}
+              <span className="font-medium text-foreground">Think-Big</span> pela{" "}
+              <span className="font-medium text-foreground">Boston Innovation Gateway</span>. Mais de uma década entregando produtos digitais, dados e IA para clientes em 4 continentes.
+            </p>
+
             <ul className="mt-8 space-y-3 text-muted-foreground">
               <li className="flex gap-3">
-                <GraduationCap className="mt-1 h-5 w-5 shrink-0 text-primary" strokeWidth={1.6} />
+                <Target className="mt-1 h-5 w-5 shrink-0 text-primary" strokeWidth={1.6} />
                 <span>
-                  <span className="font-medium text-foreground">Mestrado duplo</span> em Negócios
-                  Internacionais &amp; Business Analytics.
+                  <span className="font-medium text-foreground">PO &amp; PM Global</span> — Think-Big / Boston Innovation Gateway.
                 </span>
               </li>
               <li className="flex gap-3">
                 <TrendingUp className="mt-1 h-5 w-5 shrink-0 text-primary" strokeWidth={1.6} />
                 <span>
-                  Analytics na <span className="font-medium text-foreground">Sicredi</span> (R$50B
-                  AuM), CPO na <span className="font-medium text-foreground">Rivool</span>, Hult
-                  Alumni · 4 continentes, 22 países.
+                  Analytics na <span className="font-medium text-foreground">Sicredi</span> (R$50B AuM), CPO na{" "}
+                  <span className="font-medium text-foreground">Rivool</span>, consultoria para enterprises e scale-ups.
+                </span>
+              </li>
+              <li className="flex gap-3">
+                <GraduationCap className="mt-1 h-5 w-5 shrink-0 text-primary" strokeWidth={1.6} />
+                <span>
+                  <span className="font-medium text-foreground">Mestrado duplo</span> em Negócios Internacionais &amp; Business Analytics — Hult International Business School.
                 </span>
               </li>
               <li className="flex gap-3">
                 <Compass className="mt-1 h-5 w-5 shrink-0 text-primary" strokeWidth={1.6} />
                 <span>
-                  <span className="font-medium text-foreground">São Paulo · Boston</span> ·
-                  globalmente.
+                  Atuação em <span className="font-medium text-foreground">São Paulo · Boston</span> · projetos em 4 continentes &amp; 22 países.
                 </span>
               </li>
             </ul>
+
+            <div className="mt-8">
+              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Experiência internacional
+              </p>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                {COUNTRIES.map((c) => (
+                  <div
+                    key={c.code}
+                    className="flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5"
+                  >
+                    <Flag code={c.code} name={c.name} />
+                    <span className="text-xs font-medium">{c.name}</span>
+                  </div>
+                ))}
+                <span className="rounded-full border border-dashed border-border px-3 py-1.5 text-xs text-muted-foreground">
+                  + outros
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </Section>
