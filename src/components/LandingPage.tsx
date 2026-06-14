@@ -175,29 +175,22 @@ export default function LandingPage() {
         <div className="mt-14 grid gap-0 overflow-hidden rounded-3xl border border-border bg-card shadow-sm md:grid-cols-[1fr_1.1fr]">
           <div className="flex flex-col justify-between gap-8 p-8 sm:p-10">
             <div>
-              <Eyebrow>A OPORTUNIDADE</Eyebrow>
+              <Eyebrow>COMECE PELO DIAGNÓSTICO</Eyebrow>
               <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
-                IA sem complicação.
+                A IA já consegue muito mais do que o mercado usa.
               </h2>
               <p className="mt-4 text-muted-foreground">
-                Mapeio em uma conversa onde sua operação pode ganhar tempo, reduzir trabalho
-                manual e gerar resultado real com IA.
+                Este é o retrato do <b className="text-foreground">mercado</b>, segundo a pesquisa
+                da Anthropic — <b className="text-foreground">não é o seu resultado</b> (esse vem
+                na próxima tela). Cada ponta é uma categoria profissional: o{" "}
+                <b style={{ color: "#4F86C6" }}>azul</b> é o que a IA poderia fazer hoje; o{" "}
+                <b style={{ color: "#D14B3D" }}>vermelho</b> é o que de fato já se usa, em média.
+                A distância entre eles é a oportunidade — aberta para quem agir primeiro.
               </p>
 
               <div className="mt-8 rounded-2xl border border-border/70 bg-[var(--paper)] p-5">
-                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                  COMECE PELO DIAGNÓSTICO
-                </p>
-                <p className="mt-2 text-lg font-semibold leading-snug">
-                  A IA já consegue muito mais do que o mercado usa.
-                </p>
-                <p className="mt-3 text-sm text-muted-foreground">
-                  Este é o retrato do <b className="text-foreground">mercado</b>, segundo a pesquisa
-                  da Anthropic — <b className="text-foreground">não é o seu resultado</b> (esse vem
-                  na próxima tela). Cada ponta é uma categoria profissional: o{" "}
-                  <b style={{ color: "#4F86C6" }}>azul</b> é o que a IA poderia fazer hoje; o{" "}
-                  <b style={{ color: "#D14B3D" }}>vermelho</b> é o que de fato já se usa, em média.
-                  A distância entre eles é a oportunidade — aberta para quem agir primeiro.
+                <p className="text-sm text-muted-foreground">
+                  Agora é a sua vez: descubra o quanto você entende, usa e aplica IA — e onde estão os gaps para transformar essa oportunidade em resultado na sua empresa.
                 </p>
               </div>
             </div>
