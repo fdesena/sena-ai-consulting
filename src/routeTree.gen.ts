@@ -13,13 +13,17 @@ import { Route as DiagnosticoRouteImport } from './routes/diagnostico'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as AuthenticatedPainelRouteImport } from './routes/_authenticated/painel'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedPainelIndexRouteImport } from './routes/_authenticated/painel.index'
+import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as AuthenticatedPainelPerfilRouteImport } from './routes/_authenticated/painel.perfil'
 import { Route as AuthenticatedPainelDiagnosticoRouteImport } from './routes/_authenticated/painel.diagnostico'
 import { Route as AuthenticatedPainelAdminRouteImport } from './routes/_authenticated/painel.admin'
 import { Route as AuthenticatedPainelAdminIndexRouteImport } from './routes/_authenticated/painel.admin.index'
+import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
+import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as AuthenticatedPainelAdminWebsiteRouteImport } from './routes/_authenticated/painel.admin.website'
 import { Route as AuthenticatedPainelAdminUsuariosRouteImport } from './routes/_authenticated/painel.admin.usuarios'
@@ -47,6 +51,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
+  id: '/email/unsubscribe',
+  path: '/email/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedPainelRoute = AuthenticatedPainelRouteImport.update({
   id: '/painel',
   path: '/painel',
@@ -63,6 +72,11 @@ const AuthenticatedPainelIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedPainelRoute,
   } as any)
+const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
+  id: '/lovable/email/suppression',
+  path: '/lovable/email/suppression',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedPainelPerfilRoute =
   AuthenticatedPainelPerfilRouteImport.update({
     id: '/perfil',
@@ -86,6 +100,18 @@ const AuthenticatedPainelAdminIndexRoute =
     id: '/',
     path: '/',
     getParentRoute: () => AuthenticatedPainelAdminRoute,
+  } as any)
+const LovableEmailTransactionalSendRoute =
+  LovableEmailTransactionalSendRouteImport.update({
+    id: '/lovable/email/transactional/send',
+    path: '/lovable/email/transactional/send',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LovableEmailTransactionalPreviewRoute =
+  LovableEmailTransactionalPreviewRouteImport.update({
+    id: '/lovable/email/transactional/preview',
+    path: '/lovable/email/transactional/preview',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const LovableEmailQueueProcessRoute =
   LovableEmailQueueProcessRouteImport.update({
@@ -136,15 +162,19 @@ export interface FileRoutesByFullPath {
   '/diagnostico': typeof DiagnosticoRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/painel': typeof AuthenticatedPainelRouteWithChildren
+  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/painel/admin': typeof AuthenticatedPainelAdminRouteWithChildren
   '/painel/diagnostico': typeof AuthenticatedPainelDiagnosticoRoute
   '/painel/perfil': typeof AuthenticatedPainelPerfilRoute
+  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/painel/': typeof AuthenticatedPainelIndexRoute
   '/painel/admin/configuracoes': typeof AuthenticatedPainelAdminConfiguracoesRoute
   '/painel/admin/leads': typeof AuthenticatedPainelAdminLeadsRoute
   '/painel/admin/usuarios': typeof AuthenticatedPainelAdminUsuariosRoute
   '/painel/admin/website': typeof AuthenticatedPainelAdminWebsiteRouteWithChildren
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/painel/admin/': typeof AuthenticatedPainelAdminIndexRoute
   '/painel/admin/website/blogposts': typeof AuthenticatedPainelAdminWebsiteBlogpostsRoute
   '/painel/admin/website/': typeof AuthenticatedPainelAdminWebsiteIndexRoute
@@ -154,13 +184,17 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/diagnostico': typeof DiagnosticoRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/painel/diagnostico': typeof AuthenticatedPainelDiagnosticoRoute
   '/painel/perfil': typeof AuthenticatedPainelPerfilRoute
+  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/painel': typeof AuthenticatedPainelIndexRoute
   '/painel/admin/configuracoes': typeof AuthenticatedPainelAdminConfiguracoesRoute
   '/painel/admin/leads': typeof AuthenticatedPainelAdminLeadsRoute
   '/painel/admin/usuarios': typeof AuthenticatedPainelAdminUsuariosRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/painel/admin': typeof AuthenticatedPainelAdminIndexRoute
   '/painel/admin/website/blogposts': typeof AuthenticatedPainelAdminWebsiteBlogpostsRoute
   '/painel/admin/website': typeof AuthenticatedPainelAdminWebsiteIndexRoute
@@ -173,15 +207,19 @@ export interface FileRoutesById {
   '/diagnostico': typeof DiagnosticoRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/painel': typeof AuthenticatedPainelRouteWithChildren
+  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/_authenticated/painel/admin': typeof AuthenticatedPainelAdminRouteWithChildren
   '/_authenticated/painel/diagnostico': typeof AuthenticatedPainelDiagnosticoRoute
   '/_authenticated/painel/perfil': typeof AuthenticatedPainelPerfilRoute
+  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/_authenticated/painel/': typeof AuthenticatedPainelIndexRoute
   '/_authenticated/painel/admin/configuracoes': typeof AuthenticatedPainelAdminConfiguracoesRoute
   '/_authenticated/painel/admin/leads': typeof AuthenticatedPainelAdminLeadsRoute
   '/_authenticated/painel/admin/usuarios': typeof AuthenticatedPainelAdminUsuariosRoute
   '/_authenticated/painel/admin/website': typeof AuthenticatedPainelAdminWebsiteRouteWithChildren
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/_authenticated/painel/admin/': typeof AuthenticatedPainelAdminIndexRoute
   '/_authenticated/painel/admin/website/blogposts': typeof AuthenticatedPainelAdminWebsiteBlogpostsRoute
   '/_authenticated/painel/admin/website/': typeof AuthenticatedPainelAdminWebsiteIndexRoute
@@ -194,15 +232,19 @@ export interface FileRouteTypes {
     | '/diagnostico'
     | '/admin'
     | '/painel'
+    | '/email/unsubscribe'
     | '/painel/admin'
     | '/painel/diagnostico'
     | '/painel/perfil'
+    | '/lovable/email/suppression'
     | '/painel/'
     | '/painel/admin/configuracoes'
     | '/painel/admin/leads'
     | '/painel/admin/usuarios'
     | '/painel/admin/website'
     | '/lovable/email/queue/process'
+    | '/lovable/email/transactional/preview'
+    | '/lovable/email/transactional/send'
     | '/painel/admin/'
     | '/painel/admin/website/blogposts'
     | '/painel/admin/website/'
@@ -212,13 +254,17 @@ export interface FileRouteTypes {
     | '/auth'
     | '/diagnostico'
     | '/admin'
+    | '/email/unsubscribe'
     | '/painel/diagnostico'
     | '/painel/perfil'
+    | '/lovable/email/suppression'
     | '/painel'
     | '/painel/admin/configuracoes'
     | '/painel/admin/leads'
     | '/painel/admin/usuarios'
     | '/lovable/email/queue/process'
+    | '/lovable/email/transactional/preview'
+    | '/lovable/email/transactional/send'
     | '/painel/admin'
     | '/painel/admin/website/blogposts'
     | '/painel/admin/website'
@@ -230,15 +276,19 @@ export interface FileRouteTypes {
     | '/diagnostico'
     | '/_authenticated/admin'
     | '/_authenticated/painel'
+    | '/email/unsubscribe'
     | '/_authenticated/painel/admin'
     | '/_authenticated/painel/diagnostico'
     | '/_authenticated/painel/perfil'
+    | '/lovable/email/suppression'
     | '/_authenticated/painel/'
     | '/_authenticated/painel/admin/configuracoes'
     | '/_authenticated/painel/admin/leads'
     | '/_authenticated/painel/admin/usuarios'
     | '/_authenticated/painel/admin/website'
     | '/lovable/email/queue/process'
+    | '/lovable/email/transactional/preview'
+    | '/lovable/email/transactional/send'
     | '/_authenticated/painel/admin/'
     | '/_authenticated/painel/admin/website/blogposts'
     | '/_authenticated/painel/admin/website/'
@@ -249,7 +299,11 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   DiagnosticoRoute: typeof DiagnosticoRoute
+  EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
+  LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
+  LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
+  LovableEmailTransactionalSendRoute: typeof LovableEmailTransactionalSendRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -282,6 +336,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/email/unsubscribe': {
+      id: '/email/unsubscribe'
+      path: '/email/unsubscribe'
+      fullPath: '/email/unsubscribe'
+      preLoaderRoute: typeof EmailUnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/painel': {
       id: '/_authenticated/painel'
       path: '/painel'
@@ -302,6 +363,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/painel/'
       preLoaderRoute: typeof AuthenticatedPainelIndexRouteImport
       parentRoute: typeof AuthenticatedPainelRoute
+    }
+    '/lovable/email/suppression': {
+      id: '/lovable/email/suppression'
+      path: '/lovable/email/suppression'
+      fullPath: '/lovable/email/suppression'
+      preLoaderRoute: typeof LovableEmailSuppressionRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/painel/perfil': {
       id: '/_authenticated/painel/perfil'
@@ -330,6 +398,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/painel/admin/'
       preLoaderRoute: typeof AuthenticatedPainelAdminIndexRouteImport
       parentRoute: typeof AuthenticatedPainelAdminRoute
+    }
+    '/lovable/email/transactional/send': {
+      id: '/lovable/email/transactional/send'
+      path: '/lovable/email/transactional/send'
+      fullPath: '/lovable/email/transactional/send'
+      preLoaderRoute: typeof LovableEmailTransactionalSendRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/transactional/preview': {
+      id: '/lovable/email/transactional/preview'
+      path: '/lovable/email/transactional/preview'
+      fullPath: '/lovable/email/transactional/preview'
+      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/lovable/email/queue/process': {
       id: '/lovable/email/queue/process'
@@ -461,7 +543,11 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   DiagnosticoRoute: DiagnosticoRoute,
+  EmailUnsubscribeRoute: EmailUnsubscribeRoute,
+  LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
+  LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
+  LovableEmailTransactionalSendRoute: LovableEmailTransactionalSendRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
