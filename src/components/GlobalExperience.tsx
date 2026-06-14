@@ -234,7 +234,7 @@ export default function GlobalExperience() {
           </h3>
           <p className="mt-3 max-w-2xl text-muted-foreground">
             Uma seleção de programas, projetos e palestras conduzidos ao lado de universidades, governos
-            e empresas em diferentes países. Cada cartão leva para o registro original no LinkedIn ou na imprensa.
+            e empresas em diferentes países.
           </p>
         </div>
         <div className="flex gap-2">
