@@ -176,6 +176,7 @@ export default function DeckPage() {
       <div
         ref={containerRef}
         className="deck"
+        data-debug-len={DECK_HTML.length}
         dangerouslySetInnerHTML={{ __html: DECK_HTML }}
       />
 
