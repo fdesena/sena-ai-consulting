@@ -79,6 +79,7 @@ export type Database = {
           consentimento: boolean
           created_at: string
           desafios: Json
+          email: string | null
           equipe: string | null
           ferramentas: Json
           id: string
@@ -106,6 +107,7 @@ export type Database = {
           consentimento?: boolean
           created_at?: string
           desafios?: Json
+          email?: string | null
           equipe?: string | null
           ferramentas?: Json
           id?: string
@@ -133,6 +135,7 @@ export type Database = {
           consentimento?: boolean
           created_at?: string
           desafios?: Json
+          email?: string | null
           equipe?: string | null
           ferramentas?: Json
           id?: string
