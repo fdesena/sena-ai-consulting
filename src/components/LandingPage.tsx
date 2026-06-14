@@ -145,6 +145,7 @@ export default function LandingPage() {
             <a href="#processo" className="hover:text-primary">Processo</a>
             <a href="#cases" className="hover:text-primary">Cases</a>
             <a href="#sobre" className="hover:text-primary">Sobre</a>
+            <a href="/auth" className="hover:text-primary">Área exclusiva</a>
           </nav>
           <a
             href={WHATSAPP_URL}
