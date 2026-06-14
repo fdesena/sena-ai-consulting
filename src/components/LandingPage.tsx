@@ -319,18 +319,19 @@ export default function LandingPage() {
 
       {/* CASES */}
       <Section id="cases" className="border-t border-border">
-        <Eyebrow>Track record</Eyebrow>
-        <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
-          Construído. Implantado. Em produção.
-        </h2>
-        <div className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
-          {cases.map((c) => (
-            <article key={c.t} className="group bg-card p-6 transition hover:bg-[var(--paper)]">
-              <c.Icon className="h-6 w-6 text-primary" strokeWidth={1.5} />
-              <h3 className="mt-5 text-lg font-semibold">{c.t}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">{c.d}</p>
-            </article>
-          ))}
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <Eyebrow>Track record</Eyebrow>
+            <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
+              Construído. Implantado. Em produção.
+            </h2>
+          </div>
+          <p className="max-w-xs text-sm text-muted-foreground">
+            Amostras de soluções entregues — protótipos das interfaces reais.
+          </p>
+        </div>
+        <div className="mt-12">
+          <TrackRecord />
         </div>
       </Section>
 
