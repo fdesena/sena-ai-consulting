@@ -84,7 +84,7 @@ const pillars = [
   {
     n: "01",
     title: "Aumentar produtividade",
-    sub: "Melhoria de processos e escolha de ferramentas mais eficientes com IA.",
+    sub: "Ajudo empresas a ganhar produtividade melhorando processos, reduzindo trabalho manual e implementando ferramentas de IA mais eficientes para o negócio.",
     href: "#capacitar",
     Icon: Zap,
   },
