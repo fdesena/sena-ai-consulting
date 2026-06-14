@@ -206,7 +206,7 @@ export default function GlobalExperience() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const maxIndex = Math.max(0, EXPERIENCES.length - itemsPerView);
+  const maxIndex = Math.max(0, experiences.length - itemsPerView);
   const canPrev = current > 0;
   const canNext = current < maxIndex;
 
@@ -268,7 +268,7 @@ export default function GlobalExperience() {
           className="flex gap-6 transition-transform duration-500 ease-out will-change-transform"
           style={{ transform: `translateX(-${current * (100 / itemsPerView)}%)` }}
         >
-          {EXPERIENCES.map((exp) => (
+          {experiences.map((exp) => (
             <a
               key={exp.title}
               href={exp.link}
