@@ -134,6 +134,7 @@ const cases = [
 ];
 
 export default function LandingPage() {
+  useEffect(() => { trackPageview(); }, []);
   return (
     <main className="min-h-screen bg-background text-foreground">
       {/* NAV */}
