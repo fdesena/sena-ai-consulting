@@ -20,6 +20,7 @@ import { Route as AuthenticatedPainelPerfilRouteImport } from './routes/_authent
 import { Route as AuthenticatedPainelDiagnosticoRouteImport } from './routes/_authenticated/painel.diagnostico'
 import { Route as AuthenticatedPainelAdminRouteImport } from './routes/_authenticated/painel.admin'
 import { Route as AuthenticatedPainelAdminIndexRouteImport } from './routes/_authenticated/painel.admin.index'
+import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as AuthenticatedPainelAdminWebsiteRouteImport } from './routes/_authenticated/painel.admin.website'
 import { Route as AuthenticatedPainelAdminUsuariosRouteImport } from './routes/_authenticated/painel.admin.usuarios'
 import { Route as AuthenticatedPainelAdminLeadsRouteImport } from './routes/_authenticated/painel.admin.leads'
@@ -86,6 +87,12 @@ const AuthenticatedPainelAdminIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedPainelAdminRoute,
   } as any)
+const LovableEmailQueueProcessRoute =
+  LovableEmailQueueProcessRouteImport.update({
+    id: '/lovable/email/queue/process',
+    path: '/lovable/email/queue/process',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedPainelAdminWebsiteRoute =
   AuthenticatedPainelAdminWebsiteRouteImport.update({
     id: '/website',
@@ -137,6 +144,7 @@ export interface FileRoutesByFullPath {
   '/painel/admin/leads': typeof AuthenticatedPainelAdminLeadsRoute
   '/painel/admin/usuarios': typeof AuthenticatedPainelAdminUsuariosRoute
   '/painel/admin/website': typeof AuthenticatedPainelAdminWebsiteRouteWithChildren
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/painel/admin/': typeof AuthenticatedPainelAdminIndexRoute
   '/painel/admin/website/blogposts': typeof AuthenticatedPainelAdminWebsiteBlogpostsRoute
   '/painel/admin/website/': typeof AuthenticatedPainelAdminWebsiteIndexRoute
@@ -152,6 +160,7 @@ export interface FileRoutesByTo {
   '/painel/admin/configuracoes': typeof AuthenticatedPainelAdminConfiguracoesRoute
   '/painel/admin/leads': typeof AuthenticatedPainelAdminLeadsRoute
   '/painel/admin/usuarios': typeof AuthenticatedPainelAdminUsuariosRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/painel/admin': typeof AuthenticatedPainelAdminIndexRoute
   '/painel/admin/website/blogposts': typeof AuthenticatedPainelAdminWebsiteBlogpostsRoute
   '/painel/admin/website': typeof AuthenticatedPainelAdminWebsiteIndexRoute
@@ -172,6 +181,7 @@ export interface FileRoutesById {
   '/_authenticated/painel/admin/leads': typeof AuthenticatedPainelAdminLeadsRoute
   '/_authenticated/painel/admin/usuarios': typeof AuthenticatedPainelAdminUsuariosRoute
   '/_authenticated/painel/admin/website': typeof AuthenticatedPainelAdminWebsiteRouteWithChildren
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/_authenticated/painel/admin/': typeof AuthenticatedPainelAdminIndexRoute
   '/_authenticated/painel/admin/website/blogposts': typeof AuthenticatedPainelAdminWebsiteBlogpostsRoute
   '/_authenticated/painel/admin/website/': typeof AuthenticatedPainelAdminWebsiteIndexRoute
@@ -192,6 +202,7 @@ export interface FileRouteTypes {
     | '/painel/admin/leads'
     | '/painel/admin/usuarios'
     | '/painel/admin/website'
+    | '/lovable/email/queue/process'
     | '/painel/admin/'
     | '/painel/admin/website/blogposts'
     | '/painel/admin/website/'
@@ -207,6 +218,7 @@ export interface FileRouteTypes {
     | '/painel/admin/configuracoes'
     | '/painel/admin/leads'
     | '/painel/admin/usuarios'
+    | '/lovable/email/queue/process'
     | '/painel/admin'
     | '/painel/admin/website/blogposts'
     | '/painel/admin/website'
@@ -226,6 +238,7 @@ export interface FileRouteTypes {
     | '/_authenticated/painel/admin/leads'
     | '/_authenticated/painel/admin/usuarios'
     | '/_authenticated/painel/admin/website'
+    | '/lovable/email/queue/process'
     | '/_authenticated/painel/admin/'
     | '/_authenticated/painel/admin/website/blogposts'
     | '/_authenticated/painel/admin/website/'
@@ -236,6 +249,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   DiagnosticoRoute: typeof DiagnosticoRoute
+  LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -316,6 +330,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/painel/admin/'
       preLoaderRoute: typeof AuthenticatedPainelAdminIndexRouteImport
       parentRoute: typeof AuthenticatedPainelAdminRoute
+    }
+    '/lovable/email/queue/process': {
+      id: '/lovable/email/queue/process'
+      path: '/lovable/email/queue/process'
+      fullPath: '/lovable/email/queue/process'
+      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/painel/admin/website': {
       id: '/_authenticated/painel/admin/website'
@@ -440,6 +461,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   DiagnosticoRoute: DiagnosticoRoute,
+  LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
