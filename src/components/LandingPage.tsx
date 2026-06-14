@@ -1,3 +1,4 @@
+import TypeWriter from "@/components/TypeWriter";
 import { Link } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { trackEvent, trackPageview } from "@/lib/track";
@@ -169,7 +170,7 @@ export default function LandingPage() {
           <Eyebrow>Sena Consulting · IA &amp; Automação</Eyebrow>
         </div>
         <h1 className="mt-6 text-5xl font-semibold tracking-tight sm:text-7xl">
-          IA sem <span className="text-primary">complicação.</span>
+          <TypeWriter />
         </h1>
         <p className="mt-6 max-w-xl text-lg text-muted-foreground sm:text-xl">
           Ajudo empresas a aplicar IA de forma prática para melhorar processos, criar ferramentas sob medida e tomar decisões mais estratégicas com times mais enxutos.
