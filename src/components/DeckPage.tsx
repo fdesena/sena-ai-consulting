@@ -110,7 +110,12 @@ export default function DeckPage() {
   const progress = ((current + 1) / total) * 100;
 
   const goToIndex = (i: number) => {
-    slidesRef.current[i]?.scrollIntoView({ behavior: "smooth" });
+    const slides = slidesRef.current;
+    const target = slides[Math.max(0, Math.min(i, slides.length - 1))];
+    if (!target) return;
+    target.classList.add("visible");
+    target.scrollIntoView({ behavior: "smooth" });
+    setCurrent(i);
   };
 
   return (
