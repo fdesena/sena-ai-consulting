@@ -245,7 +245,7 @@ export default function GlobalExperience() {
                 <h4 className="text-base font-semibold leading-snug">{exp.title}</h4>
                 <p className="text-sm text-muted-foreground line-clamp-3">{exp.description}</p>
                 <div className="mt-auto flex items-center justify-between pt-3 text-sm">
-                  <span className="text-muted-foreground text-xs">{exp.location}</span>
+                  <span className="text-muted-foreground text-xs">{exp.flags} {exp.location}</span>
                   <span className="inline-flex items-center gap-1.5 font-medium text-primary text-xs">
                     {exp.linkLabel}
                     <ExternalLink className="h-3.5 w-3.5" />
