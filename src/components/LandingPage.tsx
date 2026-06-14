@@ -99,7 +99,7 @@ const pillars = [
   },
   {
     n: "03",
-    title: "Orientar estrategicamente",
+    title: "Direcionar decisões",
     sub: "Decisões baseadas em dados e estratégias que geram ROI no negócio.",
     href: "#orientar",
     Icon: TrendingUp,
@@ -119,9 +119,9 @@ const construirItems = [
 ];
 
 const orientarItems = [
-  { t: "Diagnóstico Bússola Digital & IA", Icon: Target },
-  { t: "Consultoria 1:1", Icon: MessageSquare },
-  { t: "Transformação digital", Icon: TrendingUp },
+  { t: "Indicadores para gestão do negócio", Icon: Target },
+  { t: "Análise de oportunidades e gargalos", Icon: MessageSquare },
+  { t: "Estratégia baseada em dados e ROI", Icon: TrendingUp },
 ];
 
 const cases = [
@@ -320,7 +320,7 @@ export default function LandingPage() {
       <PillarBlock
         id="orientar"
         n="03"
-        title="Orientar estrategicamente"
+        title="Direcionar decisões"
         sub="Decisões baseadas em dados e estratégias que geram ROI no negócio."
         items={orientarItems}
       />
