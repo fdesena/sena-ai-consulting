@@ -31,6 +31,9 @@ export default function DeckPage() {
     slidesRef.current = slides;
     setCurrent(0);
 
+    // Ensure first slide is visible immediately (in case IO is slow on first paint)
+    slides[0]?.classList.add("visible");
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -41,7 +44,7 @@ export default function DeckPage() {
           }
         });
       },
-      { threshold: 0.5 },
+      { root: deck, threshold: 0.5 },
     );
     slides.forEach((s) => observer.observe(s));
 
