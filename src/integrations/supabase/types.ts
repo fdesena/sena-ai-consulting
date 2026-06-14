@@ -14,16 +14,123 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      diagnostico_respostas: {
+        Row: {
+          arquetipo: string
+          aspiracao: string | null
+          barreira: string | null
+          consentimento: boolean
+          created_at: string
+          desafios: Json
+          equipe: string | null
+          ferramentas: Json
+          id: string
+          impacto: string | null
+          negocio: string | null
+          nivel: string
+          nome: string
+          papel: string | null
+          reflexao: string | null
+          respostas_brutas: Json
+          score_automacao: number
+          score_dados: number
+          score_gente: number
+          score_geral: number
+          score_oportunidades: number
+          score_usar_ia: number
+          segmento: string | null
+          whatsapp: string
+        }
+        Insert: {
+          arquetipo: string
+          aspiracao?: string | null
+          barreira?: string | null
+          consentimento?: boolean
+          created_at?: string
+          desafios?: Json
+          equipe?: string | null
+          ferramentas?: Json
+          id?: string
+          impacto?: string | null
+          negocio?: string | null
+          nivel: string
+          nome: string
+          papel?: string | null
+          reflexao?: string | null
+          respostas_brutas?: Json
+          score_automacao?: number
+          score_dados?: number
+          score_gente?: number
+          score_geral: number
+          score_oportunidades?: number
+          score_usar_ia?: number
+          segmento?: string | null
+          whatsapp: string
+        }
+        Update: {
+          arquetipo?: string
+          aspiracao?: string | null
+          barreira?: string | null
+          consentimento?: boolean
+          created_at?: string
+          desafios?: Json
+          equipe?: string | null
+          ferramentas?: Json
+          id?: string
+          impacto?: string | null
+          negocio?: string | null
+          nivel?: string
+          nome?: string
+          papel?: string | null
+          reflexao?: string | null
+          respostas_brutas?: Json
+          score_automacao?: number
+          score_dados?: number
+          score_gente?: number
+          score_geral?: number
+          score_oportunidades?: number
+          score_usar_ia?: number
+          segmento?: string | null
+          whatsapp?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +257,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin"],
+    },
   },
 } as const
