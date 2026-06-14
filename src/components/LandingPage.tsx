@@ -431,15 +431,17 @@ export default function LandingPage() {
           </div>
           <div className="rounded-2xl border border-border bg-[var(--ink)] p-8 text-[var(--paper)]">
             <Mic2 className="h-7 w-7 text-primary" strokeWidth={1.5} />
-            <h3 className="mt-6 text-2xl font-semibold">Palestra de IA</h3>
-            <p className="mt-2 opacity-80">Leve IA prática para o seu time ou evento.</p>
+            <h3 className="mt-6 text-2xl font-semibold">Fale comigo</h3>
+            <p className="mt-2 opacity-80">
+              Tem uma demanda específica ou quer entender como posso ajudar? Entre em contato e vamos avaliar o melhor caminho.
+            </p>
             <a
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground hover:opacity-90"
             >
-              Falar no WhatsApp <ArrowRight className="h-4 w-4" />
+              Entrar em contato <ArrowRight className="h-4 w-4" />
             </a>
           </div>
         </div>
