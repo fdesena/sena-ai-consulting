@@ -95,7 +95,7 @@ export default function DeckPage() {
     const hintTimer = window.setTimeout(() => setHintFaded(true), 4000);
 
     return () => {
-      observer.disconnect();
+      deck.removeEventListener("scroll", onScroll);
       document.removeEventListener("keydown", onKey);
       deck.removeEventListener("touchstart", onTouchStart);
       deck.removeEventListener("touchend", onTouchEnd);
