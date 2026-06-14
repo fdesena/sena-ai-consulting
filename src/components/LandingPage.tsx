@@ -142,7 +142,7 @@ export default function LandingPage() {
       <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <a href="#top" className="font-display text-lg font-semibold tracking-tight">
-            Sena<span className="text-primary">.</span>
+            <TypeWriter />
           </a>
           <nav className="hidden items-center gap-8 text-sm md:flex">
             <a href="#pilares" className="hover:text-primary">O que faço</a>
@@ -170,7 +170,7 @@ export default function LandingPage() {
           <Eyebrow>Sena Consulting · IA &amp; Automação</Eyebrow>
         </div>
         <h1 className="mt-6 text-5xl font-semibold tracking-tight sm:text-7xl">
-          <TypeWriter />
+          IA sem complicação.
         </h1>
         <p className="mt-6 max-w-xl text-lg text-muted-foreground sm:text-xl">
           Ajudo empresas a aplicar IA de forma prática para melhorar processos, criar ferramentas sob medida e tomar decisões mais estratégicas com times mais enxutos.
