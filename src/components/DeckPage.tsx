@@ -34,19 +34,21 @@ export default function DeckPage() {
     // Ensure first slide is visible immediately (in case IO is slow on first paint)
     slides[0]?.classList.add("visible");
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-            const idx = slides.indexOf(entry.target as HTMLElement);
-            if (idx >= 0) setCurrent(idx);
-          }
-        });
-      },
-      { root: deck, threshold: 0.5 },
-    );
-    slides.forEach((s) => observer.observe(s));
+    // Scroll-based current slide detection (more reliable than IO inside scroll-snap container)
+    const onScroll = () => {
+      const center = deck.scrollTop + deck.clientHeight / 2;
+      let idx = 0;
+      for (let i = 0; i < slides.length; i++) {
+        if (slides[i].offsetTop <= center) idx = i;
+        else break;
+      }
+      slides[idx].classList.add("visible");
+      // Pre-reveal neighbours
+      slides[idx + 1]?.classList.add("visible");
+      currentIdx = idx;
+      setCurrent(idx);
+    };
+    deck.addEventListener("scroll", onScroll, { passive: true });
 
     let currentIdx = 0;
     const goTo = (i: number) => {
