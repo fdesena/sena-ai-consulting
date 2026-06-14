@@ -482,16 +482,27 @@ function rContact(){
     <div class="note">É por aqui que o seu diagnóstico e o plano de ação chegam até você. Preencha com dados reais.</div>
     <div class="field"><label>Seu nome</label><input id="f_name" value="${A.name||''}" placeholder="Ex.: Maria Silva"></div>
     <div class="field"><label>Nome do seu negócio</label><input id="f_biz" value="${A.biz||''}" placeholder="Ex.: Clínica Sorriso"></div>
-    <div class="field"><label>WhatsApp</label><input id="f_wa" value="${A.wa||''}" inputmode="numeric" placeholder="(19) 99999-9999"></div>
+    <div class="field"><label>E-mail</label><input id="f_email" type="email" autocomplete="email" value="${A.email||''}" placeholder="voce@exemplo.com"><div class="tcount" id="f_email_err" style="text-align:left;color:var(--red);display:none">Informe um e-mail válido.</div></div>
+    <div class="field"><label>WhatsApp</label><input id="f_wa" value="${A.wa||''}" inputmode="tel" placeholder="(19) 99999-9999"><div class="tcount" id="f_wa_err" style="text-align:left;color:var(--red);display:none">Informe um número válido com DDD (mín. 10 dígitos).</div></div>
     <label class="consent"><input type="checkbox" id="f_ok" ${A.consent?'checked':''}><span>Autorizo a Sena Consulting a usar estes dados para preparar e me enviar o diagnóstico e o plano de ação (LGPD).</span></label>
     <button class="btn" id="cbtn" onclick="saveContact()">Continuar →</button>
   </section>`;
-  const v=()=>{const ok=val("f_name")&&val("f_wa")&&document.getElementById("f_ok").checked;document.getElementById("cbtn").disabled=!ok;};
-  ["f_name","f_biz","f_wa"].forEach(id=>document.getElementById(id).addEventListener("input",v));
+  const emailRe=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  const digits=s=>(s||"").replace(/\D/g,"");
+  const v=()=>{
+    const nameOk=!!val("f_name");
+    const emailOk=emailRe.test(val("f_email"));
+    const waOk=digits(val("f_wa")).length>=10;
+    const okBox=document.getElementById("f_ok").checked;
+    document.getElementById("f_email_err").style.display=val("f_email")&&!emailOk?"block":"none";
+    document.getElementById("f_wa_err").style.display=val("f_wa")&&!waOk?"block":"none";
+    document.getElementById("cbtn").disabled=!(nameOk&&emailOk&&waOk&&okBox);
+  };
+  ["f_name","f_biz","f_email","f_wa"].forEach(id=>document.getElementById(id).addEventListener("input",v));
   document.getElementById("f_ok").addEventListener("change",v);v();
 }
 function val(id){return (document.getElementById(id).value||"").trim();}
-function saveContact(){A.name=val("f_name");A.biz=val("f_biz");A.wa=val("f_wa");A.consent=true;next();}
+function saveContact(){A.name=val("f_name");A.biz=val("f_biz");A.email=val("f_email");A.wa=val("f_wa");A.consent=true;next();}
 
 /* ---------- single ---------- */
 function rSingle(s){
