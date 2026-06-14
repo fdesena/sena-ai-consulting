@@ -123,6 +123,7 @@ export default function DeckPage() {
 
   return (
     <div className="deck-app">
+      <style dangerouslySetInnerHTML={{ __html: DECK_CSS }} />
       {/* Language selector */}
       <div className="lang-selector">
         <button
