@@ -1,5 +1,13 @@
-import { useEffect, useState } from "react";
-import { Compass, Hammer, GraduationCap, LifeBuoy, type LucideIcon } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import {
+  Compass,
+  Hammer,
+  GraduationCap,
+  LifeBuoy,
+  ArrowLeft,
+  ArrowRight,
+  type LucideIcon,
+} from "lucide-react";
 
 type Step = {
   n: string;
@@ -37,22 +45,37 @@ const steps: Step[] = [
 
 export default function ProcessCycle() {
   const [active, setActive] = useState(0);
-  const [paused, setPaused] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
+  // Scroll-driven step progression
   useEffect(() => {
-    if (paused) return;
-    const id = setInterval(() => setActive((a) => (a + 1) % steps.length), 3800);
-    return () => clearInterval(id);
-  }, [paused]);
+    const el = containerRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // Progress: 0 when top hits middle of viewport, 1 when bottom leaves it
+      const total = rect.height + vh * 0.6;
+      const passed = vh * 0.8 - rect.top;
+      const p = Math.max(0, Math.min(1, passed / total));
+      const idx = Math.min(steps.length - 1, Math.floor(p * steps.length));
+      setActive(idx);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const Active = steps[active];
   const radius = 150;
 
+  const go = (delta: number) =>
+    setActive((a) => Math.max(0, Math.min(steps.length - 1, a + delta)));
+
   return (
     <div
+      ref={containerRef}
       className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
     >
       {/* Orbit */}
       <div className="relative mx-auto aspect-square w-full max-w-[420px]">
@@ -143,17 +166,37 @@ export default function ProcessCycle() {
           <p className="mt-5 max-w-md text-lg text-muted-foreground">{Active.desc}</p>
         </div>
 
-        <div className="mt-10 flex gap-2">
-          {steps.map((s, i) => (
+        <div className="mt-10 flex items-center gap-4">
+          <div className="flex gap-2">
+            {steps.map((s, i) => (
+              <button
+                key={s.n}
+                onClick={() => setActive(i)}
+                aria-label={s.title}
+                className={`h-1.5 rounded-full transition-all duration-500 ${
+                  i === active ? "w-12 bg-primary" : "w-6 bg-border hover:bg-muted-foreground"
+                }`}
+              />
+            ))}
+          </div>
+          <div className="ml-auto flex gap-2">
             <button
-              key={s.n}
-              onClick={() => setActive(i)}
-              aria-label={s.title}
-              className={`h-1.5 rounded-full transition-all duration-500 ${
-                i === active ? "w-12 bg-primary" : "w-6 bg-border hover:bg-muted-foreground"
-              }`}
-            />
-          ))}
+              onClick={() => go(-1)}
+              disabled={active === 0}
+              aria-label="Etapa anterior"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-border disabled:hover:text-foreground"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => go(1)}
+              disabled={active === steps.length - 1}
+              aria-label="Próxima etapa"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-border disabled:hover:text-foreground"
+            >
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </div>
     </div>
