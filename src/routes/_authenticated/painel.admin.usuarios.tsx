@@ -65,6 +65,15 @@ function AdminUsuarios() {
     catch (e: any) { setErr(e?.message ?? "Erro"); }
   }
 
+  async function handleResetPwd(u: U) {
+    if (!confirm(`Resetar a senha de ${u.email}?\n\nA nova senha será o próprio e-mail:\n${u.email}`)) return;
+    setErr(null); setMsg(null);
+    try {
+      await resetPwd({ data: { userId: u.id } });
+      setMsg(`Senha de ${u.email} redefinida para o próprio e-mail.`);
+    } catch (e: any) { setErr(e?.message ?? "Erro ao resetar senha"); }
+  }
+
   return (
     <div className="max-w-6xl mx-auto space-y-6 text-zinc-100">
       <div className="flex items-end justify-between gap-3 flex-wrap">
