@@ -1,3 +1,4 @@
+import TypeWriter from "@/components/TypeWriter";
 import { Link } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { trackEvent, trackPageview } from "@/lib/track";
