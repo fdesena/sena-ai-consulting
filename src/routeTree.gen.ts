@@ -15,6 +15,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedPainelRouteImport } from './routes/_authenticated/painel'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedPainelDiagnosticoRouteImport } from './routes/_authenticated/painel.diagnostico'
 
 const DiagnosticoRoute = DiagnosticoRouteImport.update({
   id: '/diagnostico',
@@ -45,20 +46,28 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPainelDiagnosticoRoute =
+  AuthenticatedPainelDiagnosticoRouteImport.update({
+    id: '/diagnostico',
+    path: '/diagnostico',
+    getParentRoute: () => AuthenticatedPainelRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/diagnostico': typeof DiagnosticoRoute
   '/admin': typeof AuthenticatedAdminRoute
-  '/painel': typeof AuthenticatedPainelRoute
+  '/painel': typeof AuthenticatedPainelRouteWithChildren
+  '/painel/diagnostico': typeof AuthenticatedPainelDiagnosticoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/diagnostico': typeof DiagnosticoRoute
   '/admin': typeof AuthenticatedAdminRoute
-  '/painel': typeof AuthenticatedPainelRoute
+  '/painel': typeof AuthenticatedPainelRouteWithChildren
+  '/painel/diagnostico': typeof AuthenticatedPainelDiagnosticoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -67,13 +76,26 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/diagnostico': typeof DiagnosticoRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
-  '/_authenticated/painel': typeof AuthenticatedPainelRoute
+  '/_authenticated/painel': typeof AuthenticatedPainelRouteWithChildren
+  '/_authenticated/painel/diagnostico': typeof AuthenticatedPainelDiagnosticoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/diagnostico' | '/admin' | '/painel'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/diagnostico'
+    | '/admin'
+    | '/painel'
+    | '/painel/diagnostico'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/diagnostico' | '/admin' | '/painel'
+  to:
+    | '/'
+    | '/auth'
+    | '/diagnostico'
+    | '/admin'
+    | '/painel'
+    | '/painel/diagnostico'
   id:
     | '__root__'
     | '/'
@@ -82,6 +104,7 @@ export interface FileRouteTypes {
     | '/diagnostico'
     | '/_authenticated/admin'
     | '/_authenticated/painel'
+    | '/_authenticated/painel/diagnostico'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -135,17 +158,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/painel/diagnostico': {
+      id: '/_authenticated/painel/diagnostico'
+      path: '/diagnostico'
+      fullPath: '/painel/diagnostico'
+      preLoaderRoute: typeof AuthenticatedPainelDiagnosticoRouteImport
+      parentRoute: typeof AuthenticatedPainelRoute
+    }
   }
 }
 
+interface AuthenticatedPainelRouteChildren {
+  AuthenticatedPainelDiagnosticoRoute: typeof AuthenticatedPainelDiagnosticoRoute
+}
+
+const AuthenticatedPainelRouteChildren: AuthenticatedPainelRouteChildren = {
+  AuthenticatedPainelDiagnosticoRoute: AuthenticatedPainelDiagnosticoRoute,
+}
+
+const AuthenticatedPainelRouteWithChildren =
+  AuthenticatedPainelRoute._addFileChildren(AuthenticatedPainelRouteChildren)
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
-  AuthenticatedPainelRoute: typeof AuthenticatedPainelRoute
+  AuthenticatedPainelRoute: typeof AuthenticatedPainelRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
-  AuthenticatedPainelRoute: AuthenticatedPainelRoute,
+  AuthenticatedPainelRoute: AuthenticatedPainelRouteWithChildren,
 }
 
 const AuthenticatedRouteRouteWithChildren =

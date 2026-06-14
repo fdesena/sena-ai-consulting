@@ -64,7 +64,7 @@ function DiagnosticoDashboard() {
     const uid = userData.user?.id;
     setEmail(userData.user?.email ?? "");
     if (!uid) return;
-    await supabase.rpc("claim_seed_admin").catch(() => {});
+    try { await supabase.rpc("claim_seed_admin"); } catch {}
     const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", uid);
     const admin = (roles ?? []).some((r: any) => r.role === "admin");
     setIsAdmin(admin);
