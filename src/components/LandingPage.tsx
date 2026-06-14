@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import WhatsAppFAB, { WHATSAPP_URL } from "./WhatsAppFAB";
 import ProcessCycle from "./ProcessCycle";
-import DiagnosticChart from "./DiagnosticChart";
+import MarketGapChart from "./MarketGapChart";
 import TrackRecord from "./TrackRecord";
 import felipeAsset from "@/assets/felipe-sena.png.asset.json";
 
@@ -173,7 +173,7 @@ export default function LandingPage() {
         </p>
 
         {/* Hero CTA — diagnostic with chart */}
-        <div className="mt-14 grid gap-0 overflow-hidden rounded-3xl border border-border bg-card shadow-sm md:grid-cols-[1.05fr_1fr]">
+        <div className="mt-14 grid gap-0 overflow-hidden rounded-3xl border border-border bg-card shadow-sm md:grid-cols-[1fr_1.1fr]">
           <div className="flex flex-col justify-between gap-8 p-8 sm:p-10">
             <div>
               <Eyebrow>Comece pelo diagnóstico</Eyebrow>
@@ -184,6 +184,23 @@ export default function LandingPage() {
                 Mapeio em uma conversa onde sua operação pode ganhar tempo, reduzir trabalho
                 manual e gerar resultado real com IA.
               </p>
+
+              <div className="mt-8 rounded-2xl border border-border/70 bg-[var(--paper)] p-5">
+                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                  A oportunidade
+                </p>
+                <p className="mt-2 text-lg font-semibold leading-snug">
+                  A IA já consegue muito mais do que o mercado usa.
+                </p>
+                <p className="mt-3 text-sm text-muted-foreground">
+                  Este é o retrato do <b className="text-foreground">mercado</b>, segundo a pesquisa
+                  da Anthropic — <b className="text-foreground">não é o seu resultado</b> (esse vem
+                  na próxima tela). Cada ponta é uma categoria profissional: o{" "}
+                  <b style={{ color: "#4F86C6" }}>azul</b> é o que a IA poderia fazer hoje; o{" "}
+                  <b style={{ color: "#D14B3D" }}>vermelho</b> é o que de fato já se usa, em média.
+                  A distância entre eles é a oportunidade — aberta para quem agir primeiro.
+                </p>
+              </div>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Link
@@ -204,19 +221,23 @@ export default function LandingPage() {
           <div className="border-t border-border bg-[var(--paper)] p-6 sm:p-8 md:border-l md:border-t-0">
             <div className="flex items-center justify-between">
               <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                Bússola Digital &amp; IA · Exemplo
+                Panorama do mercado · pesquisa
               </span>
               <Sparkles className="h-4 w-4 text-primary" />
             </div>
-            <DiagnosticChart />
-            <div className="mt-3 flex items-center justify-center gap-6 text-[11px] font-mono uppercase tracking-wider">
-              <span className="flex items-center gap-2 text-muted-foreground">
-                <span className="h-2 w-2 rounded-full bg-[var(--muted-foreground)]" /> Atual
+            <MarketGapChart />
+            <div className="mt-2 flex items-center justify-center gap-6 text-[11px] font-mono uppercase tracking-wider">
+              <span className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-sm" style={{ background: "#4F86C6" }} /> Poderia fazer
               </span>
               <span className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-primary" /> Com IA
+                <span className="h-2 w-2 rounded-sm" style={{ background: "#D14B3D" }} /> Já se usa
               </span>
             </div>
+            <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
+              Fonte: Massenkoff &amp; McCrory (2026), "Labor market impacts of AI", Anthropic — Fig.
+              2. Valores aproximados, lidos da figura. Adaptado pela Sena.
+            </p>
           </div>
         </div>
       </Section>
