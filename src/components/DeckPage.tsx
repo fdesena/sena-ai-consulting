@@ -48,21 +48,26 @@ export default function DeckPage() {
     );
     slides.forEach((s) => observer.observe(s));
 
+    let currentIdx = 0;
     const goTo = (i: number) => {
-      const target = slides[Math.max(0, Math.min(i, slides.length - 1))];
-      target?.scrollIntoView({ behavior: "smooth" });
+      const idx = Math.max(0, Math.min(i, slides.length - 1));
+      const target = slides[idx];
+      if (!target) return;
+      currentIdx = idx;
+      target.classList.add("visible");
+      target.scrollIntoView({ behavior: "smooth" });
+      setCurrent(idx);
     };
 
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement | null;
       if (t?.closest("input,textarea")) return;
-      const cur = slidesRef.current.findIndex((s) => s.classList.contains("visible"));
       if (["ArrowDown", "ArrowRight", " ", "PageDown"].includes(e.key)) {
         e.preventDefault();
-        goTo(cur + 1);
+        goTo(currentIdx + 1);
       } else if (["ArrowUp", "ArrowLeft", "PageUp"].includes(e.key)) {
         e.preventDefault();
-        goTo(cur - 1);
+        goTo(currentIdx - 1);
       } else if (e.key === "Home") {
         e.preventDefault();
         goTo(0);
