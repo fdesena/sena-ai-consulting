@@ -20,6 +20,7 @@ import {
   MessageSquare,
   Mail,
   Linkedin,
+  Zap,
 } from "lucide-react";
 import WhatsAppFAB, { WHATSAPP_URL } from "./WhatsAppFAB";
 import ProcessCycle from "./ProcessCycle";
