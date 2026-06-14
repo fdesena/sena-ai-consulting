@@ -162,6 +162,7 @@ const EXPERIENCES: Experience[] = [
 export default function GlobalExperience() {
   const [current, setCurrent] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(3);
+  const [isPaused, setIsPaused] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -180,7 +181,16 @@ export default function GlobalExperience() {
   const canNext = current < maxIndex;
 
   const goPrev = () => setCurrent((p) => Math.max(0, p - 1));
-  const goNext = () => setCurrent((p) => Math.min(maxIndex, p + 1));
+  const goNext = () => setCurrent((p) => (p >= maxIndex ? 0 : p + 1));
+
+  // Autoplay
+  useEffect(() => {
+    if (isPaused) return;
+    const interval = setInterval(() => {
+      setCurrent((p) => (p >= maxIndex ? 0 : p + 1));
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [isPaused, maxIndex]);
 
   return (
     <div>
