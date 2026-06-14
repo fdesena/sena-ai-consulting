@@ -687,7 +687,7 @@ function archOf(dim,o){
 
 /* ===================== submit + reveal ===================== */
 function persistDiag(dim, overall, ak){
-  if (!A.consent) return Promise.resolve(); // LGPD: só grava com consentimento
+  if (!A.consent) return Promise.resolve();
   const lvl = levelOf(overall);
   const optOf = (k) => {
     const s = SCREENS.find(x => x.key === k);
@@ -696,10 +696,12 @@ function persistDiag(dim, overall, ak){
   const payload = {
     nome: (A.name||"").slice(0,200),
     negocio: (A.biz||"").slice(0,200) || null,
+    email: (A.email||"").slice(0,255),
     whatsapp: (A.wa||"").slice(0,50),
     consentimento: true,
     papel: optOf("papel"),
     segmento: optOf("segmento"),
+    segmento_outro: (A.segmento_outro||"").slice(0,100) || null,
     aspiracao: optOf("aspiracao"),
     equipe: optOf("equipe"),
     barreira: optOf("barreira"),
@@ -717,27 +719,9 @@ function persistDiag(dim, overall, ak){
     score_dados: dim.dad|0,
     respostas_brutas: A
   };
-  // If a Supabase session exists in this browser, attach the user_id so the
-  // response gets linked to the logged-in user and the admin/lead can be tracked.
-  let bearer = CONFIG.SUPABASE_KEY;
-  try {
-    const raw = localStorage.getItem("sb-rzxifiijynxcwfttxoio-auth-token");
-    if (raw) {
-      const s = JSON.parse(raw);
-      const tok = s && (s.access_token || (s.currentSession && s.currentSession.access_token));
-      const uid = s && (s.user && s.user.id || (s.currentSession && s.currentSession.user && s.currentSession.user.id));
-      if (tok) bearer = tok;
-      if (uid) payload.user_id = uid;
-    }
-  } catch (e) {}
-  return fetch(CONFIG.SUPABASE_URL + "/rest/v1/diagnostico_respostas", {
+  return fetch(CONFIG.SUBMIT_URL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "apikey": CONFIG.SUPABASE_KEY,
-      "Authorization": "Bearer " + bearer,
-      "Prefer": "return=minimal"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
   }).catch(e => { console.warn("persist failed", e); });
 }
