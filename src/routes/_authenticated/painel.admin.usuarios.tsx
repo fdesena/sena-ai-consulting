@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { UserPlus, Shield, Trash2, RefreshCw, Mail, X } from "lucide-react";
+import { UserPlus, Shield, Trash2, RefreshCw, Mail, X, KeyRound } from "lucide-react";
 import {
-  adminListUsers, adminCreateUser, adminSetUserRole, adminDeleteUser,
+  adminListUsers, adminCreateUser, adminSetUserRole, adminDeleteUser, adminResetPasswordToEmail,
 } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/_authenticated/painel/admin/usuarios")({
