@@ -237,26 +237,35 @@ export default function LandingPage() {
       {/* DESAFIO */}
       <Section id="desafio" className="border-t border-border">
         <Eyebrow>O desafio</Eyebrow>
-        <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
+        <h2 className="mt-4 max-w-4xl text-3xl font-semibold sm:text-5xl">
           Entre o discurso da IA e o resultado real, existe um abismo.
         </h2>
-        <div className="mt-12 grid gap-6 sm:grid-cols-2">
-          <article className="rounded-2xl border border-border bg-card p-8">
-            <Target className="h-6 w-6 text-primary" strokeWidth={1.6} />
-            <h3 className="mt-5 text-2xl font-semibold">
+        <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
+          Todo mundo quer usar IA. Poucos conseguem gerar resultado real.
+          A dificuldade não está mais no acesso às ferramentas. Está em transformar
+          IA em processos melhores, produtividade e decisões mais rápidas.
+        </p>
+        <div className="mt-14 grid gap-6 sm:grid-cols-2">
+          <article className="rounded-2xl border border-border/40 bg-card p-8 sm:p-10">
+            <Target className="h-6 w-6 text-primary" strokeWidth={1.5} />
+            <h3 className="mt-6 text-xl font-semibold tracking-tight sm:text-2xl">
               Querem usar IA. Não sabem por onde começar.
             </h3>
-            <p className="mt-3 text-muted-foreground">
-              Travam na prática: o que priorizar, como implementar, como medir resultado.
+            <p className="mt-3 leading-relaxed text-muted-foreground">
+              Muitas empresas e profissionais travam na prática: não sabem quais
+              processos melhorar, quais ferramentas usar ou onde a IA pode gerar
+              mais impacto.
             </p>
           </article>
-          <article className="rounded-2xl border border-border bg-card p-8">
-            <Users className="h-6 w-6 text-primary" strokeWidth={1.6} />
-            <h3 className="mt-5 text-2xl font-semibold">
+          <article className="rounded-2xl border border-border/40 bg-card p-8 sm:p-10">
+            <Users className="h-6 w-6 text-primary" strokeWidth={1.5} />
+            <h3 className="mt-6 text-xl font-semibold tracking-tight sm:text-2xl">
               Ferramentas existem. Adoção real, não.
             </h3>
-            <p className="mt-3 text-muted-foreground">
-              O desafio é aplicar IA nos processos certos e fazer o time usar todo dia.
+            <p className="mt-3 leading-relaxed text-muted-foreground">
+              O desafio é transformar IA em rotina: reduzir trabalho manual,
+              melhorar a gestão da operação e fazer o time usar a tecnologia de
+              forma simples e consistente.
             </p>
           </article>
         </div>
