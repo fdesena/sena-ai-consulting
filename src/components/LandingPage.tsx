@@ -484,7 +484,13 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
+
+        <div className="mt-20 border-t border-border pt-16">
+          <GlobalExperience />
+        </div>
       </Section>
+
+
 
       {/* CTA FINAL */}
       <Section id="contato" className="border-t border-border">
