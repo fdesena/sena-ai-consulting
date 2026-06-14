@@ -165,11 +165,10 @@ export default function LandingPage() {
           <Eyebrow>Sena Consulting · IA &amp; Automação</Eyebrow>
         </div>
         <h1 className="mt-6 text-5xl font-semibold tracking-tight sm:text-7xl">
-          Onde estratégia <br className="hidden sm:block" />
-          encontra <span className="text-primary">execução.</span>
+          IA sem complicação.
         </h1>
         <p className="mt-6 max-w-xl text-lg text-muted-foreground sm:text-xl">
-          Da apresentação ao sistema rodando. Consultoria de IA com resultado mensurável.
+          Ajudo empresas a aplicar IA de forma prática para melhorar processos, criar ferramentas sob medida e tomar decisões mais estratégicas com times mais enxutos.
         </p>
 
         {/* Hero CTA — diagnostic with chart */}
