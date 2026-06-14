@@ -2,6 +2,11 @@ import { useState, useRef, useEffect } from "react";
 import { ExternalLink, Linkedin, ChevronLeft, ChevronRight } from "lucide-react";
 import selectUsaAsset from "@/assets/felipe-selectusa.png.asset.json";
 import miamiAsset from "@/assets/felipe-miami-goglobal.png.asset.json";
+import myllenniumAsset from "@/assets/felipe-myllennium.png.asset.json";
+import hultChallengeAsset from "@/assets/felipe-hult-challenge.png.asset.json";
+import mitSolveAsset from "@/assets/felipe-mit-solve.png.asset.json";
+import bostonBeyondAsset from "@/assets/felipe-boston-beyond.png.asset.json";
+import epicMalasiaAsset from "@/assets/felipe-epic-malasia.png.asset.json";
 
 type Experience = {
   title: string;
