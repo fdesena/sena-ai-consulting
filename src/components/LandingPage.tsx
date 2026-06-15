@@ -185,12 +185,10 @@ export default function LandingPage() {
                 A IA já consegue muito mais do que o mercado usa.
               </h2>
               <p className="mt-4 text-muted-foreground">
-                Este é o retrato do <b className="text-foreground">mercado</b>, segundo a pesquisa
-                da Anthropic — <b className="text-foreground">não é o seu resultado</b> (esse vem
-                na próxima tela). Cada ponta é uma categoria profissional: o{" "}
-                <b style={{ color: "#4F86C6" }}>azul</b> é o que a IA poderia fazer hoje; o{" "}
-                <b style={{ color: "#D14B3D" }}>vermelho</b> é o que de fato já se usa, em média.
-                A distância entre eles é a oportunidade — aberta para quem agir primeiro.
+                Dados da pesquisa da Anthropic mostram o <b className="text-foreground">tamanho da oportunidade</b> no mercado. Cada ponta é uma categoria profissional: o{" "}
+                <b style={{ color: "#4F86C6" }}>azul</b> é o que a IA já consegue fazer hoje; o{" "}
+                <b style={{ color: "#D14B3D" }}>vermelho</b> é o que de fato se usa, em média.
+                A distância entre eles representa o gap — e quem agir primeiro leva vantagem.
               </p>
 
               <div className="mt-8 rounded-2xl border border-border/70 bg-[var(--paper)] p-5">
