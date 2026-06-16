@@ -228,7 +228,7 @@ export default function GlobalExperience() {
       <div className="flex flex-col items-start gap-3 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-            Experiências internacionais
+            Experiências Globais
           </p>
           <h3 className="mt-3 text-2xl font-semibold sm:text-3xl">
             Onde a estratégia foi aplicada — ao vivo, com instituições e líderes globais.
