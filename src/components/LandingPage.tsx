@@ -467,13 +467,13 @@ export default function LandingPage() {
       <Section id="cases" className="border-t border-border">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
-            <Eyebrow>Track record</Eyebrow>
+            <Eyebrow>Projetos entregues</Eyebrow>
             <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
-              Construído. Implantado. Em produção.
+              Soluções reais, prontas para uso.
             </h2>
           </div>
           <p className="max-w-xs text-sm text-muted-foreground">
-            Amostras de soluções entregues — protótipos das interfaces reais.
+            Exemplos de IA, automações e sistemas aplicados a processos reais de empresas e equipes.
           </p>
         </div>
         <div className="mt-12">
@@ -529,9 +529,8 @@ export default function LandingPage() {
               Estratégia, dados e execução — em escala global.
             </h2>
             <p className="mt-5 text-lg text-muted-foreground">
-              <span className="font-medium text-foreground">Gestor de Produto e Projetos Globais</span> da plataforma{" "}
-              <span className="font-medium text-foreground">Think-Big</span> pela{" "}
-              <span className="font-medium text-foreground">Boston Innovation Gateway</span>. Mais de uma década entregando produtos digitais, dados e IA para empresas em 4 continentes.
+              <span className="font-medium text-foreground">Consultor de Estratégia e Tecnologia</span> pela{" "}
+              <span className="font-medium text-foreground">Boston Innovation Gateway</span>. Desde 2022, desenvolve e integra soluções de IA, dados e automação para aumentar produtividade, reduzir trabalho manual e apoiar decisões em empresas, governos e ecossistemas de inovação globais.
             </p>
 
             <ul className="mt-8 space-y-3 text-muted-foreground">
@@ -565,19 +564,18 @@ export default function LandingPage() {
               <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Experiência internacional trabalhando com clientes globais
               </p>
-              <div className="mt-3 flex flex-wrap items-center gap-2">
+              <div className="mt-3 flex flex-wrap items-center gap-3">
                 {COUNTRIES.map((c) => (
                   <div
                     key={c.code}
-                    className="flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5"
+                    className="flex items-center"
+                    title={c.name}
+                    aria-label={c.name}
                   >
                     <Flag code={c.code} name={c.name} />
-                    <span className="text-xs font-medium">{c.name}</span>
                   </div>
                 ))}
-                <span className="rounded-full border border-dashed border-border px-3 py-1.5 text-xs text-muted-foreground">
-                  + outros
-                </span>
+                <span className="text-xs text-muted-foreground">+ outros</span>
               </div>
             </div>
           </div>

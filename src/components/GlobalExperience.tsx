@@ -207,10 +207,11 @@ export default function GlobalExperience() {
   }, []);
 
   const maxIndex = Math.max(0, experiences.length - itemsPerView);
-  const canPrev = current > 0;
-  const canNext = current < maxIndex;
+  const totalSlides = maxIndex + 1;
+  const canPrev = true;
+  const canNext = true;
 
-  const goPrev = () => setCurrent((p) => Math.max(0, p - 1));
+  const goPrev = () => setCurrent((p) => (p <= 0 ? maxIndex : p - 1));
   const goNext = () => setCurrent((p) => (p >= maxIndex ? 0 : p + 1));
 
   // Autoplay
@@ -227,7 +228,7 @@ export default function GlobalExperience() {
       <div className="flex flex-col items-start gap-3 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-            Experiências internacionais
+            Experiências Globais
           </p>
           <h3 className="mt-3 text-2xl font-semibold sm:text-3xl">
             Onde a estratégia foi aplicada — ao vivo, com instituições e líderes globais.
