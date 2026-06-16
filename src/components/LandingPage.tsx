@@ -178,13 +178,41 @@ export default function LandingPage() {
 
         {/* Hero CTA — diagnostic with chart */}
         <div className="mt-14 grid gap-0 overflow-hidden rounded-3xl border border-border bg-card shadow-sm md:grid-cols-[1fr_1.1fr]">
-          <div className="flex flex-col justify-between gap-8 p-8 sm:p-10">
+          {/* Intro: eyebrow + title */}
+          <div className="order-1 px-8 pt-8 sm:px-10 sm:pt-10 md:order-none md:col-start-1 md:row-start-1 md:px-10 md:pt-10">
+            <Eyebrow>A OPORTUNIDADE</Eyebrow>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
+              A IA já consegue muito mais do que o mercado usa.
+            </h2>
+          </div>
+
+          {/* Chart: appears right after title on mobile; right column on desktop */}
+          <div className="order-2 border-t border-border bg-[var(--paper)] p-6 sm:p-8 md:order-none md:col-start-2 md:row-span-2 md:row-start-1 md:border-l md:border-t-0">
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                Panorama do mercado · pesquisa
+              </span>
+              <Sparkles className="h-4 w-4 text-primary" />
+            </div>
+            <MarketGapChart />
+            <div className="mt-2 flex items-center justify-center gap-6 text-[11px] font-mono uppercase tracking-wider">
+              <span className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-sm" style={{ background: "#4F86C6" }} /> Poderia fazer
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-sm" style={{ background: "#D14B3D" }} /> Já se usa
+              </span>
+            </div>
+            <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
+              Fonte: Massenkoff &amp; McCrory (2026), "Labor market impacts of AI", Anthropic — Fig.
+              2. Valores aproximados, lidos da figura. Adaptado pela Sena.
+            </p>
+          </div>
+
+          {/* Explanation + CTAs */}
+          <div className="order-3 flex flex-col justify-between gap-8 px-8 pb-8 pt-6 sm:px-10 sm:pb-10 md:order-none md:col-start-1 md:row-start-2 md:px-10 md:pb-10 md:pt-6">
             <div>
-              <Eyebrow>A OPORTUNIDADE</Eyebrow>
-              <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
-                A IA já consegue muito mais do que o mercado usa.
-              </h2>
-              <p className="mt-4 text-muted-foreground">
+              <p className="text-muted-foreground">
                 Dados da pesquisa da Anthropic mostram o <b className="text-foreground">tamanho da oportunidade</b> no mercado. Cada ponta é uma categoria profissional: o{" "}
                 <b style={{ color: "#4F86C6" }}>azul</b> é o que a IA já consegue fazer hoje; o{" "}
                 <b style={{ color: "#D14B3D" }}>vermelho</b> é o que de fato se usa, em média.
@@ -213,27 +241,6 @@ export default function LandingPage() {
                 Ver serviços
               </a>
             </div>
-          </div>
-          <div className="border-t border-border bg-[var(--paper)] p-6 sm:p-8 md:border-l md:border-t-0">
-            <div className="flex items-center justify-between">
-              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                Panorama do mercado · pesquisa
-              </span>
-              <Sparkles className="h-4 w-4 text-primary" />
-            </div>
-            <MarketGapChart />
-            <div className="mt-2 flex items-center justify-center gap-6 text-[11px] font-mono uppercase tracking-wider">
-              <span className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-sm" style={{ background: "#4F86C6" }} /> Poderia fazer
-              </span>
-              <span className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-sm" style={{ background: "#D14B3D" }} /> Já se usa
-              </span>
-            </div>
-            <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
-              Fonte: Massenkoff &amp; McCrory (2026), "Labor market impacts of AI", Anthropic — Fig.
-              2. Valores aproximados, lidos da figura. Adaptado pela Sena.
-            </p>
           </div>
         </div>
       </Section>
