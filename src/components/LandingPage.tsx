@@ -467,13 +467,13 @@ export default function LandingPage() {
       <Section id="cases" className="border-t border-border">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
-            <Eyebrow>Track record</Eyebrow>
+            <Eyebrow>Projetos entregues</Eyebrow>
             <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
-              Construído. Implantado. Em produção.
+              Soluções reais, prontas para uso.
             </h2>
           </div>
           <p className="max-w-xs text-sm text-muted-foreground">
-            Amostras de soluções entregues — protótipos das interfaces reais.
+            Exemplos de IA, automações e sistemas aplicados a processos reais de empresas e equipes.
           </p>
         </div>
         <div className="mt-12">
