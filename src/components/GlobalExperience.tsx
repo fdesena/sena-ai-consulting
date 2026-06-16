@@ -207,10 +207,11 @@ export default function GlobalExperience() {
   }, []);
 
   const maxIndex = Math.max(0, experiences.length - itemsPerView);
-  const canPrev = current > 0;
-  const canNext = current < maxIndex;
+  const totalSlides = maxIndex + 1;
+  const canPrev = true;
+  const canNext = true;
 
-  const goPrev = () => setCurrent((p) => Math.max(0, p - 1));
+  const goPrev = () => setCurrent((p) => (p <= 0 ? maxIndex : p - 1));
   const goNext = () => setCurrent((p) => (p >= maxIndex ? 0 : p + 1));
 
   // Autoplay
