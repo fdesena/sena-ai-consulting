@@ -529,9 +529,8 @@ export default function LandingPage() {
               Estratégia, dados e execução — em escala global.
             </h2>
             <p className="mt-5 text-lg text-muted-foreground">
-              <span className="font-medium text-foreground">Gestor de Produto e Projetos Globais</span> da plataforma{" "}
-              <span className="font-medium text-foreground">Think-Big</span> pela{" "}
-              <span className="font-medium text-foreground">Boston Innovation Gateway</span>. Mais de uma década entregando produtos digitais, dados e IA para empresas em 4 continentes.
+              <span className="font-medium text-foreground">Consultor de Estratégia e Tecnologia</span> pela{" "}
+              <span className="font-medium text-foreground">Boston Innovation Gateway</span>. Desde 2022, desenvolve e integra soluções de IA, dados e automação para aumentar produtividade, reduzir trabalho manual e apoiar decisões em empresas, governos e ecossistemas de inovação globais.
             </p>
 
             <ul className="mt-8 space-y-3 text-muted-foreground">
