@@ -465,15 +465,13 @@ export default function LandingPage() {
 
       {/* CASES */}
       <Section id="cases" className="border-t border-border">
-        <div className="flex flex-wrap items-end justify-between gap-6">
-          <div>
-            <Eyebrow>Projetos entregues</Eyebrow>
-            <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
-              Soluções reais, prontas para uso.
-            </h2>
-          </div>
-          <p className="max-w-xs text-sm text-muted-foreground">
-            Exemplos de IA, automações e sistemas aplicados a processos reais de empresas e equipes.
+        <div>
+          <Eyebrow>Projetos entregues</Eyebrow>
+          <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
+            Soluções reais, prontas para uso.
+          </h2>
+          <p className="mt-4 max-w-2xl text-sm text-muted-foreground">
+            Soluções desenvolvidas para problemas reais.
           </p>
         </div>
         <div className="mt-12">
