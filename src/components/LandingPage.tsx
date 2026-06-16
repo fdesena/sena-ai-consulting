@@ -564,19 +564,18 @@ export default function LandingPage() {
               <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Experiência internacional trabalhando com clientes globais
               </p>
-              <div className="mt-3 flex flex-wrap items-center gap-2">
+              <div className="mt-3 flex flex-wrap items-center gap-3">
                 {COUNTRIES.map((c) => (
                   <div
                     key={c.code}
-                    className="flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5"
+                    className="flex items-center"
+                    title={c.name}
+                    aria-label={c.name}
                   >
                     <Flag code={c.code} name={c.name} />
-                    <span className="text-xs font-medium">{c.name}</span>
                   </div>
                 ))}
-                <span className="rounded-full border border-dashed border-border px-3 py-1.5 text-xs text-muted-foreground">
-                  + outros
-                </span>
+                <span className="text-xs text-muted-foreground">+ outros</span>
               </div>
             </div>
           </div>
