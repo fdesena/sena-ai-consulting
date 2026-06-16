@@ -179,13 +179,11 @@ export default function LandingPage() {
         {/* Hero CTA — diagnostic with chart */}
         <div className="mt-14 grid gap-0 overflow-hidden rounded-3xl border border-border bg-card shadow-sm md:grid-cols-[1fr_1.1fr]">
           {/* Intro: eyebrow + title */}
-          <div className="order-1 px-8 pt-8 sm:px-10 sm:pt-10 md:order-none md:col-start-1 md:row-start-1 md:p-0 md:contents">
-            <div className="md:px-10 md:pt-10">
-              <Eyebrow>A OPORTUNIDADE</Eyebrow>
-              <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
-                A IA já consegue muito mais do que o mercado usa.
-              </h2>
-            </div>
+          <div className="order-1 px-8 pt-8 sm:px-10 sm:pt-10 md:order-none md:col-start-1 md:row-start-1 md:px-10 md:pt-10">
+            <Eyebrow>A OPORTUNIDADE</Eyebrow>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
+              A IA já consegue muito mais do que o mercado usa.
+            </h2>
           </div>
 
           {/* Chart: appears right after title on mobile; right column on desktop */}
