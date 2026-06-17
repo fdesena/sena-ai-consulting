@@ -593,13 +593,13 @@ export default function LandingPage() {
             aria-hidden
             className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-primary/20 blur-3xl"
           />
-          <div className="grid gap-12 lg:grid-cols-2 lg:items-start">
-            <div>
+          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+            <div className="flex h-full flex-col justify-center items-start">
               <Eyebrow>Vamos conversar</Eyebrow>
-              <h2 className="mt-4 max-w-3xl text-4xl font-semibold sm:text-6xl">
+              <h2 className="mt-4 max-w-3xl text-4xl font-semibold sm:text-5xl lg:text-6xl">
                 Vamos construir algo <span className="text-primary">que funciona.</span>
               </h2>
-              <div className="mt-10 flex flex-wrap gap-3">
+              <div className="mt-6 flex flex-wrap gap-3">
                 <a
                   href={WHATSAPP_URL}
                   target="_blank"
@@ -624,12 +624,12 @@ export default function LandingPage() {
                 </a>
               </div>
             </div>
-            <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+            <div className="overflow-hidden rounded-2xl border border-white/10 bg-white">
               <iframe
                 src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ3lQu1KctmL-8Unulcxey7NwiGFaiclYwd__oUfWmzqOMuGx2ZqHjylaG9sJq4QunHcHg06MH7q?gv=true"
                 style={{ border: 0 }}
                 width="100%"
-                height="600"
+                className="h-[450px] sm:h-[600px]"
                 frameBorder={0}
                 title="Agendar conversa com Felipe Sena"
               />
