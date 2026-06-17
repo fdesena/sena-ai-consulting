@@ -629,7 +629,8 @@ export default function LandingPage() {
                 src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ3lQu1KctmL-8Unulcxey7NwiGFaiclYwd__oUfWmzqOMuGx2ZqHjylaG9sJq4QunHcHg06MH7q?gv=true"
                 style={{ border: 0 }}
                 width="100%"
-                height="600"
+                height="450"
+                className="sm:h-[600px]"
                 frameBorder={0}
                 title="Agendar conversa com Felipe Sena"
               />
