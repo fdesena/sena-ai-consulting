@@ -593,8 +593,8 @@ export default function LandingPage() {
             aria-hidden
             className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-primary/20 blur-3xl"
           />
-          <div className="grid gap-12 lg:grid-cols-2 lg:items-end">
-            <div className="flex h-full flex-col justify-end items-start">
+          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+            <div className="flex h-full flex-col justify-center items-start">
               <Eyebrow>Vamos conversar</Eyebrow>
               <h2 className="mt-4 max-w-3xl text-4xl font-semibold sm:text-5xl lg:text-6xl">
                 Vamos construir algo <span className="text-primary">que funciona.</span>
