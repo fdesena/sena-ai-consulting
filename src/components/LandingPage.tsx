@@ -152,7 +152,7 @@ export default function LandingPage() {
             <a href="/auth" className="hover:text-primary">Área exclusiva</a>
           </nav>
           <a
-            href={WHATSAPP_URL}
+            href="https://calendar.app.google/oh4NeMRMtw8v5UP5A"
             target="_blank"
             rel="noopener noreferrer"
             className="hidden items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 sm:inline-flex"
@@ -356,7 +356,7 @@ export default function LandingPage() {
               <span className="font-medium text-foreground">Ideal para:</span> sensibilizar o time, nivelar conhecimento e mostrar casos reais de uso.
             </p>
             <a
-              href={WHATSAPP_URL}
+              href="https://calendar.app.google/oh4NeMRMtw8v5UP5A"
               target="_blank"
               rel="noopener noreferrer"
               className="mt-8 inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-sm font-medium hover:border-primary hover:text-primary"
@@ -379,7 +379,7 @@ export default function LandingPage() {
               <span className="font-medium text-foreground">Ideal para:</span> sair da dúvida, escolher onde começar e estruturar um plano de ação com foco em resultado.
             </p>
             <a
-              href={WHATSAPP_URL}
+              href="https://calendar.app.google/oh4NeMRMtw8v5UP5A"
               target="_blank"
               rel="noopener noreferrer"
               className="mt-8 inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-sm font-medium hover:border-primary hover:text-primary"
@@ -402,7 +402,7 @@ export default function LandingPage() {
               <span className="font-medium text-foreground">Ideal para:</span> automatizar fluxos, criar assistentes de IA, dashboards, plataformas internas e ferramentas específicas para a operação.
             </p>
             <a
-              href={WHATSAPP_URL}
+              href="https://calendar.app.google/oh4NeMRMtw8v5UP5A"
               target="_blank"
               rel="noopener noreferrer"
               className="mt-8 inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-sm font-medium hover:border-primary hover:text-primary"
@@ -593,33 +593,47 @@ export default function LandingPage() {
             aria-hidden
             className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-primary/20 blur-3xl"
           />
-          <Eyebrow>Vamos conversar</Eyebrow>
-          <h2 className="mt-4 max-w-3xl text-4xl font-semibold sm:text-6xl">
-            Vamos construir algo <span className="text-primary">que funciona.</span>
-          </h2>
-          <div className="mt-10 flex flex-wrap gap-3">
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground hover:opacity-90"
-            >
-              <MessageSquare className="h-4 w-4" /> WhatsApp
-            </a>
-            <a
-              href={`mailto:${EMAIL}`}
-              className="inline-flex items-center gap-2 rounded-full border border-white/30 px-6 py-3 font-medium text-white hover:bg-white/10"
-            >
-              <Mail className="h-4 w-4" /> E-mail
-            </a>
-            <a
-              href={LINKEDIN}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-white/30 px-6 py-3 font-medium text-white hover:bg-white/10"
-            >
-              <Linkedin className="h-4 w-4" /> LinkedIn
-            </a>
+          <div className="grid gap-12 lg:grid-cols-2 lg:items-start">
+            <div>
+              <Eyebrow>Vamos conversar</Eyebrow>
+              <h2 className="mt-4 max-w-3xl text-4xl font-semibold sm:text-6xl">
+                Vamos construir algo <span className="text-primary">que funciona.</span>
+              </h2>
+              <div className="mt-10 flex flex-wrap gap-3">
+                <a
+                  href={WHATSAPP_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground hover:opacity-90"
+                >
+                  <MessageSquare className="h-4 w-4" /> WhatsApp
+                </a>
+                <a
+                  href={`mailto:${EMAIL}`}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/30 px-6 py-3 font-medium text-white hover:bg-white/10"
+                >
+                  <Mail className="h-4 w-4" /> E-mail
+                </a>
+                <a
+                  href={LINKEDIN}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/30 px-6 py-3 font-medium text-white hover:bg-white/10"
+                >
+                  <Linkedin className="h-4 w-4" /> LinkedIn
+                </a>
+              </div>
+            </div>
+            <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+              <iframe
+                src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ3lQu1KctmL-8Unulcxey7NwiGFaiclYwd__oUfWmzqOMuGx2ZqHjylaG9sJq4QunHcHg06MH7q?gv=true"
+                style={{ border: 0 }}
+                width="100%"
+                height="600"
+                frameBorder={0}
+                title="Agendar conversa com Felipe Sena"
+              />
+            </div>
           </div>
         </div>
       </Section>
