@@ -24,12 +24,16 @@ import {
   Mail,
   Linkedin,
   Zap,
+  Building2,
 } from "lucide-react";
+import { motion } from "framer-motion";
 import WhatsAppFAB, { WHATSAPP_URL } from "./WhatsAppFAB";
 import ProcessCycle from "./ProcessCycle";
 import MarketGapChart from "./MarketGapChart";
 import TrackRecord from "./TrackRecord";
 import GlobalExperience from "./GlobalExperience";
+import { ContainerScroll } from "@/components/ui/container-scroll-animation";
+import { RING_1_TOOLS, RING_2_TOOLS, RING_3_TOOLS, type ToolIcon } from "@/data/tool-icons";
 import felipeAsset from "@/assets/felipe-sena.png.asset.json";
 
 const COUNTRIES = [
@@ -134,6 +138,114 @@ const cases = [
   { t: "Ferramentas para eventos", d: "Apps ao vivo em palestras imersivas.", Icon: Presentation },
 ];
 
+function ToolIconBadge({ tool }: { tool: ToolIcon }) {
+  return (
+    <div
+      className="flex h-9 w-9 items-center justify-center rounded-xl border border-border/60 bg-[var(--paper)] shadow-sm"
+      style={{ opacity: 0.88 }}
+      title={tool.name}
+    >
+      {tool.type === "img" ? (
+        <img
+          src={tool.src}
+          alt={tool.name}
+          className="h-6 w-6 rounded-lg object-contain"
+          loading="lazy"
+        />
+      ) : (
+        <svg viewBox="0 0 24 24" width="18" height="18" fill={tool.color}>
+          <path d={tool.path} />
+        </svg>
+      )}
+    </div>
+  );
+}
+
+function OrbitalRing({
+  tools,
+  radius,
+  duration,
+  reverse = false,
+}: {
+  tools: ToolIcon[];
+  radius: number;
+  duration: number;
+  reverse?: boolean;
+}) {
+  const dir = reverse ? -360 : 360;
+  return (
+    <motion.div
+      className="absolute inset-0"
+      animate={{ rotate: dir }}
+      transition={{ duration, repeat: Infinity, ease: "linear" }}
+    >
+      {tools.map((tool, i) => {
+        const angle = (360 / tools.length) * i;
+        return (
+          <div
+            key={tool.name}
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              marginTop: -18,
+              marginLeft: -18,
+              transform: `rotate(${angle}deg) translateX(${radius}px) rotate(-${angle}deg)`,
+            }}
+          >
+            <motion.div
+              animate={{ rotate: -dir }}
+              transition={{ duration, repeat: Infinity, ease: "linear" }}
+            >
+              <ToolIconBadge tool={tool} />
+            </motion.div>
+          </div>
+        );
+      })}
+    </motion.div>
+  );
+}
+
+function HeroOrbital() {
+  return (
+    <div
+      className="relative flex h-[420px] w-[420px] items-center justify-center select-none"
+      aria-hidden
+    >
+      {/* Ambient glow */}
+      <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_50%_50%,rgba(200,133,58,0.10)_0%,transparent_70%)]" />
+
+      {/* Static decorative rings */}
+      <svg
+        className="absolute inset-0"
+        width="420"
+        height="420"
+        viewBox="0 0 420 420"
+        fill="none"
+      >
+        <circle cx="210" cy="210" r="75"  stroke="#c8853a" strokeOpacity=".35" strokeWidth="1" strokeDasharray="3 6"/>
+        <circle cx="210" cy="210" r="130" stroke="#c8853a" strokeOpacity=".28" strokeWidth="1" strokeDasharray="3 6"/>
+        <circle cx="210" cy="210" r="185" stroke="#c8853a" strokeOpacity=".20" strokeWidth="1" strokeDasharray="3 6"/>
+      </svg>
+
+      {/* Orbital rings — each ring rotates, icons counter-rotate to stay upright */}
+      <OrbitalRing tools={RING_1_TOOLS} radius={75}  duration={18} />
+      <OrbitalRing tools={RING_2_TOOLS} radius={130} duration={26} reverse />
+      <OrbitalRing tools={RING_3_TOOLS} radius={185} duration={36} />
+
+      {/* Center: company icon */}
+      <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl border-2 border-primary/30 bg-card shadow-md">
+          <Building2 className="h-8 w-8 text-primary" strokeWidth={1.5} />
+        </div>
+        <span className="mt-2 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+          Sua Empresa
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export default function LandingPage() {
   useEffect(() => { trackPageview(); }, []);
   return (
@@ -164,68 +276,21 @@ export default function LandingPage() {
       </header>
 
       {/* HERO */}
-      <Section id="top" className="!pt-16 sm:!pt-24">
-        <div className="flex items-center gap-2">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
-          <Eyebrow>Sena Consulting · IA &amp; Automação</Eyebrow>
-        </div>
-        <h1 className="mt-6 text-5xl font-semibold tracking-tight sm:text-7xl">
-          IA sem complicação.
-        </h1>
-        <p className="mt-6 max-w-xl text-lg text-muted-foreground sm:text-xl">
-          Ajudo empresas a aplicar IA de forma prática para melhorar processos, criar ferramentas sob medida e tomar decisões mais estratégicas com times mais enxutos.
-        </p>
-
-        {/* Hero CTA — diagnostic with chart */}
-        <div className="mt-14 grid gap-0 overflow-hidden rounded-3xl border border-border bg-card shadow-sm md:grid-cols-[1fr_1.1fr]">
-          {/* Intro: eyebrow + title */}
-          <div className="order-1 px-8 pt-8 sm:px-10 sm:pt-10 md:order-none md:col-start-1 md:row-start-1 md:px-10 md:pt-10">
-            <Eyebrow>A OPORTUNIDADE</Eyebrow>
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
-              A IA já consegue muito mais do que o mercado usa.
-            </h2>
-          </div>
-
-          {/* Chart: appears right after title on mobile; right column on desktop */}
-          <div className="order-2 border-t border-border bg-[var(--paper)] p-6 sm:p-8 md:order-none md:col-start-2 md:row-span-2 md:row-start-1 md:border-l md:border-t-0">
-            <div className="flex items-center justify-between">
-              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                Panorama do mercado · pesquisa
-              </span>
-              <Sparkles className="h-4 w-4 text-primary" />
+      <Section id="top" className="!pt-16 sm:!pt-24 min-h-[calc(100svh-64px)] flex flex-col justify-between">
+        <div className="grid items-center gap-12 md:grid-cols-[1fr_1fr]">
+          {/* Left: copy + CTAs */}
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
+              <Eyebrow>Sena Consulting · IA &amp; Automação</Eyebrow>
             </div>
-            <MarketGapChart />
-            <div className="mt-2 flex items-center justify-center gap-6 text-[11px] font-mono uppercase tracking-wider">
-              <span className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-sm" style={{ background: "#4F86C6" }} /> Poderia fazer
-              </span>
-              <span className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-sm" style={{ background: "#D14B3D" }} /> Já se usa
-              </span>
-            </div>
-            <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
-              Fonte: Massenkoff &amp; McCrory (2026), "Labor market impacts of AI", Anthropic — Fig.
-              2. Valores aproximados, lidos da figura. Adaptado pela Sena.
+            <h1 className="mt-6 text-5xl font-semibold tracking-tight sm:text-7xl">
+              IA sem complicação.
+            </h1>
+            <p className="mt-6 max-w-lg text-lg text-muted-foreground sm:text-xl">
+              Ajudo empresas a aplicar IA de forma prática para melhorar processos, criar ferramentas sob medida e tomar decisões mais estratégicas com times mais enxutos.
             </p>
-          </div>
-
-          {/* Explanation + CTAs */}
-          <div className="order-3 flex flex-col justify-between gap-8 px-8 pb-8 pt-6 sm:px-10 sm:pb-10 md:order-none md:col-start-1 md:row-start-2 md:px-10 md:pb-10 md:pt-6">
-            <div>
-              <p className="text-muted-foreground">
-                Dados da pesquisa da Anthropic mostram o <b className="text-foreground">tamanho da oportunidade</b> no mercado. Cada ponta é uma categoria profissional: o{" "}
-                <b style={{ color: "#4F86C6" }}>azul</b> é o que a IA já consegue fazer hoje; o{" "}
-                <b style={{ color: "#D14B3D" }}>vermelho</b> é o que de fato se usa, em média.
-                A distância entre eles representa o gap — e quem agir primeiro leva vantagem.
-              </p>
-
-              <div className="mt-8 rounded-2xl border border-border/70 bg-[var(--paper)] p-5">
-                <p className="text-sm text-muted-foreground">
-                  Agora é a sua vez: descubra o quanto você entende, usa e aplica IA — e onde estão os gaps para transformar essa oportunidade em resultado na sua empresa.
-                </p>
-              </div>
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
               <Link
                 to="/diagnostico"
                 onClick={() => trackEvent("click_diagnostico_cta", { source: "hero" })}
@@ -242,8 +307,95 @@ export default function LandingPage() {
               </a>
             </div>
           </div>
+
+          {/* Right: animated orbital motif */}
+          <div className="relative hidden items-center justify-center md:flex">
+            <HeroOrbital />
+          </div>
         </div>
+
+        {/* Scroll cue — bottom of first fold */}
+        <a href="#oportunidade" className="group mt-16 flex items-center gap-2 self-start text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground transition hover:text-foreground sm:mt-0 sm:self-end">
+          Descobrir a oportunidade
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="transition-transform group-hover:translate-y-0.5">
+            <path d="M8 3v10M4 9l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </a>
       </Section>
+
+      {/* A OPORTUNIDADE — revealed on scroll with 3D tilt */}
+      <section id="oportunidade" className="border-t border-border">
+        <div className="mx-auto w-full max-w-6xl px-6 py-20 sm:py-28">
+          <ContainerScroll
+            titleComponent={
+              <>
+                <Eyebrow>A OPORTUNIDADE</Eyebrow>
+                <h2 className="mx-auto mt-4 max-w-3xl text-balance text-3xl font-semibold tracking-tight sm:text-5xl">
+                  A IA já consegue muito mais do que o mercado usa.
+                </h2>
+              </>
+            }
+          >
+            <div className="grid h-full gap-0 md:grid-cols-[1fr_1.1fr]">
+              {/* Explanation + CTAs */}
+              <div className="flex flex-col justify-between gap-8 px-6 py-8 text-left sm:px-10 sm:py-10">
+                <div>
+                  <p className="text-muted-foreground">
+                    Dados da pesquisa da Anthropic mostram o <b className="text-foreground">tamanho da oportunidade</b> no mercado. Cada ponta é uma categoria profissional: o{" "}
+                    <b style={{ color: "#4F86C6" }}>azul</b> é o que a IA já consegue fazer hoje; o{" "}
+                    <b style={{ color: "#D14B3D" }}>vermelho</b> é o que de fato se usa, em média.
+                    A distância entre eles representa o gap — e quem agir primeiro leva vantagem.
+                  </p>
+                  <div className="mt-8 rounded-2xl border border-border/70 bg-card p-5">
+                    <p className="text-sm text-muted-foreground">
+                      Agora é a sua vez: descubra o quanto você entende, usa e aplica IA — e onde estão os gaps para transformar essa oportunidade em resultado na sua empresa.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <Link
+                    to="/diagnostico"
+                    onClick={() => trackEvent("click_diagnostico_cta", { source: "oportunidade" })}
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+                  >
+                    Realizar diagnóstico
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                  <a
+                    href="#pilares"
+                    className="inline-flex items-center justify-center gap-2 rounded-full border border-foreground/15 px-6 py-3.5 text-sm font-medium hover:border-foreground/40"
+                  >
+                    Ver serviços
+                  </a>
+                </div>
+              </div>
+
+              {/* Chart */}
+              <div className="border-t border-border px-6 py-8 text-left sm:px-8 md:border-l md:border-t-0">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                    Panorama do mercado · pesquisa
+                  </span>
+                  <Sparkles className="h-4 w-4 text-primary" />
+                </div>
+                <MarketGapChart />
+                <div className="mt-2 flex items-center justify-center gap-6 text-[11px] font-mono uppercase tracking-wider">
+                  <span className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-sm" style={{ background: "#4F86C6" }} /> Poderia fazer
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-sm" style={{ background: "#D14B3D" }} /> Já se usa
+                  </span>
+                </div>
+                <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
+                  Fonte: Massenkoff &amp; McCrory (2026), "Labor market impacts of AI", Anthropic — Fig.
+                  2. Valores aproximados, lidos da figura. Adaptado pela Sena.
+                </p>
+              </div>
+            </div>
+          </ContainerScroll>
+        </div>
+      </section>
 
       {/* DESAFIO */}
       <Section id="desafio" className="border-t border-border">
