@@ -6,7 +6,6 @@ import {
   ArrowRight,
   ArrowUpRight,
   GraduationCap,
-  Wrench,
   Compass,
   Bot,
   Workflow,
@@ -86,30 +85,6 @@ function Section({
     </section>
   );
 }
-
-const pillars = [
-  {
-    n: "01",
-    title: "Aumentar produtividade",
-    sub: "Ajudo empresas a ganhar produtividade melhorando processos, reduzindo trabalho manual e implementando ferramentas de IA mais eficientes para o negócio.",
-    href: "#capacitar",
-    Icon: Zap,
-  },
-  {
-    n: "02",
-    title: "Construir ferramentas",
-    sub: "Soluções customizadas para seu caso, com agilidade e eficiência de custo.",
-    href: "#construir",
-    Icon: Wrench,
-  },
-  {
-    n: "03",
-    title: "Direcionar decisões",
-    sub: "Decisões baseadas em dados e estratégias que geram ROI no negócio.",
-    href: "#orientar",
-    Icon: TrendingUp,
-  },
-];
 
 const capacitarItems = [
   { t: "Mapeamento e melhoria de processos", Icon: Workflow },
@@ -421,7 +396,7 @@ export default function LandingPage() {
 
         <p className="mt-14 eyebrow text-primary">Soa familiar?</p>
         <div className="mt-5 grid gap-6 sm:grid-cols-2">
-          <article className="rounded-2xl border border-border/40 bg-card p-8 sm:p-10">
+          <article className="rounded-2xl border border-border/40 bg-card p-8 transition hover:border-primary hover:shadow-md sm:p-10">
             <div className="flex items-center gap-3">
               <Zap className="h-5 w-5 text-primary" strokeWidth={1.5} />
               <span className="eyebrow">Para líderes e profissionais</span>
@@ -433,7 +408,7 @@ export default function LandingPage() {
               “Sei que a IA podia me poupar horas por dia — mas no fim continuo fazendo quase tudo na mão.”
             </p>
           </article>
-          <article className="rounded-2xl border border-border/40 bg-card p-8 sm:p-10">
+          <article className="rounded-2xl border border-border/40 bg-card p-8 transition hover:border-primary hover:shadow-md sm:p-10">
             <div className="flex items-center gap-3">
               <Building2 className="h-5 w-5 text-primary" strokeWidth={1.5} />
               <span className="eyebrow">Para empresas e gestores</span>
@@ -449,28 +424,14 @@ export default function LandingPage() {
       </Section>
 
       {/* PILARES */}
-      <Section id="pilares" className="border-t border-border">
+      <Section id="pilares" className="border-t border-border !pb-0">
         <Eyebrow>O que eu faço</Eyebrow>
         <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
           Três formas de gerar valor com IA.
         </h2>
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {pillars.map((p) => (
-            <a
-              key={p.n}
-              href={p.href}
-              className="group relative overflow-hidden rounded-2xl border border-border bg-card p-8 transition hover:border-primary hover:shadow-md"
-            >
-              <div className="flex items-center justify-between">
-                <p.Icon className="h-7 w-7 text-primary" strokeWidth={1.5} />
-                <span className="font-mono text-xs text-muted-foreground">{p.n}</span>
-              </div>
-              <h3 className="mt-8 text-2xl font-semibold">{p.title}</h3>
-              <p className="mt-2 text-muted-foreground">{p.sub}</p>
-              <ArrowUpRight className="absolute right-6 bottom-6 h-5 w-5 translate-y-1 opacity-0 transition group-hover:translate-y-0 group-hover:opacity-100" />
-            </a>
-          ))}
-        </div>
+        <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
+          Cada uma resolve uma dor diferente. Veja como funciona na prática.
+        </p>
       </Section>
 
       {/* PILAR BLOCKS */}
@@ -480,6 +441,7 @@ export default function LandingPage() {
         title="Aumentar produtividade"
         sub="Ajudo empresas a ganhar produtividade melhorando processos, reduzindo trabalho manual e implementando ferramentas de IA mais eficientes para o negócio."
         items={capacitarItems}
+        divider={false}
       />
       <PillarBlock
         id="construir"
@@ -501,7 +463,7 @@ export default function LandingPage() {
       <Section id="como-ajudar" className="border-t border-border">
         <Eyebrow>Como posso ajudar</Eyebrow>
         <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
-          Três formas de levar IA para a prática no seu negócio.
+          Por onde você quer começar?
         </h2>
         <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
           Você pode começar com uma palestra, aprofundar com uma consultoria ou avançar direto para a implementação de agentes, automações e apps sob medida.
@@ -510,9 +472,9 @@ export default function LandingPage() {
         <div className="mt-16 grid divide-y divide-border md:grid-cols-3 md:divide-x md:divide-y-0">
           {/* 01 */}
           <div className="flex flex-col p-8 md:p-10">
-            <div className="flex items-center gap-3">
-              <span className="font-mono text-sm text-muted-foreground">01</span>
-              <Presentation className="h-5 w-5 text-primary" strokeWidth={1.5} />
+            <div className="flex items-center justify-between">
+              <span className="eyebrow text-primary">Etapa 01 · Entender</span>
+              <Presentation className="h-5 w-5 text-primary/70" strokeWidth={1.5} />
             </div>
             <h3 className="mt-6 text-xl font-semibold">Treinamentos e palestras corporativas</h3>
             <p className="mt-3 text-muted-foreground">
@@ -533,9 +495,9 @@ export default function LandingPage() {
 
           {/* 02 */}
           <div className="flex flex-col p-8 md:p-10">
-            <div className="flex items-center gap-3">
-              <span className="font-mono text-sm text-muted-foreground">02</span>
-              <Compass className="h-5 w-5 text-primary" strokeWidth={1.5} />
+            <div className="flex items-center justify-between">
+              <span className="eyebrow text-primary">Etapa 02 · Planejar</span>
+              <Compass className="h-5 w-5 text-primary/70" strokeWidth={1.5} />
             </div>
             <h3 className="mt-6 text-xl font-semibold">Consultoria customizada</h3>
             <p className="mt-3 text-muted-foreground">
@@ -556,9 +518,9 @@ export default function LandingPage() {
 
           {/* 03 */}
           <div className="flex flex-col p-8 md:p-10">
-            <div className="flex items-center gap-3">
-              <span className="font-mono text-sm text-muted-foreground">03</span>
-              <Bot className="h-5 w-5 text-primary" strokeWidth={1.5} />
+            <div className="flex items-center justify-between">
+              <span className="eyebrow text-primary">Etapa 03 · Construir</span>
+              <Bot className="h-5 w-5 text-primary/70" strokeWidth={1.5} />
             </div>
             <h3 className="mt-6 text-xl font-semibold">Agentes de IA, automações e apps</h3>
             <p className="mt-3 text-muted-foreground">
@@ -823,6 +785,7 @@ function PillarBlock({
   sub,
   items,
   dark = false,
+  divider = true,
 }: {
   id: string;
   n: string;
@@ -830,11 +793,12 @@ function PillarBlock({
   sub: string;
   items: { t: string; Icon: typeof Bot }[];
   dark?: boolean;
+  divider?: boolean;
 }) {
   return (
     <section
       id={id}
-      className={`border-t border-border ${dark ? "bg-[var(--ink)] text-[var(--paper)]" : ""}`}
+      className={`${divider ? "border-t border-border" : ""} ${dark ? "bg-[var(--ink)] text-[var(--paper)]" : ""}`}
     >
       <div className="mx-auto w-full max-w-6xl px-6 py-20 sm:py-28">
         <div className="grid gap-12 md:grid-cols-[1fr_1.6fr] md:items-start">
