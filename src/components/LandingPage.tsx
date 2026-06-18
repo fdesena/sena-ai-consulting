@@ -258,7 +258,7 @@ export default function LandingPage() {
           </a>
           <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 text-sm md:flex">
             <a href="#pilares" className="hover:text-primary">O que faço</a>
-            <a href="#processo" className="hover:text-primary">Processo</a>
+            <a href="#como-ajudar" className="hover:text-primary">Soluções</a>
             <a href="#cases" className="hover:text-primary">Cases</a>
             <a href="#sobre" className="hover:text-primary">Sobre</a>
             <a href="/auth" className="hover:text-primary">Área exclusiva</a>
@@ -338,7 +338,18 @@ export default function LandingPage() {
           >
             <div className="grid h-full gap-0 md:grid-cols-[1fr_1.1fr]">
               {/* Explanation + CTAs */}
-              <div className="flex flex-col justify-between gap-8 px-6 py-8 text-left sm:px-10 sm:py-10">
+              <div className="flex flex-col gap-6 px-6 py-8 text-left sm:px-10 sm:py-10">
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                      O gap de adoção · dados Anthropic
+                    </span>
+                    <TrendingUp className="h-4 w-4 text-primary" />
+                  </div>
+                  <h3 className="mt-3 text-xl font-semibold tracking-tight sm:text-2xl">
+                    O que os dados revelam para o seu negócio
+                  </h3>
+                </div>
                 <div>
                   <p className="text-muted-foreground">
                     Dados da pesquisa da Anthropic mostram o <b className="text-foreground">tamanho da oportunidade</b> no mercado. Cada ponta é uma categoria profissional: o{" "}
@@ -346,7 +357,7 @@ export default function LandingPage() {
                     <b style={{ color: "#D14B3D" }}>vermelho</b> é o que de fato se usa, em média.
                     A distância entre eles representa o gap — e quem agir primeiro leva vantagem.
                   </p>
-                  <div className="mt-8 rounded-2xl border border-border/70 bg-card p-5">
+                  <div className="mt-5 rounded-2xl border border-border/70 bg-card p-5">
                     <p className="text-sm text-muted-foreground">
                       Agora é a sua vez: descubra o quanto você entende, usa e aplica IA — e onde estão os gaps para transformar essa oportunidade em resultado na sua empresa.
                     </p>
@@ -745,8 +756,8 @@ export default function LandingPage() {
             aria-hidden
             className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-primary/20 blur-3xl"
           />
-          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-            <div className="flex h-full flex-col justify-center items-start">
+          <div className="flex flex-col gap-10">
+            <div className="flex flex-col items-start">
               <Eyebrow>Vamos conversar</Eyebrow>
               <h2 className="mt-4 max-w-3xl text-4xl font-semibold sm:text-5xl lg:text-6xl">
                 Vamos construir algo <span className="text-primary">que funciona.</span>
@@ -781,7 +792,7 @@ export default function LandingPage() {
                 src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ3lQu1KctmL-8Unulcxey7NwiGFaiclYwd__oUfWmzqOMuGx2ZqHjylaG9sJq4QunHcHg06MH7q?gv=true"
                 style={{ border: 0 }}
                 width="100%"
-                className="h-[450px] sm:h-[600px]"
+                className="h-[600px] sm:h-[700px]"
                 frameBorder={0}
                 title="Agendar conversa com Felipe Sena"
               />
