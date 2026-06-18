@@ -338,7 +338,7 @@ export default function LandingPage() {
           >
             <div className="grid h-full gap-0 md:grid-cols-[1fr_1.1fr]">
               {/* Explanation + CTAs */}
-              <div className="flex flex-col gap-6 px-6 py-8 text-left sm:px-10 sm:py-10">
+              <div className="order-2 flex flex-col gap-6 px-6 py-8 text-left sm:px-10 sm:py-10 md:order-1">
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
@@ -382,7 +382,7 @@ export default function LandingPage() {
               </div>
 
               {/* Chart */}
-              <div className="border-t border-border px-6 py-8 text-left sm:px-8 md:border-l md:border-t-0">
+              <div className="order-1 border-t border-border px-6 py-8 text-left sm:px-8 md:order-2 md:border-l md:border-t-0">
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                     Panorama do mercado · pesquisa
