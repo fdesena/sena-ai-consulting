@@ -29,6 +29,7 @@ import { motion } from "framer-motion";
 import WhatsAppFAB, { WHATSAPP_URL } from "./WhatsAppFAB";
 import ProcessCycle from "./ProcessCycle";
 import MarketGapChart from "./MarketGapChart";
+import DiagnosticChart from "./DiagnosticChart";
 import TrackRecord from "./TrackRecord";
 import GlobalExperience from "./GlobalExperience";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
@@ -550,32 +551,58 @@ export default function LandingPage() {
         <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
           Não sabe por onde começar?
         </h2>
-        <div className="mt-12 grid gap-6 md:grid-cols-2">
-          <div className="group rounded-2xl border border-border bg-card p-8 transition hover:border-primary">
-            <Target className="h-7 w-7 text-primary" strokeWidth={1.5} />
-            <h3 className="mt-6 text-2xl font-semibold">Diagnóstico gratuito</h3>
-            <p className="mt-2 text-muted-foreground">
-              Mapeie suas maiores oportunidades com IA.
-            </p>
-            <Link
-              to="/diagnostico"
-              onClick={() => trackEvent("click_diagnostico_cta", { source: "comece" })}
-              className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground hover:opacity-90"
-            >
-              Fazer diagnóstico <ArrowRight className="h-4 w-4" />
-            </Link>
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
+          {/* Diagnóstico — protagonista, com preview do radar */}
+          <div className="group rounded-2xl border border-border bg-card p-8 transition hover:border-primary md:col-span-2 md:p-10">
+            <div className="grid gap-8 md:grid-cols-2 md:items-start">
+              <div>
+                <div className="flex items-center gap-3">
+                  <Target className="h-7 w-7 text-primary" strokeWidth={1.5} />
+                  <span className="eyebrow text-primary">Análise personalizada</span>
+                </div>
+                <h3 className="mt-5 text-2xl font-semibold sm:text-3xl">Diagnóstico de maturidade em IA</h3>
+                <p className="mt-3 text-muted-foreground">
+                  Uma análise estruturada do seu negócio: descubra, área por área,
+                  onde a IA gera mais impacto e receba um retrato claro da distância
+                  entre onde você está hoje e o seu potencial.
+                </p>
+                <Link
+                  to="/diagnostico"
+                  onClick={() => trackEvent("click_diagnostico_cta", { source: "comece" })}
+                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground hover:opacity-90"
+                >
+                  Fazer diagnóstico <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+              <div>
+                <span className="flex h-7 items-center font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                  Exemplo de resultado
+                </span>
+                <DiagnosticChart />
+                <div className="-mt-2 flex items-center justify-center gap-5 text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
+                  <span className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-sm bg-muted-foreground/50" /> Hoje
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-sm bg-primary" /> Potencial com IA
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="rounded-2xl border border-border bg-[var(--ink)] p-8 text-[var(--paper)]">
+
+          {/* Fale comigo — secundário */}
+          <div className="flex flex-col justify-center rounded-2xl border border-border bg-[var(--ink)] p-8 text-[var(--paper)]">
             <Mic2 className="h-7 w-7 text-primary" strokeWidth={1.5} />
             <h3 className="mt-6 text-2xl font-semibold">Fale comigo</h3>
-            <p className="mt-2 opacity-80">
+            <p className="mt-3 opacity-80">
               Tem uma demanda específica ou quer entender como posso ajudar? Entre em contato e vamos avaliar o melhor caminho.
             </p>
             <a
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground hover:opacity-90"
+              className="mt-8 inline-flex items-center gap-2 self-start rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground hover:opacity-90"
             >
               Entrar em contato <ArrowRight className="h-4 w-4" />
             </a>

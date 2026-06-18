@@ -20,11 +20,11 @@ export default function DiagnosticChart() {
   return (
     <div className="h-[340px] w-full sm:h-[400px]">
       <ResponsiveContainer width="100%" height="100%">
-        <RadarChart data={data} outerRadius="78%">
+        <RadarChart data={data} outerRadius="65%" margin={{ top: 12, right: 24, bottom: 12, left: 24 }}>
           <PolarGrid stroke="var(--muted-line)" />
           <PolarAngleAxis
             dataKey="area"
-            tick={{ fill: "var(--ink)", fontSize: 12, fontFamily: "var(--font-mono)" }}
+            tick={{ fill: "var(--ink)", fontSize: 11, fontFamily: "var(--font-mono)" }}
           />
           <PolarRadiusAxis
             angle={90}

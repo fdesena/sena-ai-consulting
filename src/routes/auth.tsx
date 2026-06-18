@@ -86,14 +86,14 @@ function AuthPage() {
             Área exclusiva<span className="text-bronze">.</span>
           </h2>
           <p className="text-paper/70 text-base leading-relaxed">
-            Acompanhe diagnósticos, leads e oportunidades de IA em um só painel.
-            Decisões mais rápidas, com dados na mesa.
+            O espaço dos clientes Sena. Acompanhe seu diagnóstico, o andamento
+            dos seus projetos e os materiais da consultoria — tudo em um só lugar.
           </p>
           <div className="grid grid-cols-3 gap-4 pt-6">
             {[
-              { k: "Diagnóstico", v: "IA + Operação" },
-              { k: "Dashboards", v: "KPIs em tempo real" },
-              { k: "Exportação", v: "Excel .xlsx" },
+              { k: "Diagnóstico", v: "Seu resultado" },
+              { k: "Projetos", v: "Andamento e entregas" },
+              { k: "Materiais", v: "Relatórios e acessos" },
             ].map((it) => (
               <div key={it.k} className="rounded-lg border border-paper/10 bg-paper/5 p-3">
                 <div className="font-mono text-[10px] uppercase tracking-widest text-bronze">{it.k}</div>
@@ -125,8 +125,8 @@ function AuthPage() {
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
             {mode === "signin"
-              ? "Acesse diagnósticos, leads e dashboards da consultoria."
-              : "Cadastre-se para acompanhar diagnósticos e dashboards."}
+              ? "Acesse seu diagnóstico, seus projetos e os materiais da consultoria."
+              : "Crie seu acesso para acompanhar seu diagnóstico e seus projetos."}
           </p>
 
           <form onSubmit={submit} className="mt-8 space-y-4">
