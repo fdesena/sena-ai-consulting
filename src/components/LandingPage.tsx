@@ -614,8 +614,13 @@ export default function LandingPage() {
       <Section id="processo" className="border-t border-border">
         <Eyebrow>Como trabalho</Eyebrow>
         <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
-          Do mapa ao sistema em produção.
+          Do diagnóstico ao resultado — e além.
         </h2>
+        <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
+          A cada volta, mapeamos novas oportunidades, construímos a solução,
+          garantimos a adoção e medimos o resultado — elevando a maturidade em IA
+          do seu negócio de forma contínua.
+        </p>
         <div className="mt-16">
           <ProcessCycle />
         </div>

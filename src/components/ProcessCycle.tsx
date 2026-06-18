@@ -3,7 +3,8 @@ import {
   Compass,
   Hammer,
   GraduationCap,
-  LifeBuoy,
+  LineChart,
+  RotateCw,
   ArrowLeft,
   ArrowRight,
   type LucideIcon,
@@ -12,6 +13,7 @@ import {
 type Step = {
   n: string;
   title: string;
+  tag: string;
   desc: string;
   Icon: LucideIcon;
 };
@@ -20,26 +22,30 @@ const steps: Step[] = [
   {
     n: "01",
     title: "Diagnóstico",
-    desc: "Mapeio processos, gaps e oportunidades reais de IA no seu negócio.",
+    tag: "Ponto de partida",
+    desc: "Mapeio processos, gaps e onde a IA gera mais impacto no seu negócio.",
     Icon: Compass,
   },
   {
     n: "02",
     title: "Construção",
-    desc: "Implemento as soluções integradas ao stack que você já usa.",
+    tag: "Construir ferramentas",
+    desc: "Implemento ferramentas, agentes e automações sob medida, integrados ao stack que você já usa.",
     Icon: Hammer,
   },
   {
     n: "03",
-    title: "Capacitação",
-    desc: "Treino o time para garantir adoção real, não só entrega.",
+    title: "Adoção",
+    tag: "Aumentar produtividade",
+    desc: "Capacito o time para uso real no dia a dia — produtividade que se sustenta, não só entrega.",
     Icon: GraduationCap,
   },
   {
     n: "04",
-    title: "Suporte contínuo",
-    desc: "Mantenho e evoluo as soluções — parceria de longo prazo.",
-    Icon: LifeBuoy,
+    title: "Evolução",
+    tag: "Direcionar decisões",
+    desc: "Acompanho resultados, meço ROI e aponto o próximo ciclo de melhoria.",
+    Icon: LineChart,
   },
 ];
 
@@ -69,64 +75,75 @@ export default function ProcessCycle() {
   const Active = steps[active];
   const radius = 150;
 
+  // Wrap-around navigation — reforça que é um ciclo, sem início/fim travados
   const go = (delta: number) =>
-    setActive((a) => Math.max(0, Math.min(steps.length - 1, a + delta)));
+    setActive((a) => (a + delta + steps.length) % steps.length);
 
   return (
     <div
       ref={containerRef}
       className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center"
     >
-      {/* Orbit */}
+      {/* Orbit — cada fatia do círculo é uma fase do ciclo */}
       <div className="relative mx-auto aspect-square w-full max-w-[420px]">
         <svg viewBox="-200 -200 400 400" className="absolute inset-0 h-full w-full">
-          <circle
-            cx="0"
-            cy="0"
-            r={radius}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1"
-            className="text-border"
-            strokeDasharray="2 6"
-          />
+          <defs>
+            <marker
+              id="cycle-arrow"
+              viewBox="0 0 10 10"
+              refX="7"
+              refY="5"
+              markerWidth="4.5"
+              markerHeight="4.5"
+              orient="auto"
+            >
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--bronze)" />
+            </marker>
+          </defs>
+
           {steps.map((_, i) => {
-            const next = (i + 1) % steps.length;
-            const a1 = (i / steps.length) * Math.PI * 2 - Math.PI / 2;
-            const a2 = (next / steps.length) * Math.PI * 2 - Math.PI / 2;
+            const mid = -Math.PI / 2 + (i / steps.length) * Math.PI * 2;
+            const half = Math.PI / steps.length; // metade de uma fatia (45°)
+            const gap = 0.2; // folga entre fatias
+            const a1 = mid - half + gap;
+            const a2 = mid + half - gap;
             const x1 = Math.cos(a1) * radius;
             const y1 = Math.sin(a1) * radius;
             const x2 = Math.cos(a2) * radius;
             const y2 = Math.sin(a2) * radius;
-            const isActiveArc = i === active;
+            const isActive = i === active;
             return (
               <path
                 key={i}
                 d={`M ${x1} ${y1} A ${radius} ${radius} 0 0 1 ${x2} ${y2}`}
                 fill="none"
                 stroke="currentColor"
-                strokeWidth={isActiveArc ? 2.5 : 0}
-                className="text-primary transition-all duration-500"
+                strokeWidth={isActive ? 3 : 2}
                 strokeLinecap="round"
+                markerEnd={isActive ? "url(#cycle-arrow)" : undefined}
+                className={`transition-all duration-500 ${
+                  isActive ? "text-primary" : "text-border"
+                }`}
               />
             );
           })}
         </svg>
 
-        {/* Center icon */}
+        {/* Center hub — fase atual */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
           <div
             key={active}
-            className="flex h-32 w-32 animate-[scale-in_0.4s_ease-out] flex-col items-center justify-center rounded-full bg-primary text-primary-foreground shadow-xl"
+            className="flex h-36 w-36 animate-[scale-in_0.4s_ease-out] flex-col items-center justify-center rounded-full bg-primary px-4 text-center text-primary-foreground shadow-xl"
           >
-            <Active.Icon className="h-10 w-10" strokeWidth={1.5} />
-            <span className="mt-1 font-mono text-[10px] tracking-widest opacity-80">
-              {Active.n}
+            <Active.Icon className="h-6 w-6" strokeWidth={1.5} />
+            <span className="mt-1.5 text-base font-semibold leading-tight">{Active.title}</span>
+            <span className="mt-1 font-mono text-[9px] uppercase tracking-[0.18em] opacity-80">
+              Fase {Active.n} · de 0{steps.length}
             </span>
           </div>
         </div>
 
-        {/* Orbit dots */}
+        {/* Ícones — um por fatia/quadrante */}
         {steps.map((s, i) => {
           const angle = (i / steps.length) * Math.PI * 2 - Math.PI / 2;
           const x = Math.cos(angle) * radius;
@@ -136,15 +153,15 @@ export default function ProcessCycle() {
             <button
               key={s.n}
               onClick={() => setActive(i)}
-              aria-label={`Passo ${s.n}: ${s.title}`}
+              aria-label={`Fase ${s.n}: ${s.title}`}
               style={{
                 left: `calc(50% + ${x}px)`,
                 top: `calc(50% + ${y}px)`,
               }}
-              className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full border transition-all duration-500 ${
+              className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full border bg-card transition-all duration-500 ${
                 isActive
-                  ? "scale-125 border-primary bg-primary text-primary-foreground shadow-lg"
-                  : "scale-100 border-border bg-card text-muted-foreground hover:border-primary hover:text-foreground"
+                  ? "scale-110 border-primary text-primary shadow-md"
+                  : "border-border text-muted-foreground hover:border-primary hover:text-foreground"
               }`}
             >
               <s.Icon
@@ -159,9 +176,14 @@ export default function ProcessCycle() {
       {/* Detail */}
       <div className="min-h-[260px]">
         <div key={active} className="animate-[fade-in_0.4s_ease-out]">
-          <span className="font-mono text-xs uppercase tracking-[0.18em] text-primary">
-            Etapa {Active.n} / 04
-          </span>
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="font-mono text-xs uppercase tracking-[0.18em] text-primary">
+              Fase {Active.n}
+            </span>
+            <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-medium text-primary">
+              {Active.tag}
+            </span>
+          </div>
           <h3 className="mt-3 text-3xl font-semibold sm:text-5xl">{Active.title}</h3>
           <p className="mt-5 max-w-md text-lg text-muted-foreground">{Active.desc}</p>
         </div>
@@ -179,20 +201,21 @@ export default function ProcessCycle() {
               />
             ))}
           </div>
+          <span className="hidden items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground sm:flex">
+            <RotateCw className="h-3 w-3" /> Ciclo contínuo
+          </span>
           <div className="ml-auto flex gap-2">
             <button
               onClick={() => go(-1)}
-              disabled={active === 0}
-              aria-label="Etapa anterior"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-border disabled:hover:text-foreground"
+              aria-label="Fase anterior"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:border-primary hover:text-primary"
             >
               <ArrowLeft className="h-4 w-4" />
             </button>
             <button
               onClick={() => go(1)}
-              disabled={active === steps.length - 1}
-              aria-label="Próxima etapa"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-border disabled:hover:text-foreground"
+              aria-label="Próxima fase"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:border-primary hover:text-primary"
             >
               <ArrowRight className="h-4 w-4" />
             </button>
