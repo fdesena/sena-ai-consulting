@@ -469,9 +469,9 @@ export default function LandingPage() {
           Você pode começar com uma palestra, aprofundar com uma consultoria ou avançar direto para a implementação de agentes, automações e apps sob medida.
         </p>
 
-        <div className="mt-16 grid divide-y divide-border md:grid-cols-3 md:divide-x md:divide-y-0">
+        <div className="mt-16 grid gap-6 md:grid-cols-3 md:items-stretch">
           {/* 01 */}
-          <div className="flex flex-col p-8 md:p-10">
+          <div className="relative flex flex-col rounded-2xl border border-border/60 bg-card p-8 transition hover:border-primary/50 hover:shadow-md md:p-10">
             <div className="flex items-center justify-between">
               <span className="eyebrow text-primary">Etapa 01 · Entender</span>
               <Presentation className="h-5 w-5 text-primary/70" strokeWidth={1.5} />
@@ -487,14 +487,17 @@ export default function LandingPage() {
               href="https://calendar.app.google/oh4NeMRMtw8v5UP5A"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-8 inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-sm font-medium hover:border-primary hover:text-primary"
+              className="mt-8 inline-flex items-center justify-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-sm font-medium hover:border-primary hover:text-primary md:mt-auto"
             >
               Levar IA para meu time <ArrowRight className="h-4 w-4" />
             </a>
           </div>
 
-          {/* 02 */}
-          <div className="flex flex-col p-8 md:p-10">
+          {/* 02 — destaque */}
+          <div className="relative flex flex-col rounded-2xl border-2 border-primary bg-card p-8 shadow-lg ring-1 ring-primary/10 md:scale-[1.03] md:p-10">
+            <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-primary px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-primary-foreground shadow-sm">
+              Mais procurado
+            </span>
             <div className="flex items-center justify-between">
               <span className="eyebrow text-primary">Etapa 02 · Planejar</span>
               <Compass className="h-5 w-5 text-primary/70" strokeWidth={1.5} />
@@ -510,14 +513,14 @@ export default function LandingPage() {
               href="https://calendar.app.google/oh4NeMRMtw8v5UP5A"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-8 inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-sm font-medium hover:border-primary hover:text-primary"
+              className="mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90 md:mt-auto"
             >
               Mapear oportunidades <ArrowRight className="h-4 w-4" />
             </a>
           </div>
 
           {/* 03 */}
-          <div className="flex flex-col p-8 md:p-10">
+          <div className="relative flex flex-col rounded-2xl border border-border/60 bg-card p-8 transition hover:border-primary/50 hover:shadow-md md:p-10">
             <div className="flex items-center justify-between">
               <span className="eyebrow text-primary">Etapa 03 · Construir</span>
               <Bot className="h-5 w-5 text-primary/70" strokeWidth={1.5} />
@@ -533,7 +536,7 @@ export default function LandingPage() {
               href="https://calendar.app.google/oh4NeMRMtw8v5UP5A"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-8 inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-sm font-medium hover:border-primary hover:text-primary"
+              className="mt-8 inline-flex items-center justify-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-sm font-medium hover:border-primary hover:text-primary md:mt-auto"
             >
               Construir uma solução <ArrowRight className="h-4 w-4" />
             </a>
