@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect, useMemo } from "react";
-import { ExternalLink, Linkedin, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { ExternalLink, Linkedin, ArrowLeft, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import selectUsaAsset from "@/assets/felipe-selectusa.png.asset.json";
 import miamiAsset from "@/assets/felipe-miami-goglobal.png.asset.json";
@@ -161,11 +161,12 @@ const EXPERIENCES: Experience[] = [
 ];
 
 export default function GlobalExperience() {
-  const [current, setCurrent] = useState(0);
-  const [itemsPerView, setItemsPerView] = useState(3);
   const [isPaused, setIsPaused] = useState(false);
   const [dbPosts, setDbPosts] = useState<Experience[]>([]);
-  const trackRef = useRef<HTMLDivElement>(null);
+  const scrollerRef = useRef<HTMLDivElement>(null);
+
+  const nudge = (dir: 1 | -1) =>
+    scrollerRef.current?.scrollBy({ left: dir * 648, behavior: "smooth" });
 
   useEffect(() => {
     (async () => {
@@ -194,89 +195,76 @@ export default function GlobalExperience() {
   }, []);
 
   const experiences = useMemo(() => [...dbPosts, ...EXPERIENCES], [dbPosts]);
+  // Duplicate for seamless infinite loop
+  const marqueeItems = useMemo(() => [...experiences, ...experiences], [experiences]);
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 640) setItemsPerView(1);
-      else if (window.innerWidth < 1024) setItemsPerView(2);
-      else setItemsPerView(3);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const maxIndex = Math.max(0, experiences.length - itemsPerView);
-  const totalSlides = maxIndex + 1;
-  const canPrev = true;
-  const canNext = true;
-
-  const goPrev = () => setCurrent((p) => (p <= 0 ? maxIndex : p - 1));
-  const goNext = () => setCurrent((p) => (p >= maxIndex ? 0 : p + 1));
-
-  // Autoplay
-  useEffect(() => {
-    if (isPaused) return;
-    const interval = setInterval(() => {
-      setCurrent((p) => (p >= maxIndex ? 0 : p + 1));
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [isPaused, maxIndex]);
+  // Velocidade constante (px/s) → duração proporcional à quantidade de cards.
+  // Card = 300px (w-[300px]) + 24px (gap-6).
+  const CARD_W = 324;
+  const SPEED = 100; // px por segundo
+  const duration = useMemo(
+    () => Math.max(20, (experiences.length * CARD_W) / SPEED),
+    [experiences.length]
+  );
 
   return (
     <div>
-      <div className="flex flex-col items-start gap-3 md:flex-row md:items-end md:justify-between">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-            Experiências Globais
-          </p>
-          <h3 className="mt-3 text-2xl font-semibold sm:text-3xl">
-            Onde a estratégia foi aplicada — ao vivo, com instituições e líderes globais.
-          </h3>
-          <p className="mt-3 max-w-2xl text-muted-foreground">
-            Uma seleção de programas, projetos e palestras conduzidos ao lado de universidades, governos
-            e empresas em diferentes países.
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <button
-            onClick={goPrev}
-            disabled={!canPrev}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background transition hover:bg-accent disabled:opacity-40"
-            aria-label="Anterior"
-          >
-            <ChevronLeft className="h-5 w-5" />
-          </button>
-          <button
-            onClick={goNext}
-            disabled={!canNext}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background transition hover:bg-accent disabled:opacity-40"
-            aria-label="Próximo"
-          >
-            <ChevronRight className="h-5 w-5" />
-          </button>
-        </div>
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          Experiências Profissionais Globais
+        </p>
+        <h3 className="mt-3 text-2xl font-semibold sm:text-3xl">
+          Onde a estratégia foi aplicada — ao vivo, com instituições e líderes globais.
+        </h3>
+        <p className="mt-3 max-w-2xl text-muted-foreground">
+          Uma seleção de programas, projetos e palestras conduzidos ao lado de universidades, governos
+          e empresas em diferentes países.
+        </p>
       </div>
 
-      {/* Carousel track */}
+      {/* Controles manuais de navegação */}
+      <div className="mt-8 flex justify-end gap-2">
+        <button
+          onClick={() => nudge(-1)}
+          aria-label="Voltar"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:border-primary hover:text-primary"
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </button>
+        <button
+          onClick={() => nudge(1)}
+          aria-label="Avançar"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:border-primary hover:text-primary"
+        >
+          <ArrowRight className="h-4 w-4" />
+        </button>
+      </div>
+
+      {/* Continuous marquee carousel */}
       <div
-        className="mt-10 overflow-hidden"
+        ref={scrollerRef}
+        className="mt-4 overflow-hidden"
+        style={{
+          maskImage: "linear-gradient(to right, transparent, black 60px, black calc(100% - 60px), transparent)",
+          WebkitMaskImage: "linear-gradient(to right, transparent, black 60px, black calc(100% - 60px), transparent)",
+        }}
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
         <div
-          ref={trackRef}
-          className="flex gap-6 transition-transform duration-500 ease-out will-change-transform"
-          style={{ transform: `translateX(-${current * (100 / itemsPerView)}%)` }}
+          className="flex gap-6"
+          style={{
+            animation: `globalexp-marquee ${duration}s linear infinite`,
+            animationPlayState: isPaused ? "paused" : "running",
+          }}
         >
-          {experiences.map((exp) => (
+          {marqueeItems.map((exp, i) => (
             <a
-              key={exp.title}
+              key={`${exp.title}-${i}`}
               href={exp.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-card transition hover:border-primary/60 hover:shadow-lg"
-              style={{ width: `calc(${100 / itemsPerView}% - ${(24 * (itemsPerView - 1)) / itemsPerView}px)` }}
+              className="group flex w-[300px] shrink-0 flex-col overflow-hidden rounded-2xl border border-border bg-card transition hover:border-primary/60 hover:shadow-lg"
             >
               {exp.image ? (
                 <div className="relative aspect-[16/10] overflow-hidden bg-muted">
@@ -315,19 +303,12 @@ export default function GlobalExperience() {
         </div>
       </div>
 
-      {/* Dots */}
-      <div className="mt-6 flex justify-center gap-2">
-        {Array.from({ length: maxIndex + 1 }).map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrent(i)}
-            className={`h-2 rounded-full transition-all ${
-              i === current ? "w-6 bg-primary" : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
-            }`}
-            aria-label={`Ir para slide ${i + 1}`}
-          />
-        ))}
-      </div>
+      <style>{`
+        @keyframes globalexp-marquee {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
+        }
+      `}</style>
     </div>
   );
 }

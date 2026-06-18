@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Workflow,
   Bot,
@@ -5,7 +6,15 @@ import {
   GraduationCap,
   Database,
   Presentation,
+  Play,
+  type LucideIcon,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 /* ---------- Mini visual mockups (pure SVG/CSS) ---------- */
 
@@ -146,72 +155,203 @@ function MockEvent() {
 
 /* ---------- Card grid ---------- */
 
-const items = [
+type Item = {
+  t: string;
+  d: string;
+  Icon: LucideIcon;
+  Mock: () => React.ReactElement;
+  desafio: string;
+  solucao: string;
+  resultado: string;
+  tags: string[];
+  /** Quando houver vídeo de demonstração, basta preencher a URL aqui. */
+  video?: string;
+};
+
+const items: Item[] = [
   {
     t: "Automação de propostas",
     d: "−80% no tempo de elaboração.",
     Icon: Workflow,
     Mock: MockProposal,
+    desafio:
+      "Elaboração de propostas comerciais feita à mão: lenta, inconsistente entre a equipe e dependente de poucas pessoas.",
+    solucao:
+      "Fluxo que monta a proposta a partir de poucos inputs, padronizando texto, escopo e precificação.",
+    resultado: "−80% no tempo de elaboração, com mais padronização e menos retrabalho.",
+    tags: ["Automação", "IA generativa", "Documentos"],
   },
   {
     t: "Agentes em conteúdo proprietário",
     d: "Suporte e decisão em escala.",
     Icon: Bot,
     Mock: MockAgent,
+    desafio:
+      "Conhecimento espalhado em documentos e pessoas, dificultando suporte e decisões rápidas.",
+    solucao:
+      "Agente de IA treinado no conteúdo da empresa, respondendo com base nas fontes internas.",
+    resultado: "Suporte e tomada de decisão em escala, com respostas consistentes.",
+    tags: ["Agentes de IA", "RAG", "Base de conhecimento"],
   },
   {
     t: "Visualização de dados com IA",
     d: "Dashboards executivos automáticos.",
     Icon: LineChartIcon,
     Mock: MockChart,
+    desafio: "Relatórios manuais, demorados e quase sempre desatualizados para a gestão.",
+    solucao:
+      "Pipeline que consolida os dados e gera dashboards executivos atualizados automaticamente.",
+    resultado: "Dashboards executivos prontos para decisão, sem trabalho manual.",
+    tags: ["Dados", "Dashboards", "Automação"],
   },
   {
     t: "LMS gamificado",
     d: "Vídeos, quizzes e rankings próprios.",
     Icon: GraduationCap,
     Mock: MockLMS,
+    desafio: "Treinamentos dispersos, sem trilha clara e com baixo engajamento do time.",
+    solucao:
+      "Plataforma de ensino própria com trilhas, vídeos, quizzes e rankings — com identidade da marca.",
+    resultado: "Mais engajamento e aprendizado mensurável, em ambiente próprio.",
+    tags: ["Plataforma", "LMS", "Gamificação"],
   },
   {
-    t: "CRM + Funil próprio",
-    d: "Leads, pipeline e analytics integrados.",
+    t: "Website + CRM + Funil próprio",
+    d: "Do site ao fechamento, tudo integrado.",
     Icon: Database,
     Mock: MockCRM,
+    desafio:
+      "Site sem captura integrada e leads gerenciados em planilhas — sem visão de funil nem métricas confiáveis.",
+    solucao:
+      "Website sob medida que captura leads direto no CRM próprio, com pipeline e analytics integrados.",
+    resultado: "Do site ao fechamento em um só lugar, com visão clara do funil.",
+    tags: ["Website", "CRM", "Funil", "Analytics"],
   },
   {
     t: "Ferramentas para eventos",
     d: "Apps ao vivo em palestras imersivas.",
     Icon: Presentation,
     Mock: MockEvent,
+    desafio: "Palestras e eventos com pouca interação e participação da plateia.",
+    solucao:
+      "Apps ao vivo (votações, dinâmicas e visualizações em tempo real) para tornar o evento imersivo.",
+    resultado: "Experiências ao vivo mais imersivas e participativas.",
+    tags: ["App", "Tempo real", "Eventos"],
   },
 ];
 
-export default function TrackRecord() {
+function CaseRow({ label, text }: { label: string; text: string }) {
   return (
-    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      {items.map((c) => (
-        <article
-          key={c.t}
-          className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition hover:-translate-y-1 hover:border-primary hover:shadow-lg"
-        >
-          {/* Preview canvas */}
-          <div className="relative h-36 border-b border-border bg-[var(--paper)] p-4">
-            <div className="absolute left-3 top-3 flex gap-1">
-              <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
-              <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
-              <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
-            </div>
-            <div className="mt-4 h-[88px]">
-              <c.Mock />
-            </div>
-          </div>
-          {/* Meta */}
-          <div className="flex flex-1 flex-col p-5">
-            <c.Icon className="h-5 w-5 text-primary" strokeWidth={1.5} />
-            <h3 className="mt-4 text-base font-semibold">{c.t}</h3>
-            <p className="mt-1 text-sm text-muted-foreground">{c.d}</p>
-          </div>
-        </article>
-      ))}
+    <div>
+      <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-primary">{label}</span>
+      <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{text}</p>
     </div>
+  );
+}
+
+export default function TrackRecord() {
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const active = openIdx !== null ? items[openIdx] : null;
+
+  return (
+    <>
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {items.map((c, i) => (
+          <button
+            key={c.t}
+            onClick={() => setOpenIdx(i)}
+            aria-label={`Ver exemplo: ${c.t}`}
+            className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card text-left transition hover:-translate-y-1 hover:border-primary hover:shadow-lg"
+          >
+            {/* Preview canvas */}
+            <div className="relative h-36 overflow-hidden border-b border-border bg-[var(--paper)] p-4">
+              <div className="absolute left-3 top-3 flex gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
+                <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
+                <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
+              </div>
+              <div className="mt-4 h-[88px]">
+                <c.Mock />
+              </div>
+              {/* Hover affordance */}
+              <div className="absolute inset-0 flex items-center justify-center bg-background/55 opacity-0 backdrop-blur-[1px] transition duration-300 group-hover:opacity-100">
+                <span className="inline-flex items-center gap-2 rounded-full bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground shadow-sm">
+                  <Play className="h-3.5 w-3.5" /> Ver exemplo
+                </span>
+              </div>
+            </div>
+            {/* Meta */}
+            <div className="flex flex-1 flex-col p-5">
+              <c.Icon className="h-5 w-5 text-primary" strokeWidth={1.5} />
+              <h3 className="mt-4 text-base font-semibold">{c.t}</h3>
+              <p className="mt-1 text-sm text-muted-foreground">{c.d}</p>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      <Dialog open={openIdx !== null} onOpenChange={(o) => !o && setOpenIdx(null)}>
+        <DialogContent className="max-w-2xl overflow-hidden p-0">
+          {active && (
+            <div className="max-h-[85vh] overflow-y-auto">
+              {/* Slot de mídia — vídeo quando houver; placeholder até lá */}
+              <div className="relative border-b border-border bg-[var(--paper)] p-6">
+                <div className="mb-3 flex gap-1">
+                  <span className="h-2 w-2 rounded-full bg-foreground/20" />
+                  <span className="h-2 w-2 rounded-full bg-foreground/20" />
+                  <span className="h-2 w-2 rounded-full bg-foreground/20" />
+                </div>
+                {active.video ? (
+                  <video
+                    src={active.video}
+                    controls
+                    className="aspect-video w-full rounded-lg border border-border"
+                  />
+                ) : (
+                  <>
+                    <div className="mx-auto h-44 max-w-[320px]">
+                      <active.Mock />
+                    </div>
+                    <span className="absolute right-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-primary/90 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-primary-foreground">
+                      <Play className="h-3 w-3" /> Demo em vídeo em breve
+                    </span>
+                  </>
+                )}
+              </div>
+
+              {/* Conteúdo do caso */}
+              <div className="p-6">
+                <div className="flex items-center gap-3">
+                  <active.Icon className="h-6 w-6 shrink-0 text-primary" strokeWidth={1.5} />
+                  <DialogTitle className="text-xl">{active.t}</DialogTitle>
+                </div>
+                <DialogDescription className="sr-only">
+                  Detalhes do projeto {active.t}: desafio, solução e resultado.
+                </DialogDescription>
+
+                <div className="mt-5 space-y-4">
+                  <CaseRow label="Desafio" text={active.desafio} />
+                  <CaseRow label="Solução" text={active.solucao} />
+                  <div className="rounded-xl border border-primary/30 bg-primary/5 p-4">
+                    <CaseRow label="Resultado" text={active.resultado} />
+                  </div>
+                </div>
+
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {active.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full border border-border px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
