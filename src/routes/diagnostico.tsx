@@ -8,17 +8,20 @@ export const Route = createFileRoute("/diagnostico")({
       {
         name: "description",
         content:
-          "Diagnóstico estruturado para mapear onde IA e automação geram retorno real no seu negócio antes de investir.",
+          "Diagnóstico estruturado para mapear onde IA e automação geram retorno real no seu negócio antes de investir tempo e dinheiro.",
       },
       { property: "og:title", content: "Diagnóstico Bússola Digital & IA — Sena Consulting" },
       {
         property: "og:description",
-        content: "Mapeie suas maiores oportunidades com IA antes de investir.",
+        content: "Mapeie suas maiores oportunidades com IA e automação antes de investir.",
       },
-      { property: "og:url", content: "https://sena-ai-consulting.lovable.app/diagnostico" },
+      { property: "og:url", content: "https://senaconsulting.app/diagnostico" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:title", content: "Diagnóstico Bússola Digital & IA — Sena Consulting" },
+      { name: "twitter:description", content: "Mapeie suas maiores oportunidades com IA e automação antes de investir." },
     ],
     links: [
-      { rel: "canonical", href: "https://sena-ai-consulting.lovable.app/diagnostico" },
+      { rel: "canonical", href: "https://senaconsulting.app/diagnostico" },
     ],
   }),
   component: DiagnosticoRedirect,

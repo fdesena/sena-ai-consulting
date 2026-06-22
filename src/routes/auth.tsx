@@ -5,7 +5,12 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
-    meta: [{ title: "Área exclusiva — Sena Consulting" }],
+    meta: [
+      { title: "Entrar — Área exclusiva Sena Consulting" },
+      { name: "description", content: "Acesso à área exclusiva de clientes e parceiros da Sena Consulting." },
+      { name: "robots", content: "noindex,follow" },
+    ],
+    links: [{ rel: "canonical", href: "https://senaconsulting.app/auth" }],
   }),
   component: AuthPage,
 });

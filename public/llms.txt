@@ -1,0 +1,10 @@
+# Sena Consulting
+
+> Consultoria de IA, automação e transformação digital — de São Paulo e Boston, atuando globalmente. Diagnóstico, construção e capacitação com resultados mensuráveis.
+
+A Sena Consulting ajuda empresas e equipes a aplicar Inteligência Artificial e automação em processos reais — saindo das apresentações em PowerPoint e entregando sistemas em produção. O fundador, Felipe Sena, atua entre Brasil e Estados Unidos com experiência em projetos de inovação globais (MIT Solve, Hult Prize, Boston Innovation Gateway, SelectUSA).
+
+## Pages
+
+- [Home](/): Visão geral dos serviços, casos e abordagem.
+- [Diagnóstico Bússola Digital & IA](/diagnostico): Diagnóstico estruturado para mapear onde IA e automação geram retorno real no seu negócio.
