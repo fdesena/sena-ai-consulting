@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowRight, Award, Sparkles, Target, TrendingUp } from "lucide-react";
+import { ArrowRight, RotateCcw } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/painel/diagnostico")({
   component: MeuDiagnostico,
@@ -22,11 +22,13 @@ type Resp = {
   score_dados: number;
   desafios: string[] | null;
   reflexao: string | null;
+  respostas_brutas: Record<string, any> | null;
 };
 
 function MeuDiagnostico() {
   const [loading, setLoading] = useState(true);
   const [resp, setResp] = useState<Resp | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -43,6 +45,53 @@ function MeuDiagnostico() {
       setLoading(false);
     })();
   }, []);
+
+  // Envia os dados do diagnóstico para o relatório embutido e ajusta a altura.
+  useEffect(() => {
+    if (!resp) return;
+    const iframe = iframeRef.current;
+    if (!iframe) return;
+
+    const payload = {
+      type: "diag-report",
+      scores: {
+        lit: resp.score_usar_ia,
+        vis: resp.score_oportunidades,
+        exe: resp.score_automacao,
+        pes: resp.score_gente,
+        dad: resp.score_dados,
+        overall: resp.score_geral,
+        ak: resp.arquetipo,
+      },
+      answers: resp.respostas_brutas ?? {},
+    };
+
+    const onMessage = (ev: MessageEvent) => {
+      if (ev.origin !== window.location.origin) return;
+      if (ev.data?.type === "diag-embed-ready") {
+        iframe.contentWindow?.postMessage(payload, window.location.origin);
+      }
+    };
+    window.addEventListener("message", onMessage);
+
+    // Caso o iframe já esteja pronto (cache), envia direto.
+    try { iframe.contentWindow?.postMessage(payload, window.location.origin); } catch {}
+
+    const syncHeight = () => {
+      try {
+        const h = iframe.contentDocument?.documentElement?.scrollHeight;
+        if (h) iframe.style.height = h + "px";
+      } catch {}
+    };
+    const interval = setInterval(syncHeight, 400);
+    const stop = setTimeout(() => clearInterval(interval), 6000);
+
+    return () => {
+      window.removeEventListener("message", onMessage);
+      clearInterval(interval);
+      clearTimeout(stop);
+    };
+  }, [resp]);
 
   if (loading) return <p className="text-muted-foreground">Carregando…</p>;
 
@@ -65,89 +114,32 @@ function MeuDiagnostico() {
     );
   }
 
-  const dims = [
-    ["Usar IA", resp.score_usar_ia],
-    ["Oportunidades", resp.score_oportunidades],
-    ["Automação", resp.score_automacao],
-    ["Gente", resp.score_gente],
-    ["Dados", resp.score_dados],
-  ] as const;
-
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
-      <div>
-        <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">Meu diagnóstico</span>
-        <h1 className="mt-2 text-3xl font-semibold">Seu resultado</h1>
-        <p className="text-sm text-muted-foreground">
-          Respondido em {new Date(resp.created_at).toLocaleDateString("pt-BR")}
-        </p>
-      </div>
-
-      <div className="grid sm:grid-cols-3 gap-4">
-        <KPI label="Nota geral" value={`${resp.score_geral}/100`} Icon={TrendingUp} />
-        <KPI label="Nível" value={resp.nivel} Icon={Award} />
-        <KPI label="Arquétipo" value={resp.arquetipo} Icon={Target} />
-      </div>
-
-      <div className="rounded-2xl border border-border bg-surface p-6">
-        <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-4">
-          Notas por dimensão
-        </div>
-        <div className="space-y-3">
-          {dims.map(([label, v]) => (
-            <div key={label}>
-              <div className="flex justify-between text-sm mb-1">
-                <span>{label}</span>
-                <span className="font-semibold text-bronze">{v}</span>
-              </div>
-              <div className="h-2 rounded-full bg-muted overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-bronze to-[#a36c2e]" style={{ width: `${v}%` }} />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {resp.desafios && resp.desafios.length > 0 && (
-        <div className="rounded-2xl border border-border bg-surface p-6">
-          <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-3">
-            Seus principais desafios
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {resp.desafios.map((d) => (
-              <span key={d} className="text-xs bg-muted px-2.5 py-1 rounded">{d}</span>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <div className="rounded-2xl border border-bronze/30 bg-bronze/5 p-6 flex items-start gap-4">
-        <Sparkles className="h-5 w-5 text-bronze flex-shrink-0 mt-0.5" />
+    <div className="max-w-3xl mx-auto space-y-5">
+      <div className="flex items-end justify-between gap-4 flex-wrap">
         <div>
-          <h3 className="font-semibold">Quer evoluir esses números?</h3>
-          <p className="text-sm text-muted-foreground mt-1">
-            Refaça o diagnóstico após aplicar as ações sugeridas e acompanhe sua evolução.
+          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">Meu diagnóstico</span>
+          <h1 className="mt-2 text-3xl font-semibold">Seu resultado</h1>
+          <p className="text-sm text-muted-foreground">
+            Respondido em {new Date(resp.created_at).toLocaleDateString("pt-BR")}
           </p>
-          <Link to="/diagnostico" className="mt-3 inline-flex items-center gap-1.5 text-sm text-bronze font-medium">
-            Refazer diagnóstico <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
         </div>
+        <Link
+          to="/diagnostico"
+          className="inline-flex items-center gap-1.5 rounded-xl border border-border px-4 py-2 text-sm font-medium hover:bg-muted"
+        >
+          <RotateCcw className="h-3.5 w-3.5" /> Refazer diagnóstico
+        </Link>
       </div>
-    </div>
-  );
-}
 
-function KPI({ label, value, Icon }: { label: string; value: string; Icon: any }) {
-  return (
-    <div className="rounded-2xl border border-border bg-surface p-5">
-      <div className="flex items-start justify-between">
-        <div>
-          <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{label}</div>
-          <div className="mt-2 text-xl font-semibold">{value}</div>
-        </div>
-        <div className="h-9 w-9 rounded-lg bg-bronze/10 text-bronze grid place-items-center">
-          <Icon className="h-4 w-4" />
-        </div>
+      <div className="rounded-2xl border border-border bg-surface overflow-hidden">
+        <iframe
+          ref={iframeRef}
+          src="/diagnostico.html?embed=report"
+          title="Seu diagnóstico completo"
+          className="w-full block"
+          style={{ height: 1200, border: "none" }}
+        />
       </div>
     </div>
   );
