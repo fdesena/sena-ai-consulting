@@ -770,6 +770,7 @@ function persistDiag(dim, overall, ak){
     const s = SCREENS.find(x => x.key === k);
     return (s && A[k]!=null) ? s.opts[A[k]] : null;
   };
+  A.porte_label = optOf("porte"); // rótulo legível p/ o painel admin (respostas_brutas guarda só o índice)
   const payload = {
     nome: (A.name||"").slice(0,200),
     negocio: (A.biz||"").slice(0,200) || null,
@@ -932,12 +933,12 @@ function renderReport(dim,overall,ak){
     <h3>${nome1?nome1+", "+offer.h:offer.h.charAt(0).toUpperCase()+offer.h.slice(1)}?</h3>
     <p>${offer.p}${atv?` Pra você, isso começa por <b>${atv.nome}</b>.`:""}</p>
 
-    <div class="note" style="background:#1f1d1a;border-color:#2f2c27;color:#E9E3D6;margin-bottom:16px">
+    ${EMBED?"":`<div class="note" style="background:#1f1d1a;border-color:#2f2c27;color:#E9E3D6;margin-bottom:16px">
       🔐 <b>Seu acesso ao painel</b><br>
       Criamos uma conta para você acompanhar o diagnóstico no site. Use seu e-mail <b>${A.email||""}</b> como <b>login e senha</b>. Acabamos de enviar as instruções por e-mail — recomendamos trocar a senha em <i>Perfil → alterar senha</i> assim que entrar.
     </div>
 
-    <button class="btn" id="enterBtn" style="background:#fff;color:#1A1916;margin-bottom:16px" onclick="entrarPlataforma(this)">Entrar na plataforma →</button>
+    <button class="btn" id="enterBtn" style="background:#fff;color:#1A1916;margin-bottom:16px" onclick="entrarPlataforma(this)">Entrar na plataforma →</button>`}
 
     <button class="btn accent" onclick="window.open('${CONFIG.AGENDA_URL}','_blank')">📅 Agendar 30 min gratuitos com o Felipe</button>
     <div style="height:10px"></div>
@@ -1008,7 +1009,25 @@ async function entrarPlataforma(btn){
 
 /* radar removido — relatório agora usa índice (gauge) + barras por área */
 
-render();
+/* ===================== modo relatório embutido (painel / admin) ===================== */
+let EMBED=false;
+function setupEmbed(){
+  app.innerHTML=`<section class="card"><p class="lead">Carregando relatório…</p></section>`;
+  window.addEventListener("message",ev=>{
+    if(ev.origin!==window.location.origin) return;
+    const m=ev.data||{};
+    if(m.type!=="diag-report"||!m.answers) return;
+    Object.keys(m.answers).forEach(k=>{A[k]=m.answers[k];});
+    EMBED=true;
+    const s=m.scores||{};
+    const dim={lit:s.lit|0,vis:s.vis|0,exe:s.exe|0,pes:s.pes|0,dad:s.dad|0};
+    const overall=s.overall|0;
+    renderReport(dim, overall, s.ak||archOf(dim,overall));
+  });
+  try{ window.parent.postMessage({type:"diag-embed-ready"}, window.location.origin); }catch(e){}
+}
+if(new URLSearchParams(window.location.search).get("embed")==="report"){ setupEmbed(); }
+else { render(); }
 </script>
 </body>
 </html>

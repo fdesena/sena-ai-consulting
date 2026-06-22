@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   PieChart, Pie, Cell, LineChart as RLineChart, Line, Legend,
 } from "recharts";
-import { Download, Search, RefreshCw, TrendingUp, Users, Award, Target } from "lucide-react";
+import { Download, Search, RefreshCw, TrendingUp, Users, Award, Target, FileText } from "lucide-react";
 import * as XLSX from "xlsx";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -13,14 +13,61 @@ export const Route = createFileRoute("/_authenticated/painel/admin/leads")({
 });
 
 type Row = {
-  id: string; created_at: string; nome: string; negocio: string | null; whatsapp: string;
+  id: string; created_at: string; nome: string; email: string | null; negocio: string | null; whatsapp: string;
   papel: string | null; segmento: string | null; aspiracao: string | null; equipe: string | null;
   barreira: string | null; impacto: string | null; ferramentas: string[] | null;
   desafios: string[] | null; reflexao: string | null;
   score_geral: number; nivel: string; arquetipo: string;
   score_usar_ia: number; score_oportunidades: number; score_automacao: number;
   score_gente: number; score_dados: number;
+  respostas_brutas: Record<string, any> | null;
 };
+
+function porteOf(r: Row): string {
+  return (r.respostas_brutas?.porte_label as string) ?? "—";
+}
+
+function ReportModal({ row, onClose }: { row: Row; onClose: () => void }) {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  useEffect(() => {
+    function onMsg(ev: MessageEvent) {
+      if (ev.origin !== window.location.origin) return;
+      if ((ev.data as any)?.type !== "diag-embed-ready") return;
+      iframeRef.current?.contentWindow?.postMessage(
+        {
+          type: "diag-report",
+          scores: {
+            lit: row.score_usar_ia, vis: row.score_oportunidades, exe: row.score_automacao,
+            pes: row.score_gente, dad: row.score_dados, overall: row.score_geral, ak: row.arquetipo,
+          },
+          answers: row.respostas_brutas ?? {},
+        },
+        window.location.origin,
+      );
+    }
+    window.addEventListener("message", onMsg);
+    return () => window.removeEventListener("message", onMsg);
+  }, [row]);
+  return (
+    <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4" onClick={onClose}>
+      <div onClick={(e) => e.stopPropagation()} className="bg-white rounded-2xl w-full max-w-3xl h-[88vh] flex flex-col overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-200 bg-zinc-50">
+          <div className="text-sm font-semibold text-zinc-800">Relatório — {row.nome}</div>
+          <div className="flex gap-2">
+            <button onClick={() => iframeRef.current?.contentWindow?.print()}
+              className="rounded-lg bg-gradient-to-r from-bronze to-[#a36c2e] px-3 py-1.5 text-sm font-semibold text-white hover:opacity-95">
+              Imprimir
+            </button>
+            <button onClick={onClose} className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 hover:bg-zinc-100">
+              Fechar
+            </button>
+          </div>
+        </div>
+        <iframe ref={iframeRef} src="/diagnostico.html?embed=report" title="Relatório do diagnóstico" className="flex-1 w-full border-0" />
+      </div>
+    </div>
+  );
+}
 
 const PALETTE = ["#C8853A", "#2D5A3D", "#A6492F", "#7A756D", "#D4A574", "#4A7C5A", "#3E3A33"];
 
@@ -29,6 +76,7 @@ function AdminLeads() {
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Row | null>(null);
+  const [report, setReport] = useState<Row | null>(null);
 
   async function load() {
     setError(null);
@@ -46,7 +94,7 @@ function AdminLeads() {
     const q = search.trim().toLowerCase();
     if (!q) return rows;
     return rows.filter((r) =>
-      [r.nome, r.negocio, r.whatsapp, r.segmento, r.arquetipo, r.nivel]
+      [r.nome, r.email, r.negocio, r.whatsapp, r.segmento, r.arquetipo, r.nivel, porteOf(r)]
         .filter(Boolean).some((v) => String(v).toLowerCase().includes(q)),
     );
   }, [rows, search]);
@@ -92,7 +140,8 @@ function AdminLeads() {
     if (!filtered.length) return;
     const sheetRows = filtered.map((r) => ({
       "Data": new Date(r.created_at).toLocaleString("pt-BR"),
-      "Nome": r.nome, "Negócio": r.negocio ?? "", "WhatsApp": r.whatsapp,
+      "Nome": r.nome, "Email": r.email ?? "", "Telefone": r.whatsapp, "Porte": porteOf(r),
+      "Negócio": r.negocio ?? "",
       "Papel": r.papel ?? "", "Segmento": r.segmento ?? "", "Aspiração": r.aspiracao ?? "",
       "Equipe": r.equipe ?? "", "Barreira": r.barreira ?? "", "Impacto": r.impacto ?? "",
       "Nota Geral": r.score_geral, "Nível": r.nivel, "Arquétipo": r.arquetipo,
@@ -236,9 +285,11 @@ function AdminLeads() {
                 <thead>
                   <tr className="text-left text-[11px] uppercase tracking-wider text-zinc-500 font-mono border-b border-zinc-800">
                     <th className="py-2.5 px-2">Data</th><th className="py-2.5 px-2">Nome</th>
+                    <th className="py-2.5 px-2">Email</th><th className="py-2.5 px-2">Telefone</th>
+                    <th className="py-2.5 px-2">Porte</th>
                     <th className="py-2.5 px-2">Negócio</th><th className="py-2.5 px-2">Segmento</th>
                     <th className="py-2.5 px-2">Nota</th><th className="py-2.5 px-2">Nível</th>
-                    <th className="py-2.5 px-2">Arquétipo</th>
+                    <th className="py-2.5 px-2">Arquétipo</th><th className="py-2.5 px-2 text-right">Ação</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -246,11 +297,23 @@ function AdminLeads() {
                     <tr key={r.id} onClick={() => setSelected(r)} className="border-b border-zinc-900 hover:bg-zinc-900/60 cursor-pointer">
                       <td className="py-2.5 px-2 font-mono text-[12px] text-zinc-500">{new Date(r.created_at).toLocaleDateString("pt-BR")}</td>
                       <td className="py-2.5 px-2 font-medium">{r.nome}</td>
+                      <td className="py-2.5 px-2 text-zinc-300">{r.email ?? "—"}</td>
+                      <td className="py-2.5 px-2 text-zinc-300 whitespace-nowrap">{r.whatsapp || "—"}</td>
+                      <td className="py-2.5 px-2">{porteOf(r)}</td>
                       <td className="py-2.5 px-2">{r.negocio ?? "—"}</td>
                       <td className="py-2.5 px-2">{r.segmento ?? "—"}</td>
                       <td className="py-2.5 px-2"><span className="inline-flex items-center rounded-full bg-bronze/15 text-bronze px-2 py-0.5 text-xs font-semibold">{r.score_geral}</span></td>
                       <td className="py-2.5 px-2">{r.nivel}</td>
                       <td className="py-2.5 px-2">{r.arquetipo}</td>
+                      <td className="py-2.5 px-2 text-right">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setReport(r); }}
+                          title="Ver relatório final"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-700 bg-[#1f1f1f] px-2.5 py-1.5 text-xs hover:bg-zinc-800 whitespace-nowrap"
+                        >
+                          <FileText className="h-3.5 w-3.5" /> Ver relatório
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -259,6 +322,8 @@ function AdminLeads() {
           </DCard>
         </>
       )}
+
+      {report && <ReportModal row={report} onClose={() => setReport(null)} />}
 
       {selected && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-end sm:items-center justify-center p-4" onClick={() => setSelected(null)}>
