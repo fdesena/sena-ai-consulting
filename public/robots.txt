@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /painel
+Disallow: /auth
+Disallow: /api/
+Disallow: /lovable/
+
+Sitemap: https://senaconsulting.app/sitemap.xml
