@@ -828,6 +828,28 @@ function submitDiag(){
 }
 
 /* ===================== report ===================== */
+/* teto realista de "poderia fazer" por dimensão — adaptado dos índices de aplicabilidade
+   de IA por cluster ocupacional em Massenkoff & McCrory (2026), Anthropic, Fig. 2 */
+const REACH={lit:92,vis:86,exe:90,pes:72,dad:88};
+function radarSVG(dim){
+  const keys=DIMKEYS, N=keys.length, cx=150, cy=130, R=86, LR=108;
+  const ang=i=>(-90 + i*360/N)*Math.PI/180;
+  const pt=(i,r)=>[cx+r*Math.cos(ang(i)), cy+r*Math.sin(ang(i))];
+  const polyPts=vals=>keys.map((k,i)=>{const[x,y]=pt(i,R*Math.max(0,Math.min(100,vals[i]))/100);return x.toFixed(1)+","+y.toFixed(1);}).join(" ");
+  let grid="";
+  [25,50,75].forEach(p=>{const pts=keys.map((k,i)=>{const[x,y]=pt(i,R*p/100);return x.toFixed(1)+","+y.toFixed(1);}).join(" ");grid+=`<polygon points="${pts}" fill="none" stroke="var(--border)" stroke-width="1"/>`;});
+  let spokes="";
+  keys.forEach((k,i)=>{const[x,y]=pt(i,R);spokes+=`<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--border)" stroke-width="1"/>`;});
+  const cur=keys.map(k=>dim[k]), pot=keys.map(k=>Math.max(dim[k],REACH[k]));
+  const dots=keys.map((k,i)=>{const[x,y]=pt(i,R*Math.max(0,Math.min(100,dim[k]))/100);return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="var(--accent)"/>`;}).join("");
+  const labels=keys.map((k,i)=>{const[x,y]=pt(i,LR);const dy=y<cy-20?"-4":(y>cy+20?"12":"4");return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" dy="${dy}" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="var(--dim)">${DIMS[k].short}</text>`;}).join("");
+  return `<svg viewBox="0 0 300 250" width="100%" style="max-width:340px">
+    ${grid}${spokes}
+    <polygon points="${polyPts(pot)}" fill="#4F86C6" fill-opacity="0.08" stroke="#4F86C6" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <polygon points="${polyPts(cur)}" fill="var(--accent)" fill-opacity="0.22" stroke="var(--accent)" stroke-width="2"/>
+    ${dots}${labels}
+  </svg>`;
+}
 function renderReport(dim,overall,ak){
   const lvl=levelOf(overall), a=ARCH[ak], ax=ARCHX[ak];
   const asc=DIMKEYS.slice().sort((x,y)=>dim[x]-dim[y]);
@@ -889,6 +911,17 @@ function renderReport(dim,overall,ak){
     <div class="scorebig" style="margin-top:10px"><span class="n">${horasMes}h</span><span class="u">por mês</span></div>
     <p class="lead" style="font-size:14.5px;margin-top:10px">Hoje, ${atv?atv.nome+" e ":""}outras tarefas repetitivas consomem cerca de <b>${horasMes} horas por mês</b> do seu negócio — quase <b>${diasMes} ${diasMes>1?"dias":"dia"} de trabalho</b> todo mês. É esse tempo que dá pra começar a recuperar.</p>
   </div>`:""}
+
+  <div class="rsec card">
+    <span class="label">Seu mapa de prontidão</span>
+    <p class="lead" style="font-size:14px;margin:8px 0 4px">Onde você está hoje e até onde dá pra chegar nas cinco áreas que mais pesam.</p>
+    <div class="radarbox">${radarSVG(dim)}</div>
+    <div style="display:flex;gap:20px;justify-content:center;font-size:12px;color:var(--dim);font-family:var(--mono)">
+      <span><span style="display:inline-block;width:11px;height:11px;background:var(--accent);opacity:.85;border-radius:2px;margin-right:6px;vertical-align:-1px"></span>Onde você está</span>
+      <span><span style="display:inline-block;width:11px;height:11px;border:1.5px dashed #4F86C6;border-radius:2px;margin-right:6px;vertical-align:-1px"></span>Onde dá pra chegar</span>
+    </div>
+    <p class="foot" style="text-align:center;margin-top:12px">Teto realista adaptado dos índices de aplicabilidade de IA por área em Massenkoff &amp; McCrory (2026), Anthropic — não é 100%, é o que dá pra alcançar de fato.</p>
+  </div>
 
   <div class="rsec card">
     <span class="label">Onde você está forte e onde dá pra crescer</span>

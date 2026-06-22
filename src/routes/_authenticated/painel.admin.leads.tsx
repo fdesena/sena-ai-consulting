@@ -4,7 +4,7 @@ import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   PieChart, Pie, Cell, LineChart as RLineChart, Line, Legend,
 } from "recharts";
-import { Download, Search, RefreshCw, TrendingUp, Users, Award, Target, FileText } from "lucide-react";
+import { Download, Search, RefreshCw, TrendingUp, Users, Award, Target, FileText, Copy, MessageSquare, Lightbulb, Flame, Check } from "lucide-react";
 import * as XLSX from "xlsx";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -27,8 +27,170 @@ function porteOf(r: Row): string {
   return (r.respostas_brutas?.porte_label as string) ?? "—";
 }
 
+/* ===================== Insights de venda (derivados do diagnóstico) ===================== */
+const ATIV = ["Atendimento / responder mensagens", "Agendamento e confirmações", "Orçamentos e propostas", "Cobrança e financeiro", "Conteúdo e marketing", "Pós-venda e relacionamento", "Relatórios e planilhas", "Recrutamento e equipe"];
+const ATIV_SOL = [
+  { sol: "um assistente de IA que responde, qualifica e encaminha no primeiro contato", tipo: "Automação / Chatbot" },
+  { sol: "agendamento automático com confirmação e lembretes (menos faltas, zero ida e volta manual)", tipo: "Automação" },
+  { sol: "um gerador de orçamentos e propostas com IA — da conversa ao PDF em minutos", tipo: "Automação / App" },
+  { sol: "uma régua de cobrança e conciliação financeira automatizadas", tipo: "Automação" },
+  { sol: "uma esteira de conteúdo com IA (calendário, roteiros e criativos para as redes)", tipo: "Conteúdo / IA" },
+  { sol: "um pós-venda automatizado: follow-up, reativação e pesquisa de satisfação", tipo: "Automação / CRM" },
+  { sol: "um dashboard que monta os relatórios sozinho a partir dos seus dados", tipo: "Dados / BI" },
+  { sol: "triagem e organização de recrutamento com IA", tipo: "Automação / RH" },
+];
+const HORAS_MID = [3, 7, 15, 25];
+const VOLUME_OPT = ["menos de 20", "20 a 100", "100 a 500", "mais de 500"];
+const CANAL_OPT = ["WhatsApp", "Instagram / redes", "Indicação", "Site / Google", "Telefone", "Presencial / loja", "Outros"];
+const PRAZO_OPT = ["Urgente — o quanto antes", "Próximos 1 a 3 meses", "Sem pressa, explorando", "Só pesquisando"];
+const DECISOR_OPT = ["Decide sozinho(a)", "Decide com sócio(a)", "Decide com a equipe", "Precisa aprovar com outra pessoa"];
+const ARQ: Record<string, { nome: string; gap: string; venda: string; frente: string }> = {
+  improviso: { nome: "Operador no Improviso", gap: "Tudo depende dele(a); sem automação o negócio não escala além do próprio tempo.", venda: "Consultoria para mapear o caminho + a 1ª automação de alto impacto.", frente: "Consultoria" },
+  curioso: { nome: "Curioso sem Rumo", gap: "Testa muita ferramenta sem foco — esforço espalhado, pouco resultado.", venda: "Consultoria para focar em 1 frente e construir a rotina que gera resultado.", frente: "Consultoria" },
+  travado: { nome: "Estrategista Travado", gap: "Tem a visão, mas trava na execução — a ideia não sai do papel.", venda: "Construção de solução: tirar o piloto do papel em poucas semanas.", frente: "Construção" },
+  intuitivo: { nome: "Executor Intuitivo", gap: "Executa no instinto, sem dados — decide no escuro.", venda: "Construção + camada de dados/dashboard para decidir com número.", frente: "Construção" },
+  pioneiro: { nome: "Pioneiro Local", gap: "Já está à frente; o salto agora é diferenciação fina, não o básico.", venda: "Construção avançada sob medida + parceria contínua para manter a dianteira.", frente: "Construção" },
+};
+const DIM_GAP: Record<string, { nome: string; venda: string }> = {
+  usar_ia: { nome: "Usar IA no dia a dia", venda: "capacitação prática para a equipe destravar o uso básico" },
+  oportunidades: { nome: "Enxergar oportunidades", venda: "consultoria de mapeamento de oportunidades de IA" },
+  automacao: { nome: "Colocar pra rodar (automação)", venda: "construção de automações e processos" },
+  gente: { nome: "Gente e hábito", venda: "treinamento + acompanhamento de adoção da equipe" },
+  dados: { nome: "Organização e dados", venda: "organização de dados + dashboard de indicadores" },
+};
+
+function buildInsights(row: Row) {
+  const rb = row.respostas_brutas ?? {};
+  const num = (k: string) => (typeof rb[k] === "number" ? (rb[k] as number) : null);
+  const ativArr: number[] = Array.isArray(rb.atividade) ? rb.atividade : typeof rb.atividade === "number" ? [rb.atividade] : [];
+  const gargalo = ativArr.length && ativArr[0] != null ? ATIV[ativArr[0]] : null;
+  const gargaloSol = ativArr.length && ativArr[0] != null ? ATIV_SOL[ativArr[0]] : null;
+  const h = num("horas");
+  const horasMes = h != null ? Math.round(HORAS_MID[h] * 4.3) : null;
+  const cI = num("canal"), vI = num("volume"), pI = num("prazo"), dI = num("decisor");
+  const canal = cI != null ? CANAL_OPT[cI] : null;
+  const volume = vI != null ? VOLUME_OPT[vI] : null;
+  const prazo = pI != null ? PRAZO_OPT[pI] : null;
+  const decisor = dI != null ? DECISOR_OPT[dI] : null;
+  const arq = ARQ[row.arquetipo] ?? null;
+
+  const dims = [
+    { key: "usar_ia", v: row.score_usar_ia }, { key: "oportunidades", v: row.score_oportunidades },
+    { key: "automacao", v: row.score_automacao }, { key: "gente", v: row.score_gente }, { key: "dados", v: row.score_dados },
+  ].sort((a, b) => a.v - b.v);
+  const lows = dims.slice(0, 2);
+
+  const heat = (pI != null ? [2, 1, 0, -1][pI] : 0) + (dI != null ? [2, 1, 0, -1][dI] : 0);
+  const termo = heat >= 3 ? { label: "Quente", color: "#A6492F" } : heat >= 1 ? { label: "Morno", color: "#C8853A" } : { label: "Frio", color: "#7A756D" };
+  const termoReason = [prazo ? `prazo: ${prazo.toLowerCase()}` : null, decisor ? `decisão: ${decisor.toLowerCase()}` : null].filter(Boolean).join(" · ") || "sem sinais claros de prazo/decisão";
+
+  const ops: { titulo: string; tipo: string; desc: string }[] = [];
+  if (arq) ops.push({ titulo: `Frente principal: ${arq.frente}`, tipo: arq.frente, desc: arq.venda });
+  if (gargaloSol && gargalo) ops.push({ titulo: `Resolver o gargalo nº1 — ${gargalo}`, tipo: gargaloSol.tipo, desc: `Vender ${gargaloSol.sol}.` });
+  const lowDim = DIM_GAP[lows[0].key];
+  if (lowDim) ops.push({ titulo: `Atacar a área mais baixa — ${lowDim.nome} (${lows[0].v}/100)`, tipo: "Sob medida", desc: `Oferecer ${lowDim.venda}.` });
+
+  const roteiro: string[] = [];
+  if (gargalo) roteiro.push(`Abra pelo gargalo nº1 — ${gargalo}${horasMes ? ` — e ancore na conta: ~${horasMes}h/mês em jogo` : ""}.`);
+  if (canal) roteiro.push(`Canal de clientes: ${canal}${volume ? ` · ${volume} clientes/mês` : ""} — conecte a solução a esse fluxo.`);
+  if (row.barreira) roteiro.push(`Maior barreira declarada: "${row.barreira}" — trate como a objeção principal.`);
+  if (lowDim) roteiro.push(`Posicione "${lowDim.nome}" como o próximo passo de maior retorno (área mais baixa hoje).`);
+  if (arq) roteiro.push(`Limite do perfil: ${arq.gap}`);
+  if (prazo) roteiro.push(`Feche propondo um próximo passo no horizonte que ele(a) declarou (${prazo.toLowerCase()}).`);
+
+  const nome1 = (row.nome || "").split(" ")[0];
+  const mensagem = [
+    `Oi ${nome1 || "tudo bem"}, aqui é o Felipe da Sena.`,
+    `Vi o seu diagnóstico (${arq ? arq.nome : row.arquetipo}, nota ${row.score_geral}/100).`,
+    gargalo ? `Pelo que você marcou, seu maior gargalo hoje é ${gargalo.toLowerCase()}${horasMes ? ` — algo como ${horasMes}h/mês` : ""}.` : "",
+    gargaloSol ? `Tenho uma ideia de como ${gargaloSol.sol} pra te devolver parte desse tempo.` : arq ? `Tenho uma ideia de ${arq.venda.toLowerCase()}` : "",
+    `Topa 30 min essa semana pra eu te mostrar o caminho? Sem compromisso.`,
+  ].filter(Boolean).join(" ");
+
+  return { termo, termoReason, ops, gaps: lows.map((d) => ({ nome: DIM_GAP[d.key]?.nome, v: d.v, venda: DIM_GAP[d.key]?.venda })), roteiro, mensagem, arq, gargalo, horasMes, canal, volume, prazo, decisor };
+}
+
+function InsTag({ children }: { children: React.ReactNode }) {
+  return <span className="inline-block rounded-full bg-bronze/15 text-bronze px-2 py-0.5 text-[11px] font-mono uppercase tracking-wide">{children}</span>;
+}
+
+function LeadInsights({ row }: { row: Row }) {
+  const ins = useMemo(() => buildInsights(row), [row]);
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try { await navigator.clipboard.writeText(ins.mensagem); setCopied(true); setTimeout(() => setCopied(false), 1800); } catch {}
+  };
+  const wa = row.whatsapp ? `https://wa.me/${row.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(ins.mensagem)}` : null;
+  const block = "rounded-xl border border-zinc-800 bg-[#1b1b1b] p-4";
+  const label = "font-mono text-[10px] uppercase tracking-widest text-zinc-500 mb-2 flex items-center gap-1.5";
+
+  return (
+    <div className="p-5 space-y-4">
+      <div className={block}>
+        <div className={label}><Flame className="h-3.5 w-3.5" /> Termômetro do lead</div>
+        <div className="flex items-center gap-3">
+          <span className="rounded-lg px-3 py-1 text-sm font-bold text-white" style={{ background: ins.termo.color }}>{ins.termo.label}</span>
+          <span className="text-sm text-zinc-400">{ins.termoReason}</span>
+        </div>
+      </div>
+
+      <div className={block}>
+        <div className={label}><Target className="h-3.5 w-3.5" /> O que vender</div>
+        <div className="space-y-3">
+          {ins.ops.map((o, i) => (
+            <div key={i} className="border-l-2 border-bronze/60 pl-3">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-sm font-semibold text-zinc-100">{o.titulo}</span>
+                <InsTag>{o.tipo}</InsTag>
+              </div>
+              <p className="text-sm text-zinc-400 mt-0.5">{o.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className={block}>
+        <div className={label}><TrendingUp className="h-3.5 w-3.5" /> Gaps a explorar</div>
+        <div className="space-y-2">
+          {ins.gaps.map((g, i) => (
+            <div key={i} className="flex items-start gap-3">
+              <span className="rounded-md bg-zinc-800 px-2 py-0.5 text-xs font-semibold text-bronze whitespace-nowrap">{g.v}/100</span>
+              <p className="text-sm text-zinc-300"><b>{g.nome}:</b> oportunidade de {g.venda}.</p>
+            </div>
+          ))}
+          {ins.arq && <p className="text-sm text-zinc-400 pt-1 border-t border-zinc-800 mt-2">Gap do perfil <b className="text-zinc-300">{ins.arq.nome}</b>: {ins.arq.gap}</p>}
+        </div>
+      </div>
+
+      <div className={block}>
+        <div className={label}><Lightbulb className="h-3.5 w-3.5" /> Roteiro para a conversa agendada</div>
+        <ol className="space-y-1.5 list-decimal list-inside">
+          {ins.roteiro.map((r, i) => (<li key={i} className="text-sm text-zinc-300">{r}</li>))}
+        </ol>
+      </div>
+
+      <div className={block}>
+        <div className={label}><MessageSquare className="h-3.5 w-3.5" /> Mensagem sugerida</div>
+        <p className="text-sm text-zinc-200 bg-[#111] rounded-lg p-3 border border-zinc-800 whitespace-pre-wrap leading-relaxed">{ins.mensagem}</p>
+        <div className="flex gap-2 mt-3">
+          <button onClick={copy} className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-700 bg-[#1f1f1f] px-3 py-1.5 text-sm hover:bg-zinc-800">
+            {copied ? <><Check className="h-3.5 w-3.5 text-green-400" /> Copiado</> : <><Copy className="h-3.5 w-3.5" /> Copiar</>}
+          </button>
+          {wa && (
+            <a href={wa} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-bronze to-[#a36c2e] px-3 py-1.5 text-sm font-semibold text-white hover:opacity-95">
+              <MessageSquare className="h-3.5 w-3.5" /> Abrir no WhatsApp
+            </a>
+          )}
+        </div>
+        <p className="text-[11px] text-zinc-600 mt-2">Sugestão automática a partir das respostas. Revise antes de enviar.</p>
+      </div>
+    </div>
+  );
+}
+
 function ReportModal({ row, onClose }: { row: Row; onClose: () => void }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [tab, setTab] = useState<"report" | "insights">("report");
   useEffect(() => {
     function onMsg(ev: MessageEvent) {
       if (ev.origin !== window.location.origin) return;
@@ -48,22 +210,37 @@ function ReportModal({ row, onClose }: { row: Row; onClose: () => void }) {
     window.addEventListener("message", onMsg);
     return () => window.removeEventListener("message", onMsg);
   }, [row]);
+  const tabCls = (t: string) => t === tab
+    ? "rounded-lg px-3 py-1.5 text-sm font-semibold bg-white text-zinc-900 border border-zinc-300 shadow-sm"
+    : "rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-500 hover:text-zinc-800";
   return (
     <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4" onClick={onClose}>
       <div onClick={(e) => e.stopPropagation()} className="bg-white rounded-2xl w-full max-w-3xl h-[88vh] flex flex-col overflow-hidden">
         <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-200 bg-zinc-50">
-          <div className="text-sm font-semibold text-zinc-800">Relatório — {row.nome}</div>
+          <div className="flex items-center gap-2">
+            <button onClick={() => setTab("report")} className={tabCls("report")}>Relatório</button>
+            <button onClick={() => setTab("insights")} className={tabCls("insights")}>Insights</button>
+            <span className="text-sm text-zinc-400 ml-1 hidden sm:inline">— {row.nome}</span>
+          </div>
           <div className="flex gap-2">
-            <button onClick={() => iframeRef.current?.contentWindow?.print()}
-              className="rounded-lg bg-gradient-to-r from-bronze to-[#a36c2e] px-3 py-1.5 text-sm font-semibold text-white hover:opacity-95">
-              Imprimir
-            </button>
+            {tab === "report" && (
+              <button onClick={() => iframeRef.current?.contentWindow?.print()}
+                className="rounded-lg bg-gradient-to-r from-bronze to-[#a36c2e] px-3 py-1.5 text-sm font-semibold text-white hover:opacity-95">
+                Imprimir
+              </button>
+            )}
             <button onClick={onClose} className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 hover:bg-zinc-100">
               Fechar
             </button>
           </div>
         </div>
-        <iframe ref={iframeRef} src="/diagnostico.html?embed=report" title="Relatório do diagnóstico" className="flex-1 w-full border-0" />
+        <div className="flex-1 min-h-0 relative">
+          <iframe ref={iframeRef} src="/diagnostico.html?embed=report" title="Relatório do diagnóstico"
+            className={`absolute inset-0 w-full h-full border-0 ${tab === "report" ? "" : "invisible pointer-events-none"}`} />
+          {tab === "insights" && <div className="absolute inset-0 overflow-y-auto bg-[#161616] text-zinc-100">
+            <LeadInsights row={row} />
+          </div>}
+        </div>
       </div>
     </div>
   );
