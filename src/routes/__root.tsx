@@ -77,18 +77,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Sena Consulting" },
-      { name: "description", content: "Sena Consulting — IA, Automação e Transformação Digital." },
+      { title: "Sena Consulting — IA e Automação para Negócios" },
+      { name: "description", content: "Consultoria de IA, automação e transformação digital. São Paulo e Boston — atuando globalmente com diagnóstico, construção e capacitação." },
       { name: "author", content: "Felipe Sena" },
       { property: "og:site_name", content: "Sena Consulting" },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { property: "og:title", content: "Sena Consulting" },
-      { name: "twitter:title", content: "Sena Consulting" },
-      { property: "og:description", content: "Sena Consulting — IA, Automação e Transformação Digital." },
-      { name: "twitter:description", content: "Sena Consulting — IA, Automação e Transformação Digital." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/cf534c12-18f3-46bb-a3fb-24f782d82249/id-preview-a139f3d4--88496c08-49a1-46f2-85dc-9ca829dc750a.lovable.app-1781453935344.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/cf534c12-18f3-46bb-a3fb-24f782d82249/id-preview-a139f3d4--88496c08-49a1-46f2-85dc-9ca829dc750a.lovable.app-1781453935344.png" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -101,6 +95,30 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Fragment+Mono:ital@0;1&display=swap",
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Sena Consulting",
+          url: "https://senaconsulting.app",
+          logo: "https://senaconsulting.app/favicon.ico",
+          founder: { "@type": "Person", name: "Felipe Sena" },
+          areaServed: "Worldwide",
+          description: "Consultoria de IA, automação e transformação digital.",
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Sena Consulting",
+          url: "https://senaconsulting.app",
+        }),
       },
     ],
   }),
