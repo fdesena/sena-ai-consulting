@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { UserPlus, Shield, Trash2, RefreshCw, Mail, X, KeyRound } from "lucide-react";
+import { UserPlus, Shield, Trash2, RefreshCw, Mail, X, KeyRound, Users, AppWindow, Check } from "lucide-react";
 import {
   adminListUsers, adminCreateUser, adminSetUserRole, adminDeleteUser, adminResetPasswordToEmail,
+  adminListAppAccess, adminSetAppAccess,
 } from "@/lib/admin.functions";
+import { APPS } from "@/lib/apps";
 
 export const Route = createFileRoute("/_authenticated/painel/admin/usuarios")({
   component: AdminUsuarios,
@@ -15,6 +17,8 @@ type U = {
   last_sign_in_at: string | null; confirmed: boolean; roles: string[];
 };
 
+type Tab = "usuarios" | "apps";
+
 function AdminUsuarios() {
   const list = useServerFn(adminListUsers);
   const create = useServerFn(adminCreateUser);
@@ -22,6 +26,7 @@ function AdminUsuarios() {
   const del = useServerFn(adminDeleteUser);
   const resetPwd = useServerFn(adminResetPasswordToEmail);
 
+  const [tab, setTab] = useState<Tab>("usuarios");
   const [users, setUsers] = useState<U[]>([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
@@ -74,6 +79,11 @@ function AdminUsuarios() {
     } catch (e: any) { setErr(e?.message ?? "Erro ao resetar senha"); }
   }
 
+  const tabCls = (t: Tab) =>
+    `inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition ${
+      tab === t ? "bg-bronze text-white" : "text-muted-foreground hover:text-foreground"
+    }`;
+
   return (
     <div className="max-w-6xl mx-auto space-y-6 text-foreground">
       <div className="flex items-end justify-between gap-3 flex-wrap">
@@ -86,72 +96,87 @@ function AdminUsuarios() {
           <button onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-border bg-muted px-4 py-2.5 text-sm hover:bg-muted">
             <RefreshCw className="h-4 w-4" /> Atualizar
           </button>
-          <button onClick={() => setShowNew(true)} className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-bronze to-[#a36c2e] px-4 py-2.5 text-sm font-semibold text-white">
-            <UserPlus className="h-4 w-4" /> Novo usuário
-          </button>
+          {tab === "usuarios" && (
+            <button onClick={() => setShowNew(true)} className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-bronze to-[#a36c2e] px-4 py-2.5 text-sm font-semibold text-white">
+              <UserPlus className="h-4 w-4" /> Novo usuário
+            </button>
+          )}
         </div>
+      </div>
+
+      <div className="inline-flex rounded-xl border border-border bg-muted p-1">
+        <button onClick={() => setTab("usuarios")} className={tabCls("usuarios")}>
+          <Users className="h-4 w-4" /> Usuários
+        </button>
+        <button onClick={() => setTab("apps")} className={tabCls("apps")}>
+          <AppWindow className="h-4 w-4" /> Acesso de Apps
+        </button>
       </div>
 
       {err && <div className="rounded-lg bg-red-950/40 border border-red-900 text-red-300 px-3 py-2.5 text-sm">{err}</div>}
       {msg && <div className="rounded-lg bg-emerald-950/40 border border-emerald-900 text-emerald-300 px-3 py-2.5 text-sm">{msg}</div>}
 
-      <div className="rounded-2xl border border-border bg-card overflow-hidden">
-        {loading ? (
-          <p className="p-6 text-muted-foreground text-sm">Carregando…</p>
-        ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-mono border-b border-border">
-                <th className="py-3 px-4">E-mail</th>
-                <th className="py-3 px-4">Papel</th>
-                <th className="py-3 px-4">Criado</th>
-                <th className="py-3 px-4">Último login</th>
-                <th className="py-3 px-4 text-right">Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((u) => {
-                const role = (u.roles.includes("admin") ? "admin" : u.roles[0] ?? "user") as "admin" | "user" | "moderator";
-                return (
-                  <tr key={u.id} className="border-b border-border">
-                    <td className="py-3 px-4">
-                      <div className="flex items-center gap-2">
-                        <Mail className="h-3.5 w-3.5 text-muted-foreground" />
-                        <span>{u.email}</span>
-                        {!u.confirmed && <span className="text-[10px] bg-amber-900/40 text-amber-300 px-1.5 py-0.5 rounded">pendente</span>}
-                      </div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <select
-                        value={role}
-                        onChange={(e) => handleChangeRole(u, e.target.value as any)}
-                        className="rounded-lg border border-border bg-muted px-2 py-1 text-xs"
-                      >
-                        <option value="user">user</option>
-                        <option value="moderator">moderator</option>
-                        <option value="admin">admin</option>
-                      </select>
-                      {role === "admin" && <Shield className="inline ml-2 h-3.5 w-3.5 text-bronze" />}
-                    </td>
-                    <td className="py-3 px-4 font-mono text-[12px] text-muted-foreground">{new Date(u.created_at).toLocaleDateString("pt-BR")}</td>
-                    <td className="py-3 px-4 font-mono text-[12px] text-muted-foreground">{u.last_sign_in_at ? new Date(u.last_sign_in_at).toLocaleDateString("pt-BR") : "—"}</td>
-                    <td className="py-3 px-4 text-right">
-                      <div className="inline-flex items-center gap-1">
-                        <button onClick={() => handleResetPwd(u)} title="Resetar senha para o e-mail" className="text-muted-foreground hover:text-bronze p-1">
-                          <KeyRound className="h-4 w-4" />
-                        </button>
-                        <button onClick={() => handleDelete(u)} title="Excluir usuário" className="text-muted-foreground hover:text-red-400 p-1">
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        )}
-      </div>
+      {tab === "usuarios" ? (
+        <div className="rounded-2xl border border-border bg-card overflow-hidden">
+          {loading ? (
+            <p className="p-6 text-muted-foreground text-sm">Carregando…</p>
+          ) : (
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-mono border-b border-border">
+                  <th className="py-3 px-4">E-mail</th>
+                  <th className="py-3 px-4">Papel</th>
+                  <th className="py-3 px-4">Criado</th>
+                  <th className="py-3 px-4">Último login</th>
+                  <th className="py-3 px-4 text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((u) => {
+                  const role = (u.roles.includes("admin") ? "admin" : u.roles[0] ?? "user") as "admin" | "user" | "moderator";
+                  return (
+                    <tr key={u.id} className="border-b border-border">
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-2">
+                          <Mail className="h-3.5 w-3.5 text-muted-foreground" />
+                          <span>{u.email}</span>
+                          {!u.confirmed && <span className="text-[10px] bg-amber-900/40 text-amber-300 px-1.5 py-0.5 rounded">pendente</span>}
+                        </div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <select
+                          value={role}
+                          onChange={(e) => handleChangeRole(u, e.target.value as any)}
+                          className="rounded-lg border border-border bg-muted px-2 py-1 text-xs"
+                        >
+                          <option value="user">user</option>
+                          <option value="moderator">moderator</option>
+                          <option value="admin">admin</option>
+                        </select>
+                        {role === "admin" && <Shield className="inline ml-2 h-3.5 w-3.5 text-bronze" />}
+                      </td>
+                      <td className="py-3 px-4 font-mono text-[12px] text-muted-foreground">{new Date(u.created_at).toLocaleDateString("pt-BR")}</td>
+                      <td className="py-3 px-4 font-mono text-[12px] text-muted-foreground">{u.last_sign_in_at ? new Date(u.last_sign_in_at).toLocaleDateString("pt-BR") : "—"}</td>
+                      <td className="py-3 px-4 text-right">
+                        <div className="inline-flex items-center gap-1">
+                          <button onClick={() => handleResetPwd(u)} title="Resetar senha para o e-mail" className="text-muted-foreground hover:text-bronze p-1">
+                            <KeyRound className="h-4 w-4" />
+                          </button>
+                          <button onClick={() => handleDelete(u)} title="Excluir usuário" className="text-muted-foreground hover:text-red-400 p-1">
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
+        </div>
+      ) : (
+        <AppAccessPanel users={users} usersLoading={loading} onError={setErr} />
+      )}
 
       {showNew && (
         <div className="fixed inset-0 z-50 bg-black/60 grid place-items-center p-4" onClick={() => setShowNew(false)}>
@@ -177,6 +202,130 @@ function AdminUsuarios() {
           </form>
         </div>
       )}
+    </div>
+  );
+}
+
+function AppAccessPanel({
+  users, usersLoading, onError,
+}: {
+  users: U[];
+  usersLoading: boolean;
+  onError: (m: string) => void;
+}) {
+  const listAccess = useServerFn(adminListAppAccess);
+  const setAccess = useServerFn(adminSetAppAccess);
+
+  // Set de chaves "userId:appSlug" com acesso liberado.
+  const [granted, setGranted] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(true);
+  // Chaves em processo de atualização (para desabilitar o toggle).
+  const [pending, setPending] = useState<Set<string>>(new Set());
+  const [q, setQ] = useState("");
+
+  async function load() {
+    setLoading(true);
+    try {
+      const r = await listAccess();
+      setGranted(new Set(r.access.map((a) => `${a.user_id}:${a.app_slug}`)));
+    } catch (e: any) { onError(e?.message ?? "Erro ao carregar acessos"); }
+    finally { setLoading(false); }
+  }
+  useEffect(() => { load(); }, []);
+
+  async function toggle(userId: string, appSlug: string, next: boolean) {
+    const key = `${userId}:${appSlug}`;
+    setPending((p) => new Set(p).add(key));
+    // Atualização otimista.
+    setGranted((g) => {
+      const n = new Set(g);
+      if (next) n.add(key); else n.delete(key);
+      return n;
+    });
+    try {
+      await setAccess({ data: { userId, appSlug: appSlug as any, granted: next } });
+    } catch (e: any) {
+      onError(e?.message ?? "Erro ao atualizar acesso");
+      // Reverte em caso de erro.
+      setGranted((g) => {
+        const n = new Set(g);
+        if (next) n.delete(key); else n.add(key);
+        return n;
+      });
+    } finally {
+      setPending((p) => { const n = new Set(p); n.delete(key); return n; });
+    }
+  }
+
+  const filtered = users.filter((u) => u.email.toLowerCase().includes(q.toLowerCase()));
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <p className="text-sm text-muted-foreground">
+          Defina quais usuários enxergam cada app no menu. Por padrão, novas contas não têm acesso.
+        </p>
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Buscar por e-mail…"
+          className="rounded-xl border border-border bg-muted px-3 py-2 text-sm w-full sm:w-64"
+        />
+      </div>
+
+      <div className="rounded-2xl border border-border bg-card overflow-x-auto">
+        {usersLoading || loading ? (
+          <p className="p-6 text-muted-foreground text-sm">Carregando…</p>
+        ) : (
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-mono border-b border-border">
+                <th className="py-3 px-4">Usuário</th>
+                {APPS.map((a) => (
+                  <th key={a.slug} className="py-3 px-4 text-center">{a.name}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((u) => {
+                const isAdmin = u.roles.includes("admin");
+                return (
+                  <tr key={u.id} className="border-b border-border">
+                    <td className="py-3 px-4">
+                      <div className="flex items-center gap-2">
+                        <Mail className="h-3.5 w-3.5 text-muted-foreground" />
+                        <span>{u.email}</span>
+                        {isAdmin && <Shield className="h-3.5 w-3.5 text-bronze" />}
+                      </div>
+                    </td>
+                    {APPS.map((a) => {
+                      const key = `${u.id}:${a.slug}`;
+                      const on = isAdmin || granted.has(key);
+                      const busy = pending.has(key);
+                      return (
+                        <td key={a.slug} className="py-3 px-4 text-center">
+                          <button
+                            disabled={isAdmin || busy}
+                            onClick={() => toggle(u.id, a.slug, !granted.has(key))}
+                            title={isAdmin ? "Admins têm acesso a todos os apps" : on ? "Remover acesso" : "Conceder acesso"}
+                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition disabled:opacity-50 ${
+                              on ? "bg-bronze" : "bg-muted-foreground/30"
+                            }`}
+                          >
+                            <span className={`inline-flex h-5 w-5 items-center justify-center rounded-full bg-white shadow transition ${on ? "translate-x-5" : "translate-x-0.5"}`}>
+                              {on && <Check className="h-3 w-3 text-bronze" />}
+                            </span>
+                          </button>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
+      </div>
     </div>
   );
 }

@@ -17,5 +17,11 @@ export default defineConfig({
   // entirely, which would drop SSR + server routes. Pinning "vercel" makes the
   // local `bun run build` produce the same Build Output API (.vercel/output) that
   // Vercel deploys.
-  nitro: { preset: "vercel" },
+  // maxDuration: o agente do JusRadar (OpenAI + DataJud/jurisprudência) pode levar
+  // mais que o timeout padrão da Vercel. 300s exige plano Pro; no Hobby o teto é 60s
+  // (a Vercel limita automaticamente, sem quebrar o build).
+  // `vercel.functions` não é tipado pelo wrapper, mas o Nitro o repassa ao preset
+  // (gera maxDuration no .vc-config.json — verificado no build). Spread evita o
+  // excess-property-check do TS sem perder o efeito em runtime.
+  nitro: { preset: "vercel", ...({ vercel: { functions: { maxDuration: 300 } } } as object) },
 });

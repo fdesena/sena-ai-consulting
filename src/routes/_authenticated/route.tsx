@@ -14,10 +14,18 @@ import {
   PanelLeftClose,
   PanelLeft,
   Globe,
+  Scale,
+  LayoutGrid,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PainelHeader } from "@/components/PainelHeader";
 import { useAdminTheme } from "@/lib/admin-theme";
+import { APPS } from "@/lib/apps";
+
+// Ícone por app (mantido fora do registro serializável de @/lib/apps).
+const APP_ICONS: Record<string, any> = {
+  jusradar: Scale,
+};
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -30,6 +38,7 @@ export const Route = createFileRoute("/_authenticated")({
 });
 
 type NavItem = { to: string; label: string; Icon: any; exact?: boolean };
+type NavGroup = { title: string; items: NavItem[] };
 
 const USER_NAV: NavItem[] = [
   { to: "/painel", label: "Início", Icon: Home, exact: true },
@@ -49,6 +58,7 @@ function AuthedShell() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [email, setEmail] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [appAccess, setAppAccess] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [adminTheme] = useAdminTheme();
@@ -79,6 +89,11 @@ function AuthedShell() {
         admin = !!hr;
       }
       setIsAdmin(admin);
+      const { data: access } = await supabase
+        .from("user_app_access")
+        .select("app_slug")
+        .eq("user_id", uid);
+      setAppAccess((access ?? []).map((a: any) => a.app_slug));
     };
     load();
     const { data: sub } = supabase.auth.onAuthStateChange(() => { load(); });
@@ -97,7 +112,17 @@ function AuthedShell() {
     navigate({ to: "/auth" });
   }
 
-  const NAV = inAdmin ? ADMIN_NAV : USER_NAV;
+  // Apps liberados ao usuário (admin enxerga todos para preview).
+  const appItems: NavItem[] = APPS
+    .filter((a) => isAdmin || appAccess.includes(a.slug))
+    .map((a) => ({ to: a.to, label: a.name, Icon: APP_ICONS[a.slug] ?? LayoutGrid }));
+
+  const navGroups: NavGroup[] = inAdmin
+    ? [{ title: "Administração", items: ADMIN_NAV }]
+    : [
+        { title: "Geral", items: USER_NAV },
+        ...(appItems.length ? [{ title: "Sena Consulting Apps", items: appItems }] : []),
+      ];
 
   // Theme classes — token-based so they follow light/dark via CSS variables.
   const shellBg = "bg-background text-foreground";
@@ -152,28 +177,34 @@ function AuthedShell() {
         )}
 
         <nav className="p-3 flex-1 space-y-1 overflow-y-auto">
-          {!collapsed && (
-            <div className={`px-3 py-2 text-[10px] uppercase tracking-widest font-mono ${mutedTxt}`}>
-              {inAdmin ? "Administração" : "Geral"}
+          {navGroups.map((group, gi) => (
+            <div key={group.title} className={gi > 0 ? "mt-4" : ""}>
+              {!collapsed ? (
+                <div className={`px-3 py-2 text-[10px] uppercase tracking-widest font-mono ${mutedTxt}`}>
+                  {group.title}
+                </div>
+              ) : gi > 0 ? (
+                <div className={`mx-2 my-2 border-t ${borderC}`} />
+              ) : null}
+              {group.items.map(({ to, label, Icon, exact }) => {
+                const active = exact ? pathname === to : pathname === to || pathname.startsWith(to + "/");
+                return (
+                  <Link
+                    key={to}
+                    to={to as any}
+                    onClick={() => setOpen(false)}
+                    title={collapsed ? label : undefined}
+                    className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition ${
+                      active ? activeCls : `${hoverBg}`
+                    } ${collapsed ? "justify-center px-2" : ""}`}
+                  >
+                    <Icon className="h-4 w-4 shrink-0" />
+                    {!collapsed && <span>{label}</span>}
+                  </Link>
+                );
+              })}
             </div>
-          )}
-          {NAV.map(({ to, label, Icon, exact }) => {
-            const active = exact ? pathname === to : pathname === to || pathname.startsWith(to + "/");
-            return (
-              <Link
-                key={to}
-                to={to as any}
-                onClick={() => setOpen(false)}
-                title={collapsed ? label : undefined}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition ${
-                  active ? activeCls : `${hoverBg}`
-                } ${collapsed ? "justify-center px-2" : ""}`}
-              >
-                <Icon className="h-4 w-4 shrink-0" />
-                {!collapsed && <span>{label}</span>}
-              </Link>
-            );
-          })}
+          ))}
         </nav>
 
         {/* Bottom section */}

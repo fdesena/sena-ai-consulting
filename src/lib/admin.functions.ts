@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { APP_SLUGS } from "@/lib/apps";
 
 async function assertAdmin(context: any) {
   const { data, error } = await context.supabase.rpc("has_role", {
@@ -99,6 +100,51 @@ export const adminDeleteUser = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.auth.admin.deleteUser(data.userId);
     if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const adminListAppAccess = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await supabaseAdmin
+      .from("user_app_access")
+      .select("user_id, app_slug");
+    if (error) throw new Error(error.message);
+    return { access: (data ?? []) as { user_id: string; app_slug: string }[] };
+  });
+
+export const adminSetAppAccess = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z
+      .object({
+        userId: z.string().uuid(),
+        appSlug: z.enum(APP_SLUGS),
+        granted: z.boolean(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (data.granted) {
+      const { error } = await supabaseAdmin
+        .from("user_app_access")
+        .upsert(
+          { user_id: data.userId, app_slug: data.appSlug, granted_by: context.userId },
+          { onConflict: "user_id,app_slug" },
+        );
+      if (error) throw new Error(error.message);
+    } else {
+      const { error } = await supabaseAdmin
+        .from("user_app_access")
+        .delete()
+        .eq("user_id", data.userId)
+        .eq("app_slug", data.appSlug);
+      if (error) throw new Error(error.message);
+    }
     return { ok: true };
   });
 
