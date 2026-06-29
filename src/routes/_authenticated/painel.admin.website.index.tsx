@@ -96,14 +96,14 @@ function TrafficPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div className="inline-flex rounded-full bg-zinc-900 border border-zinc-800 p-1">
+        <div className="inline-flex rounded-full bg-card border border-border p-1">
           {[7, 30, 90].map((d) => (
-            <button key={d} onClick={() => setDays(d)} className={`px-3 py-1.5 text-xs rounded-full ${days === d ? "bg-bronze text-black font-semibold" : "text-zinc-400"}`}>
+            <button key={d} onClick={() => setDays(d)} className={`px-3 py-1.5 text-xs rounded-full ${days === d ? "bg-bronze text-black font-semibold" : "text-muted-foreground"}`}>
               {d}d
             </button>
           ))}
         </div>
-        <button onClick={exportCsv} className="inline-flex items-center gap-2 rounded-full border border-zinc-700 px-4 py-2 text-xs hover:border-bronze">
+        <button onClick={exportCsv} className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-xs hover:border-bronze">
           <Download className="h-3.5 w-3.5" /> Exportar CSV
         </button>
       </div>
@@ -115,9 +115,9 @@ function TrafficPage() {
         <Kpi label="Diagnósticos concluídos" value={String(leadCount)} Icon={FileCheck2} />
       </div>
 
-      <div className="rounded-2xl border border-zinc-800 bg-[#161616] p-5">
-        <div className="font-mono text-[10px] uppercase tracking-widest text-zinc-500 mb-2">Conversão</div>
-        <p className="text-sm text-zinc-300">
+      <div className="rounded-2xl border border-border bg-card p-5">
+        <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Conversão</div>
+        <p className="text-sm text-foreground">
           De cada 100 visitantes, <span className="text-bronze font-semibold">{stats.conversionRate}</span> clicaram em "Realizar diagnóstico".
         </p>
       </div>
@@ -127,14 +127,14 @@ function TrafficPage() {
         <Breakdown title="Origem do tráfego" rows={bySource} loading={loading} />
       </div>
 
-      <div className="rounded-2xl border border-zinc-800 bg-[#161616] p-5">
-        <div className="font-mono text-[10px] uppercase tracking-widest text-zinc-500 mb-3">Cliques no CTA por origem</div>
+      <div className="rounded-2xl border border-border bg-card p-5">
+        <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-3">Cliques no CTA por origem</div>
         {ctaSources.length === 0 ? (
-          <p className="text-sm text-zinc-500">Nenhum clique registrado no período.</p>
+          <p className="text-sm text-muted-foreground">Nenhum clique registrado no período.</p>
         ) : (
-          <ul className="divide-y divide-zinc-800">
+          <ul className="divide-y divide-border">
             {ctaSources.map(([k, v]) => (
-              <li key={k} className="py-2 flex justify-between text-sm"><span className="text-zinc-300">{k}</span><span className="text-bronze font-semibold">{v}</span></li>
+              <li key={k} className="py-2 flex justify-between text-sm"><span className="text-foreground">{k}</span><span className="text-bronze font-semibold">{v}</span></li>
             ))}
           </ul>
         )}
@@ -145,10 +145,10 @@ function TrafficPage() {
 
 function Kpi({ label, value, Icon }: { label: string; value: string; Icon: any }) {
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-[#161616] p-5">
+    <div className="rounded-2xl border border-border bg-card p-5">
       <div className="flex items-start justify-between">
         <div>
-          <div className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">{label}</div>
+          <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{label}</div>
           <div className="mt-2 text-2xl font-semibold">{value}</div>
         </div>
         <div className="h-9 w-9 rounded-lg bg-bronze/15 text-bronze grid place-items-center">
@@ -162,21 +162,21 @@ function Kpi({ label, value, Icon }: { label: string; value: string; Icon: any }
 function Breakdown({ title, rows, loading }: { title: string; rows: [string, number][]; loading: boolean }) {
   const max = Math.max(1, ...rows.map((r) => r[1]));
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-[#161616] p-5">
-      <div className="font-mono text-[10px] uppercase tracking-widest text-zinc-500 mb-3">{title}</div>
+    <div className="rounded-2xl border border-border bg-card p-5">
+      <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-3">{title}</div>
       {loading ? (
-        <p className="text-sm text-zinc-500">Carregando…</p>
+        <p className="text-sm text-muted-foreground">Carregando…</p>
       ) : rows.length === 0 ? (
-        <p className="text-sm text-zinc-500">Sem dados ainda.</p>
+        <p className="text-sm text-muted-foreground">Sem dados ainda.</p>
       ) : (
         <ul className="space-y-2">
           {rows.map(([k, v]) => (
             <li key={k}>
               <div className="flex justify-between text-xs mb-1">
-                <span className="text-zinc-300 truncate max-w-[70%]">{k}</span>
+                <span className="text-foreground truncate max-w-[70%]">{k}</span>
                 <span className="text-bronze font-semibold">{v}</span>
               </div>
-              <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+              <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                 <div className="h-full bg-bronze rounded-full" style={{ width: `${(v / max) * 100}%` }} />
               </div>
             </li>

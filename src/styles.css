@@ -69,6 +69,35 @@
   --ring: var(--bronze);
 }
 
+/* Dark theme — applied via the `.dark` class on <html> (admin panel toggle).
+   Reproduces the original hardcoded admin palette so dark mode looks unchanged. */
+.dark {
+  --paper: #0d0d0d;
+  --ink: #f4f4f5;
+  --surface: #161616;
+  --muted-line: #27272a;
+
+  --background: #0d0d0d;
+  --foreground: #f4f4f5;
+  --card: #161616;
+  --card-foreground: #f4f4f5;
+  --popover: #161616;
+  --popover-foreground: #f4f4f5;
+  --primary: var(--bronze);
+  --primary-foreground: #ffffff;
+  --secondary: var(--forest);
+  --secondary-foreground: #ffffff;
+  --muted: #1f1f1f;
+  --muted-foreground: #a1a1aa;
+  --accent: var(--bronze);
+  --accent-foreground: #ffffff;
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: #ffffff;
+  --border: #27272a;
+  --input: #27272a;
+  --ring: var(--bronze);
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
