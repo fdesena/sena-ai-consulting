@@ -23,6 +23,12 @@ src/routeTree.gen.ts
 .wrangler/
 .dev.vars
 
+# Supabase CLI temp/local state
+supabase/.temp/
+
+# Vercel
+.vercel
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

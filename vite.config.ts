@@ -12,4 +12,10 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  // Self-hosted on Vercel (no longer a Lovable Cloud deploy). Force Nitro on with
+  // the Vercel preset — outside a Lovable build the wrapper's default skips Nitro
+  // entirely, which would drop SSR + server routes. Pinning "vercel" makes the
+  // local `bun run build` produce the same Build Output API (.vercel/output) that
+  // Vercel deploys.
+  nitro: { preset: "vercel" },
 });
