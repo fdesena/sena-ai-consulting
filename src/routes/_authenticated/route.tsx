@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PainelHeader } from "@/components/PainelHeader";
+import { useAdminTheme } from "@/lib/admin-theme";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -50,8 +51,19 @@ function AuthedShell() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [open, setOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const [adminTheme] = useAdminTheme();
 
   const inAdmin = pathname.startsWith("/painel/admin");
+
+  // Apply dark theme (token override) on <html> only inside the admin panel.
+  // Scoped here so the public site and user panel always stay light, and so
+  // Radix portals (dropdowns/dialogs) inherit the theme too.
+  useEffect(() => {
+    const root = document.documentElement;
+    if (inAdmin && adminTheme === "dark") root.classList.add("dark");
+    else root.classList.remove("dark");
+    return () => root.classList.remove("dark");
+  }, [inAdmin, adminTheme]);
 
   useEffect(() => {
     const load = async () => {
@@ -87,17 +99,13 @@ function AuthedShell() {
 
   const NAV = inAdmin ? ADMIN_NAV : USER_NAV;
 
-  // Theme classes
-  const shellBg = inAdmin ? "bg-[#0d0d0d] text-zinc-100" : "bg-background text-foreground";
-  const sideBg = inAdmin
-    ? "bg-[#161616] border-zinc-800 text-zinc-100"
-    : "bg-surface border-border text-foreground";
-  const mutedTxt = inAdmin ? "text-zinc-500" : "text-muted-foreground";
-  const borderC = inAdmin ? "border-zinc-800" : "border-border";
-  const hoverBg = inAdmin ? "hover:bg-zinc-800/60" : "hover:bg-muted";
-  const activeCls = inAdmin
-    ? "bg-bronze/20 text-bronze font-medium"
-    : "bg-bronze/10 text-bronze font-medium";
+  // Theme classes — token-based so they follow light/dark via CSS variables.
+  const shellBg = "bg-background text-foreground";
+  const sideBg = "bg-surface border-border text-foreground";
+  const mutedTxt = "text-muted-foreground";
+  const borderC = "border-border";
+  const hoverBg = "hover:bg-muted";
+  const activeCls = "bg-bronze/15 text-bronze font-medium";
 
   const isMobileOpen = open;
   const sidebarWidth = collapsed ? "w-[72px]" : "w-[260px]";
@@ -187,7 +195,7 @@ function AuthedShell() {
               to="/painel"
               onClick={() => setOpen(false)}
               title={collapsed ? "Painel do Usuário" : undefined}
-              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition bg-zinc-800/60 hover:bg-zinc-700/60 text-zinc-100 ${collapsed ? "justify-center px-2" : ""}`}
+              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition bg-muted hover:bg-muted/70 text-foreground ${collapsed ? "justify-center px-2" : ""}`}
             >
               <ArrowLeftRight className="h-4 w-4 shrink-0" />
               {!collapsed && "Painel do Usuário"}
@@ -205,14 +213,12 @@ function AuthedShell() {
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0">
-        <header className={`md:hidden sticky top-0 z-30 backdrop-blur border-b px-4 py-3 flex items-center justify-between ${
-          inAdmin ? "bg-[#0d0d0d]/90 border-zinc-800" : "bg-background/90 border-border"
-        }`}>
+        <header className="md:hidden sticky top-0 z-30 backdrop-blur border-b px-4 py-3 flex items-center justify-between bg-background/90 border-border">
           <button onClick={() => setOpen(true)} className="p-1"><MenuIcon className="h-5 w-5" /></button>
           <span className="font-semibold">Sena<span className="text-bronze">.</span></span>
           <div className="w-6" />
         </header>
-        <PainelHeader title={inAdmin ? "Administrador" : "Painel"} dark={inAdmin} />
+        <PainelHeader title={inAdmin ? "Administrador" : "Painel"} />
         <main className="flex-1 p-6 sm:p-8">
           <Outlet />
         </main>

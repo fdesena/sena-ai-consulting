@@ -5,10 +5,9 @@ import { supabase } from "@/integrations/supabase/client";
 
 type Props = {
   title: string;
-  dark?: boolean;
 };
 
-export function PainelHeader({ title, dark = false }: Props) {
+export function PainelHeader({ title }: Props) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [avatar, setAvatar] = useState<string | null>(null);
@@ -49,16 +48,10 @@ export function PainelHeader({ title, dark = false }: Props) {
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
-  const headerCls = dark
-    ? "bg-[#0d0d0d]/95 border-zinc-800 text-zinc-100"
-    : "bg-background/95 border-border text-foreground";
-  const subTxt = dark ? "text-zinc-500" : "text-muted-foreground";
-  const bellBtn = dark
-    ? "hover:bg-zinc-800/60 text-zinc-300"
-    : "hover:bg-muted text-muted-foreground";
-  const dropdownCls = dark
-    ? "bg-[#161616] border-zinc-800 text-zinc-100"
-    : "bg-white border-border text-foreground";
+  const headerCls = "bg-background/95 border-border text-foreground";
+  const subTxt = "text-muted-foreground";
+  const bellBtn = "hover:bg-muted text-muted-foreground";
+  const dropdownCls = "bg-popover border-border text-popover-foreground";
 
   const initials = (name || email || "?")
     .split(/\s+/).map((s) => s[0]).slice(0, 2).join("").toUpperCase();
@@ -106,9 +99,7 @@ export function PainelHeader({ title, dark = false }: Props) {
         {/* Avatar + name */}
         <Link
           to="/painel/perfil"
-          className={`flex items-center gap-2.5 rounded-full pl-1 pr-3 py-1 transition ${
-            dark ? "hover:bg-zinc-800/60" : "hover:bg-muted"
-          }`}
+          className="flex items-center gap-2.5 rounded-full pl-1 pr-3 py-1 transition hover:bg-muted"
         >
           <span className="h-8 w-8 rounded-full bg-bronze text-white grid place-items-center text-xs font-semibold overflow-hidden">
             {avatar ? (

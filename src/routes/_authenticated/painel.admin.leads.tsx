@@ -121,8 +121,8 @@ function LeadInsights({ row }: { row: Row }) {
     try { await navigator.clipboard.writeText(ins.mensagem); setCopied(true); setTimeout(() => setCopied(false), 1800); } catch {}
   };
   const wa = row.whatsapp ? `https://wa.me/${row.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(ins.mensagem)}` : null;
-  const block = "rounded-xl border border-zinc-800 bg-[#1b1b1b] p-4";
-  const label = "font-mono text-[10px] uppercase tracking-widest text-zinc-500 mb-2 flex items-center gap-1.5";
+  const block = "rounded-xl border border-border bg-muted p-4";
+  const label = "font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2 flex items-center gap-1.5";
 
   return (
     <div className="p-5 space-y-4">
@@ -130,7 +130,7 @@ function LeadInsights({ row }: { row: Row }) {
         <div className={label}><Flame className="h-3.5 w-3.5" /> Termômetro do lead</div>
         <div className="flex items-center gap-3">
           <span className="rounded-lg px-3 py-1 text-sm font-bold text-white" style={{ background: ins.termo.color }}>{ins.termo.label}</span>
-          <span className="text-sm text-zinc-400">{ins.termoReason}</span>
+          <span className="text-sm text-muted-foreground">{ins.termoReason}</span>
         </div>
       </div>
 
@@ -140,10 +140,10 @@ function LeadInsights({ row }: { row: Row }) {
           {ins.ops.map((o, i) => (
             <div key={i} className="border-l-2 border-bronze/60 pl-3">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-sm font-semibold text-zinc-100">{o.titulo}</span>
+                <span className="text-sm font-semibold text-foreground">{o.titulo}</span>
                 <InsTag>{o.tipo}</InsTag>
               </div>
-              <p className="text-sm text-zinc-400 mt-0.5">{o.desc}</p>
+              <p className="text-sm text-muted-foreground mt-0.5">{o.desc}</p>
             </div>
           ))}
         </div>
@@ -154,26 +154,26 @@ function LeadInsights({ row }: { row: Row }) {
         <div className="space-y-2">
           {ins.gaps.map((g, i) => (
             <div key={i} className="flex items-start gap-3">
-              <span className="rounded-md bg-zinc-800 px-2 py-0.5 text-xs font-semibold text-bronze whitespace-nowrap">{g.v}/100</span>
-              <p className="text-sm text-zinc-300"><b>{g.nome}:</b> oportunidade de {g.venda}.</p>
+              <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-semibold text-bronze whitespace-nowrap">{g.v}/100</span>
+              <p className="text-sm text-foreground"><b>{g.nome}:</b> oportunidade de {g.venda}.</p>
             </div>
           ))}
-          {ins.arq && <p className="text-sm text-zinc-400 pt-1 border-t border-zinc-800 mt-2">Gap do perfil <b className="text-zinc-300">{ins.arq.nome}</b>: {ins.arq.gap}</p>}
+          {ins.arq && <p className="text-sm text-muted-foreground pt-1 border-t border-border mt-2">Gap do perfil <b className="text-foreground">{ins.arq.nome}</b>: {ins.arq.gap}</p>}
         </div>
       </div>
 
       <div className={block}>
         <div className={label}><Lightbulb className="h-3.5 w-3.5" /> Roteiro para a conversa agendada</div>
         <ol className="space-y-1.5 list-decimal list-inside">
-          {ins.roteiro.map((r, i) => (<li key={i} className="text-sm text-zinc-300">{r}</li>))}
+          {ins.roteiro.map((r, i) => (<li key={i} className="text-sm text-foreground">{r}</li>))}
         </ol>
       </div>
 
       <div className={block}>
         <div className={label}><MessageSquare className="h-3.5 w-3.5" /> Mensagem sugerida</div>
-        <p className="text-sm text-zinc-200 bg-[#111] rounded-lg p-3 border border-zinc-800 whitespace-pre-wrap leading-relaxed">{ins.mensagem}</p>
+        <p className="text-sm text-foreground bg-card rounded-lg p-3 border border-border whitespace-pre-wrap leading-relaxed">{ins.mensagem}</p>
         <div className="flex gap-2 mt-3">
-          <button onClick={copy} className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-700 bg-[#1f1f1f] px-3 py-1.5 text-sm hover:bg-zinc-800">
+          <button onClick={copy} className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-muted px-3 py-1.5 text-sm hover:bg-muted">
             {copied ? <><Check className="h-3.5 w-3.5 text-green-400" /> Copiado</> : <><Copy className="h-3.5 w-3.5" /> Copiar</>}
           </button>
           {wa && (
@@ -182,7 +182,7 @@ function LeadInsights({ row }: { row: Row }) {
             </a>
           )}
         </div>
-        <p className="text-[11px] text-zinc-600 mt-2">Sugestão automática a partir das respostas. Revise antes de enviar.</p>
+        <p className="text-[11px] text-muted-foreground mt-2">Sugestão automática a partir das respostas. Revise antes de enviar.</p>
       </div>
     </div>
   );
@@ -212,7 +212,7 @@ function ReportModal({ row, onClose }: { row: Row; onClose: () => void }) {
   }, [row]);
   const tabCls = (t: string) => t === tab
     ? "rounded-lg px-3 py-1.5 text-sm font-semibold bg-white text-zinc-900 border border-zinc-300 shadow-sm"
-    : "rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-500 hover:text-zinc-800";
+    : "rounded-lg px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-zinc-800";
   return (
     <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4" onClick={onClose}>
       <div onClick={(e) => e.stopPropagation()} className="bg-white rounded-2xl w-full max-w-3xl h-[88vh] flex flex-col overflow-hidden">
@@ -220,7 +220,7 @@ function ReportModal({ row, onClose }: { row: Row; onClose: () => void }) {
           <div className="flex items-center gap-2">
             <button onClick={() => setTab("report")} className={tabCls("report")}>Relatório</button>
             <button onClick={() => setTab("insights")} className={tabCls("insights")}>Insights</button>
-            <span className="text-sm text-zinc-400 ml-1 hidden sm:inline">— {row.nome}</span>
+            <span className="text-sm text-muted-foreground ml-1 hidden sm:inline">— {row.nome}</span>
           </div>
           <div className="flex gap-2">
             {tab === "report" && (
@@ -237,7 +237,7 @@ function ReportModal({ row, onClose }: { row: Row; onClose: () => void }) {
         <div className="flex-1 min-h-0 relative">
           <iframe ref={iframeRef} src="/diagnostico.html?embed=report" title="Relatório do diagnóstico"
             className={`absolute inset-0 w-full h-full border-0 ${tab === "report" ? "" : "invisible pointer-events-none"}`} />
-          {tab === "insights" && <div className="absolute inset-0 overflow-y-auto bg-[#161616] text-zinc-100">
+          {tab === "insights" && <div className="absolute inset-0 overflow-y-auto bg-card text-foreground">
             <LeadInsights row={row} />
           </div>}
         </div>
@@ -341,18 +341,18 @@ function AdminLeads() {
   }
 
   const tipStyle: React.CSSProperties = { background: "#161616", border: "1px solid #3f3f46", borderRadius: 10, fontSize: 12, color: "#fafafa" };
-  const cardBase = "rounded-2xl border border-zinc-800 bg-[#161616] p-5";
+  const cardBase = "rounded-2xl border border-border bg-card p-5";
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 text-zinc-100">
+    <div className="max-w-7xl mx-auto space-y-6 text-foreground">
       <div className="flex items-end justify-between gap-4 flex-wrap">
         <div>
           <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">Administrador</span>
           <h1 className="mt-2 text-3xl font-semibold">Leads & Diagnósticos</h1>
-          <p className="mt-1 text-sm text-zinc-400">Todas as respostas, KPIs, gráficos e exportação.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Todas as respostas, KPIs, gráficos e exportação.</p>
         </div>
         <div className="flex gap-2">
-          <button onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-zinc-700 bg-[#1f1f1f] px-4 py-2.5 text-sm hover:bg-zinc-800">
+          <button onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-border bg-muted px-4 py-2.5 text-sm hover:bg-muted">
             <RefreshCw className="h-4 w-4" /> Atualizar
           </button>
           <button onClick={exportXLSX} disabled={!filtered.length}
@@ -365,7 +365,7 @@ function AdminLeads() {
       {error && <div className="rounded-lg bg-red-950/40 border border-red-900 text-red-300 px-3 py-2.5 text-sm">{error}</div>}
 
       {!stats ? (
-        <div className="rounded-2xl border border-dashed border-zinc-800 p-12 text-center text-zinc-500">Nenhuma resposta ainda.</div>
+        <div className="rounded-2xl border border-dashed border-border p-12 text-center text-muted-foreground">Nenhuma resposta ainda.</div>
       ) : (
         <>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -452,15 +452,15 @@ function AdminLeads() {
 
           <DCard title={`Leads (${filtered.length})`}>
             <div className="relative mb-3">
-              <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+              <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <input placeholder="Buscar por nome, negócio, WhatsApp, segmento…"
                 value={search} onChange={(e) => setSearch(e.target.value)}
-                className="w-full rounded-xl border border-zinc-700 bg-[#1f1f1f] pl-10 pr-4 py-2.5 text-sm outline-none focus:border-bronze text-zinc-100" />
+                className="w-full rounded-xl border border-border bg-muted pl-10 pr-4 py-2.5 text-sm outline-none focus:border-bronze text-foreground" />
             </div>
             <div className="overflow-x-auto -mx-1">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-[11px] uppercase tracking-wider text-zinc-500 font-mono border-b border-zinc-800">
+                  <tr className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-mono border-b border-border">
                     <th className="py-2.5 px-2">Data</th><th className="py-2.5 px-2">Nome</th>
                     <th className="py-2.5 px-2">Email</th><th className="py-2.5 px-2">Telefone</th>
                     <th className="py-2.5 px-2">Porte</th>
@@ -471,11 +471,11 @@ function AdminLeads() {
                 </thead>
                 <tbody>
                   {filtered.map((r) => (
-                    <tr key={r.id} onClick={() => setSelected(r)} className="border-b border-zinc-900 hover:bg-zinc-900/60 cursor-pointer">
-                      <td className="py-2.5 px-2 font-mono text-[12px] text-zinc-500">{new Date(r.created_at).toLocaleDateString("pt-BR")}</td>
+                    <tr key={r.id} onClick={() => setSelected(r)} className="border-b border-border hover:bg-card/60 cursor-pointer">
+                      <td className="py-2.5 px-2 font-mono text-[12px] text-muted-foreground">{new Date(r.created_at).toLocaleDateString("pt-BR")}</td>
                       <td className="py-2.5 px-2 font-medium">{r.nome}</td>
-                      <td className="py-2.5 px-2 text-zinc-300">{r.email ?? "—"}</td>
-                      <td className="py-2.5 px-2 text-zinc-300 whitespace-nowrap">{r.whatsapp || "—"}</td>
+                      <td className="py-2.5 px-2 text-foreground">{r.email ?? "—"}</td>
+                      <td className="py-2.5 px-2 text-foreground whitespace-nowrap">{r.whatsapp || "—"}</td>
                       <td className="py-2.5 px-2">{porteOf(r)}</td>
                       <td className="py-2.5 px-2">{r.negocio ?? "—"}</td>
                       <td className="py-2.5 px-2">{r.segmento ?? "—"}</td>
@@ -486,7 +486,7 @@ function AdminLeads() {
                         <button
                           onClick={(e) => { e.stopPropagation(); setReport(r); }}
                           title="Ver relatório final"
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-700 bg-[#1f1f1f] px-2.5 py-1.5 text-xs hover:bg-zinc-800 whitespace-nowrap"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-muted px-2.5 py-1.5 text-xs hover:bg-muted whitespace-nowrap"
                         >
                           <FileText className="h-3.5 w-3.5" /> Ver relatório
                         </button>
@@ -504,14 +504,14 @@ function AdminLeads() {
 
       {selected && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-end sm:items-center justify-center p-4" onClick={() => setSelected(null)}>
-          <div onClick={(e) => e.stopPropagation()} className="bg-[#161616] text-zinc-100 rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-7 border border-zinc-800">
+          <div onClick={(e) => e.stopPropagation()} className="bg-card text-foreground rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-7 border border-border">
             <div className="flex justify-between items-start mb-5">
               <div>
                 <span className="font-mono text-[11px] uppercase tracking-widest text-bronze">Lead</span>
                 <h2 className="text-2xl font-semibold mt-1">{selected.nome}</h2>
-                <p className="text-sm text-zinc-400">{selected.negocio} · {selected.whatsapp}</p>
+                <p className="text-sm text-muted-foreground">{selected.negocio} · {selected.whatsapp}</p>
               </div>
-              <button onClick={() => setSelected(null)} className="text-zinc-500 hover:text-zinc-100 text-2xl leading-none">×</button>
+              <button onClick={() => setSelected(null)} className="text-muted-foreground hover:text-foreground text-2xl leading-none">×</button>
             </div>
             <div className="grid grid-cols-2 gap-3 text-sm">
               <F k="Segmento" v={selected.segmento} /><F k="Papel" v={selected.papel} />
@@ -525,23 +525,23 @@ function AdminLeads() {
                 ["Usar IA", selected.score_usar_ia], ["Oport.", selected.score_oportunidades],
                 ["Autom.", selected.score_automacao], ["Gente", selected.score_gente], ["Dados", selected.score_dados],
               ].map(([k, v]) => (
-                <div key={k as string} className="rounded-lg border border-zinc-800 p-2.5 text-center">
-                  <div className="font-mono text-[10px] uppercase text-zinc-500">{k}</div>
+                <div key={k as string} className="rounded-lg border border-border p-2.5 text-center">
+                  <div className="font-mono text-[10px] uppercase text-muted-foreground">{k}</div>
                   <div className="text-lg font-semibold text-bronze">{v as number}</div>
                 </div>
               ))}
             </div>
             {selected.desafios && selected.desafios.length > 0 && (
               <div className="mt-5">
-                <div className="font-mono text-[10px] uppercase tracking-widest text-zinc-500 mb-1.5">Desafios</div>
+                <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Desafios</div>
                 <div className="flex flex-wrap gap-1.5">
-                  {selected.desafios.map((d) => (<span key={d} className="text-xs bg-zinc-800 px-2 py-1 rounded">{d}</span>))}
+                  {selected.desafios.map((d) => (<span key={d} className="text-xs bg-muted px-2 py-1 rounded">{d}</span>))}
                 </div>
               </div>
             )}
             {selected.reflexao && (
               <div className="mt-4">
-                <div className="font-mono text-[10px] uppercase tracking-widest text-zinc-500 mb-1.5">Reflexão</div>
+                <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Reflexão</div>
                 <p className="text-sm">{selected.reflexao}</p>
               </div>
             )}
@@ -556,7 +556,7 @@ function AdminLeads() {
       <div className={cardBase}>
         <div className="flex items-start justify-between">
           <div>
-            <div className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">{label}</div>
+            <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{label}</div>
             <div className="mt-2 text-2xl font-semibold">{value}</div>
           </div>
           <div className="h-9 w-9 rounded-lg bg-bronze/15 text-bronze grid place-items-center"><Icon className="h-4 w-4" /></div>
@@ -567,15 +567,15 @@ function AdminLeads() {
   function DCard({ title, children, className = "" }: { title: string; children: React.ReactNode; className?: string }) {
     return (
       <div className={`${cardBase} ${className}`}>
-        <div className="font-mono text-[10px] uppercase tracking-widest text-zinc-500 mb-3">{title}</div>
+        <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-3">{title}</div>
         {children}
       </div>
     );
   }
   function F({ k, v }: { k: string; v: string | null }) {
     return (
-      <div className="rounded-lg border border-zinc-800 p-2.5">
-        <div className="font-mono text-[10px] uppercase text-zinc-500">{k}</div>
+      <div className="rounded-lg border border-border p-2.5">
+        <div className="font-mono text-[10px] uppercase text-muted-foreground">{k}</div>
         <div className="text-sm mt-0.5">{v || "—"}</div>
       </div>
     );
