@@ -56,7 +56,8 @@ demais em runtime pela função de servidor.
 | `SUPABASE_SERVICE_ROLE_KEY` | (Dashboard → Settings → API → service_role) | **secret** |
 | `RESEND_API_KEY` | (resend.com → API Keys) | **secret** |
 | `RESEND_FROM` | contato@senaconsulting.app | pública |
-| `PUBLIC_SITE_URL` | https://senaconsulting.app | pública |
+| `RESEND_WEBHOOK_SECRET` | `whsec_...` (resend.com → Webhooks) — opcional, p/ supressão de bounces | **secret** |
+| `PUBLIC_SITE_URL` | https://www.senaconsulting.app | pública |
 
 > `SUPABASE_DB_PASSWORD` NÃO vai pra Vercel (é só pra CLI de migrations).
 
@@ -89,22 +90,32 @@ select vault.create_secret('<SERVICE_ROLE_KEY>', 'email_queue_service_role_key',
 ```
 Depois rode `supabase/setup_email_queue_cron.sql` para agendar o job (`process-email-queue`, a cada 10s).
 
-## Pendências / couplings da Lovable que ficaram
+## Webhook de bounce/complaint do Resend (supressão automática)
 
-Estes não bloqueiam o funcionamento principal, mas merecem atenção:
+`src/routes/lovable/email/suppression.ts` foi reescrito como **webhook do Resend**
+(assinatura via Svix, lib `svix`). Para ativar a supressão automática de
+bounces/spam:
 
-- **`src/routes/lovable/email/suppression.ts`** — webhook que recebia eventos de
-  bounce/complaint do Mailgun via API da Lovable (`@lovable.dev/webhooks-js`,
-  `LOVABLE_API_KEY`). **Com o Resend ele não recebe mais nada.** Para ter
-  supressão automática de bounces, reescrever como webhook do Resend (assinatura
-  via Svix) e configurar em resend.com → Webhooks. O unsubscribe self-service
-  (`/email/unsubscribe`) continua funcionando normalmente.
-- **`src/routes/lovable/email/transactional/preview.ts`** — endpoint de preview de
-  templates usado pelo dashboard da Lovable. Órfão, mas inofensivo.
-- **Dependências `@lovable.dev/email-js` e `@lovable.dev/webhooks-js`** em
-  `package.json`: a primeira não é mais importada (pode remover); a segunda ainda
-  é usada por `suppression.ts`. (`@lovable.dev/vite-tanstack-config` é necessária
-  para o build — NÃO remover.)
+1. **resend.com → Webhooks → Add Endpoint**:
+   `https://www.senaconsulting.app/lovable/email/suppression`
+2. Eventos: marcar **`email.bounced`** e **`email.complained`**.
+3. Copiar o **Signing Secret** (`whsec_...`) e adicioná-lo na Vercel como
+   `RESEND_WEBHOOK_SECRET` (Production) → **Redeploy**.
+
+Sem essa env var o endpoint responde 500 (fail-closed). O unsubscribe self-service
+(`/email/unsubscribe`) já funciona independentemente.
+
+## Limpeza de Lovable já feita
+
+- Removidos os pacotes mortos `@lovable.dev/email-js` e `@lovable.dev/webhooks-js`,
+  e a pasta `.lovable/`. (`@lovable.dev/vite-tanstack-config` **permanece** — é
+  necessária para o build.)
+- Removido `transactional/preview.ts` (era preview de templates do dashboard da Lovable).
+- As rotas sob `/lovable/email/...` mantêm esse prefixo de propósito (o cron e o
+  fluxo do diagnóstico apontam para elas) — é só cosmético.
+
+## Outras observações
+
 - **Emails de auth do Supabase** (reset de senha etc.) usam o serviço padrão do
   Supabase no projeto novo. Para produção, dá pra configurar SMTP custom (Resend)
   em Auth → SMTP Settings. Opcional — o fluxo de credenciais do diagnóstico já vai

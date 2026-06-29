@@ -42,7 +42,9 @@ select cron.schedule(
 
     if has_msgs then
       perform net.http_post(
-        url := 'https://senaconsulting.app/lovable/email/queue/process',
+        -- Canonical host: the apex 308-redirects to www and pg_net does not
+        -- follow redirects, so the request must target www directly.
+        url := 'https://www.senaconsulting.app/lovable/email/queue/process',
         headers := jsonb_build_object(
           'Content-Type', 'application/json',
           'Authorization', 'Bearer ' || (
