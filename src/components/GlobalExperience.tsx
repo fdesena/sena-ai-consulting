@@ -1,14 +1,14 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { ExternalLink, Linkedin, ArrowLeft, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import selectUsaAsset from "@/assets/felipe-selectusa.png.asset.json";
-import miamiAsset from "@/assets/felipe-miami-goglobal.png.asset.json";
-import myllenniumAsset from "@/assets/felipe-myllennium.png.asset.json";
-import hultChallengeAsset from "@/assets/felipe-hult-challenge.png.asset.json";
-import mitSolveAsset from "@/assets/felipe-mit-solve.png.asset.json";
-import bostonBeyondAsset from "@/assets/felipe-boston-beyond.png.asset.json";
-import epicMalasiaAsset from "@/assets/felipe-epic-malasia.png.asset.json";
-import hultAlumniAsset from "@/assets/felipe-hult-alumni.png.asset.json";
+import selectUsaImg from "@/assets/felipe-selectusa.png";
+import miamiImg from "@/assets/felipe-miami-goglobal.png";
+import myllenniumImg from "@/assets/felipe-myllennium.png";
+import hultChallengeImg from "@/assets/felipe-hult-challenge.png";
+import mitSolveImg from "@/assets/felipe-mit-solve.png";
+import bostonBeyondImg from "@/assets/felipe-boston-beyond.png";
+import epicMalasiaImg from "@/assets/felipe-epic-malasia.png";
+import hultAlumniImg from "@/assets/felipe-hult-alumni.png";
 
 type Experience = {
   title: string;
@@ -31,7 +31,7 @@ const EXPERIENCES: Experience[] = [
     location: "Estados Unidos · Brasil · Panamá",
     flags: "🇺🇸 🇧🇷 🇵🇦",
     tag: "Internacionalização",
-    image: miamiAsset.url,
+    image: miamiImg,
     link: "https://www.linkedin.com/in/senafelipe/",
     linkLabel: "Ver no LinkedIn",
   },
@@ -69,7 +69,7 @@ const EXPERIENCES: Experience[] = [
     location: "Estados Unidos",
     flags: "🇺🇸",
     tag: "Captação internacional",
-    image: selectUsaAsset.url,
+    image: selectUsaImg,
     link: "https://portal.agrosummit.com.br/agfintech-brasileira-e-selecionada-para-maior-evento-de-investimento-dos-eua",
     linkLabel: "Ver matéria",
   },
@@ -81,7 +81,7 @@ const EXPERIENCES: Experience[] = [
     location: "Estados Unidos",
     flags: "🇺🇸",
     tag: "Networking global",
-    image: hultAlumniAsset.url,
+    image: hultAlumniImg,
     link: "https://www.linkedin.com/posts/senafelipe_activity-7465827955500367872",
     linkLabel: "Ver post",
   },
@@ -93,7 +93,7 @@ const EXPERIENCES: Experience[] = [
     location: "Estados Unidos",
     flags: "🇺🇸",
     tag: "Estratégia & IA",
-    image: hultChallengeAsset.url,
+    image: hultChallengeImg,
     link: "https://www.linkedin.com/posts/senafelipe_it-was-a-distinct-pleasure-to-participate-activity-7143594499804459008-T8Co",
     linkLabel: "Ver post",
   },
@@ -118,7 +118,7 @@ const EXPERIENCES: Experience[] = [
     location: "Itália · Estados Unidos",
     flags: "🇮🇹 🇺🇸",
     tag: "Aceleração",
-    image: myllenniumAsset.url,
+    image: myllenniumImg,
     link: "https://www.linkedin.com/posts/senafelipe_lesperienza-del-boston-innovation-gateway-activity-7176944036270784513-87zo",
     linkLabel: "Ver post",
   },
@@ -130,7 +130,7 @@ const EXPERIENCES: Experience[] = [
     location: "Estados Unidos · Jordânia",
     flags: "🇺🇸 🇯🇴",
     tag: "MIT · IA estratégica",
-    image: mitSolveAsset.url,
+    image: mitSolveImg,
     link: "https://www.linkedin.com/posts/senafelipe_digitaltransformation-artificialintelligence-activity-7123746921839493120-ePnZ",
     linkLabel: "Ver post",
   },
@@ -142,7 +142,7 @@ const EXPERIENCES: Experience[] = [
     location: "Brasil · Estados Unidos",
     flags: "🇧🇷 🇺🇸",
     tag: "Executivo · IA aplicada",
-    image: bostonBeyondAsset.url,
+    image: bostonBeyondImg,
     link: "https://www.linkedin.com/feed/update/urn:li:ugcPost:7121963915718074368",
     linkLabel: "Ver post",
   },
@@ -154,7 +154,7 @@ const EXPERIENCES: Experience[] = [
     location: "Malásia · Estados Unidos",
     flags: "🇲🇾 🇺🇸",
     tag: "Inovação corporativa",
-    image: epicMalasiaAsset.url,
+    image: epicMalasiaImg,
     link: "https://www.linkedin.com/posts/senafelipe_epicboston-innovationmanagement-collaboration-activity-7068354948282871808-K--8",
     linkLabel: "Ver post",
   },

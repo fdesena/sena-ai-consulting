@@ -34,7 +34,7 @@ import TrackRecord from "./TrackRecord";
 import GlobalExperience from "./GlobalExperience";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 import { RING_1_TOOLS, RING_2_TOOLS, RING_3_TOOLS, type ToolIcon } from "@/data/tool-icons";
-import felipeAsset from "@/assets/felipe-sena.png.asset.json";
+import felipeImg from "@/assets/felipe-sena-profile.png";
 
 const COUNTRIES = [
   { code: "BR", name: "Brasil" },
@@ -653,7 +653,7 @@ export default function LandingPage() {
               />
               <div className="relative h-56 w-56 overflow-hidden rounded-full ring-4 ring-primary/20 ring-offset-4 ring-offset-background sm:h-64 sm:w-64">
                 <img
-                  src={felipeAsset.url}
+                  src={felipeImg}
                   alt="Felipe Sena, fundador da Sena Consulting"
                   className="h-full w-full object-cover object-[center_15%]"
                   loading="lazy"

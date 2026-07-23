@@ -5,9 +5,9 @@
 - **Styling:** Tailwind CSS v4 with `md:` breakpoint for responsive
 - **Package Manager:** Bun
 - **Animation:** Framer-motion + CSS @keyframes
-- **Database:** Supabase (blog_posts table for GlobalExperience)
-- **Sync:** Lovable ↔ GitHub (2-way automatic sync)
-- **Deployment:** Production domain is `senaconsulting.app`
+- **Database:** Supabase (blog_posts table for GlobalExperience) — own project, no longer Lovable Cloud
+- **Deployment:** Vercel (self-hosted), production domain is `senaconsulting.app`. **No longer using Lovable** — GitHub sync + custom domain were disconnected 2026-06-29; GitHub is the sole source of truth (no bidirectional sync to reconcile).
+- **Known leftover Lovable coupling:** `@lovable.dev/vite-tanstack-config` is still required for the build (Nitro/Vercel preset, etc). One side effect: images imported via `src/assets/*.asset.json` (`import x from "@/assets/foo.png.asset.json"`, then `x.url`) resolve to `/__l5e/assets-v1/...`, a path only served by that package's dev-only proxy plugin (needs `LOVABLE_PREVIEW_HOST`, which isn't set). **These URLs 404 in production and in local dev.** Don't use the `.asset.json` import pattern for new images — drop a real image file in `src/assets/` and `import img from "@/assets/foo.png"` directly (plain Vite asset import), or put it in `public/` and reference by path.
 
 ## Git Workflow & Commit Process
 
