@@ -1,0 +1,110 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+
+const EMAIL = "felipesmsena@gmail.com";
+
+export const Route = createFileRoute("/politica-de-privacidade")({
+  head: () => ({
+    meta: [
+      { title: "Política de Privacidade — Sena Consulting" },
+      {
+        name: "description",
+        content:
+          "Política de Privacidade da Sena Consulting: como coletamos, usamos e protegemos dados de contato, incluindo comunicação via WhatsApp.",
+      },
+      { property: "og:title", content: "Política de Privacidade — Sena Consulting" },
+      { property: "og:url", content: "https://senaconsulting.app/politica-de-privacidade" },
+      { property: "og:type", content: "website" },
+      { name: "robots", content: "noindex, follow" },
+    ],
+    links: [{ rel: "canonical", href: "https://senaconsulting.app/politica-de-privacidade" }],
+  }),
+  component: PrivacyPolicy,
+});
+
+function PrivacyPolicy() {
+  return (
+    <main className="mx-auto max-w-3xl px-6 py-16 text-foreground">
+      <Link to="/" className="text-sm text-muted-foreground hover:underline">
+        ← Voltar
+      </Link>
+
+      <h1 className="mt-6 text-3xl font-semibold">Política de Privacidade</h1>
+      <p className="mt-2 text-sm text-muted-foreground">Última atualização: 30 de julho de 2026</p>
+
+      <div className="prose prose-neutral mt-8 max-w-none space-y-6 text-sm leading-relaxed text-foreground/90">
+        <section>
+          <h2 className="text-lg font-semibold">1. Quem somos</h2>
+          <p>
+            A Sena Consulting ("nós") é uma consultoria de IA e automação operada por Felipe Sena. Esta
+            política explica como coletamos, usamos e protegemos as informações de pessoas que entram em
+            contato conosco pelo site, e-mail, LinkedIn ou WhatsApp, incluindo interações automatizadas
+            realizadas através da API do WhatsApp Business (Meta).
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-lg font-semibold">2. Quais dados coletamos</h2>
+          <p>Quando você interage com a gente, podemos coletar:</p>
+          <ul className="list-disc pl-6">
+            <li>Nome, número de telefone e conteúdo das mensagens trocadas via WhatsApp;</li>
+            <li>Endereço de e-mail e conteúdo de mensagens enviadas por formulários ou e-mail;</li>
+            <li>Respostas fornecidas em nosso diagnóstico de IA e automação (Bússola Digital & IA);</li>
+            <li>Dados de uso do site (páginas visitadas, origem do tráfego) para fins estatísticos.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 className="text-lg font-semibold">3. Como usamos seus dados</h2>
+          <p>Usamos essas informações para:</p>
+          <ul className="list-disc pl-6">
+            <li>Responder dúvidas e conduzir conversas comerciais, inclusive por automações de WhatsApp;</li>
+            <li>Agendar reuniões e dar continuidade a propostas de consultoria;</li>
+            <li>Gerar o diagnóstico solicitado e enviar seu resultado por e-mail ou WhatsApp;</li>
+            <li>Melhorar nossos serviços e comunicação.</li>
+          </ul>
+          <p>Não vendemos seus dados a terceiros.</p>
+        </section>
+
+        <section>
+          <h2 className="text-lg font-semibold">4. Compartilhamento de dados</h2>
+          <p>
+            Seus dados podem ser processados pelos seguintes prestadores de serviço, sob acordos de
+            confidencialidade e proteção de dados:
+          </p>
+          <ul className="list-disc pl-6">
+            <li>Meta Platforms, Inc. — infraestrutura da API do WhatsApp Business, usada para envio e recebimento de mensagens;</li>
+            <li>Supabase — armazenamento de dados de formulários e diagnósticos;</li>
+            <li>Vercel — hospedagem do site;</li>
+            <li>Provedores de e-mail transacional, para envio de comunicações solicitadas.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 className="text-lg font-semibold">5. Retenção e exclusão de dados</h2>
+          <p>
+            Mantemos seus dados pelo tempo necessário para os fins descritos acima ou conforme exigido por
+            lei. Você pode solicitar a exclusão dos seus dados a qualquer momento entrando em contato pelo
+            e-mail <a href={`mailto:${EMAIL}`} className="underline">{EMAIL}</a>.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-lg font-semibold">6. Seus direitos</h2>
+          <p>
+            De acordo com a LGPD (Lei nº 13.709/2018) e, quando aplicável, o GDPR, você tem direito a
+            acessar, corrigir, portar ou solicitar a exclusão dos seus dados pessoais, além de revogar
+            consentimento para comunicações a qualquer momento.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-lg font-semibold">7. Contato</h2>
+          <p>
+            Para exercer seus direitos ou tirar dúvidas sobre esta política, entre em contato pelo e-mail{" "}
+            <a href={`mailto:${EMAIL}`} className="underline">{EMAIL}</a>.
+          </p>
+        </section>
+      </div>
+    </main>
+  );
+}

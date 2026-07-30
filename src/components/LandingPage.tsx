@@ -804,7 +804,18 @@ export default function LandingPage() {
       <footer className="border-t border-border">
         <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 px-6 py-10 text-sm text-muted-foreground sm:flex-row sm:items-center">
           <span>© {new Date().getFullYear()} Sena Consulting · Felipe Sena</span>
-          <span>São Paulo · Boston · Global</span>
+          <div className="flex flex-wrap items-center gap-4">
+            <a href="/politica-de-privacidade" className="hover:underline">
+              Política de Privacidade
+            </a>
+            <a href="/termos-de-uso" className="hover:underline">
+              Termos de Uso
+            </a>
+            <a href="/exclusao-de-dados" className="hover:underline">
+              Exclusão de Dados
+            </a>
+            <span>São Paulo · Boston · Global</span>
+          </div>
         </div>
       </footer>
 
