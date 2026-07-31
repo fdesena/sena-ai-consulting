@@ -1,6 +1,6 @@
 import TypeWriter from "@/components/TypeWriter";
 import logoIcon from "@/assets/Logo/logo-icon.png";
-import logoFull from "@/assets/Logo/senaconsulting_logo.png";
+import logoFull from "@/assets/Logo/senaconsulting_logo_tight.png";
 import { Link } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { trackEvent, trackPageview } from "@/lib/track";
@@ -807,22 +807,24 @@ export default function LandingPage() {
       </Section>
 
       <footer className="border-t border-border">
-        <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 px-6 py-10 text-sm text-muted-foreground sm:flex-row sm:items-center">
-          <div className="flex items-center gap-3">
-            <img src={logoFull} alt="Sena Consulting" className="h-8 w-auto opacity-90" />
-            <span>© {new Date().getFullYear()} Sena Consulting · Felipe Sena</span>
-          </div>
-          <div className="flex flex-wrap items-center gap-4">
-            <a href="/politica-de-privacidade" className="hover:underline">
-              Política de Privacidade
-            </a>
-            <a href="/termos-de-uso" className="hover:underline">
-              Termos de Uso
-            </a>
-            <a href="/exclusao-de-dados" className="hover:underline">
-              Exclusão de Dados
-            </a>
-            <span>São Paulo · Boston · Global</span>
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-10 text-sm text-muted-foreground">
+          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
+            <div className="flex flex-col items-start gap-1">
+              <img src={logoFull} alt="Sena Consulting" className="h-auto w-[248px] opacity-90" />
+              <span>© {new Date().getFullYear()} Sena Consulting · Felipe Sena</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-4">
+              <a href="/politica-de-privacidade" className="hover:underline">
+                Política de Privacidade
+              </a>
+              <a href="/termos-de-uso" className="hover:underline">
+                Termos de Uso
+              </a>
+              <a href="/exclusao-de-dados" className="hover:underline">
+                Exclusão de Dados
+              </a>
+              <span>São Paulo · Boston · Global</span>
+            </div>
           </div>
         </div>
       </footer>
