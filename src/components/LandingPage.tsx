@@ -1,4 +1,6 @@
 import TypeWriter from "@/components/TypeWriter";
+import logoIcon from "@/assets/Logo/logo-icon.png";
+import logoFull from "@/assets/Logo/senaconsulting_logo.png";
 import { Link } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { trackEvent, trackPageview } from "@/lib/track";
@@ -229,8 +231,11 @@ export default function LandingPage() {
       {/* NAV */}
       <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <a href="#top" className="font-display text-lg font-semibold tracking-tight inline-block min-w-[280px]">
-            <TypeWriter />
+          <a href="#top" className="inline-flex min-w-[280px] items-center gap-2">
+            <img src={logoIcon} alt="Sena Consulting" className="h-8 w-8" />
+            <span className="font-display text-lg font-semibold tracking-tight">
+              <TypeWriter />
+            </span>
           </a>
           <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 text-sm md:flex">
             <a href="#pilares" className="hover:text-primary">O que faço</a>
@@ -803,7 +808,10 @@ export default function LandingPage() {
 
       <footer className="border-t border-border">
         <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 px-6 py-10 text-sm text-muted-foreground sm:flex-row sm:items-center">
-          <span>© {new Date().getFullYear()} Sena Consulting · Felipe Sena</span>
+          <div className="flex items-center gap-3">
+            <img src={logoFull} alt="Sena Consulting" className="h-8 w-auto opacity-90" />
+            <span>© {new Date().getFullYear()} Sena Consulting · Felipe Sena</span>
+          </div>
           <div className="flex flex-wrap items-center gap-4">
             <a href="/politica-de-privacidade" className="hover:underline">
               Política de Privacidade
