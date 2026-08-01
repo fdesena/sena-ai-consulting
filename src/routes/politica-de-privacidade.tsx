@@ -68,15 +68,33 @@ function PrivacyPolicy() {
         <section>
           <h2 className="text-lg font-semibold">4. Compartilhamento de dados</h2>
           <p>
-            Seus dados podem ser processados pelos seguintes prestadores de serviço, sob acordos de
-            confidencialidade e proteção de dados:
+            Não vendemos seus dados. Tratamos dois conjuntos de dados independentes, em infraestruturas
+            separadas, e cada prestador tem acesso apenas ao conjunto indicado abaixo.
+          </p>
+          <p>
+            Dados do site e da área de clientes — nome, e-mail, respostas de diagnóstico e dados de uso:
           </p>
           <ul className="list-disc pl-6">
-            <li>Meta Platforms, Inc. — infraestrutura da API do WhatsApp Business, usada para envio e recebimento de mensagens;</li>
-            <li>Supabase — armazenamento de dados de formulários e diagnósticos;</li>
-            <li>Vercel — hospedagem do site;</li>
-            <li>Provedores de e-mail transacional, para envio de comunicações solicitadas.</li>
+            <li>Supabase, Inc. (Estados Unidos) — banco de dados;</li>
+            <li>Vercel Inc. (Estados Unidos) — hospedagem do site;</li>
+            <li>provedor de e-mail transacional.</li>
           </ul>
+          <p>
+            Dados das integrações de WhatsApp Business — nome, telefone e conteúdo das mensagens trocadas
+            entre nossos clientes e os clientes deles:
+          </p>
+          <ul className="list-disc pl-6">
+            <li>Meta Platforms, Inc. — infraestrutura da API do WhatsApp Business;</li>
+            <li>servidores operados diretamente pela Sena Consulting, em datacenter no Brasil.</li>
+          </ul>
+          <p>
+            Estes dados não são armazenados no Supabase, na Vercel nem em qualquer outro prestador
+            terceiro.
+          </p>
+          <p>
+            Também podemos divulgar dados quando exigido por autoridade competente, observada nossa
+            política de análise de legitimidade e de minimização de dados.
+          </p>
         </section>
 
         <section>
