@@ -29,7 +29,7 @@ function PrivacyPolicy() {
       </Link>
 
       <h1 className="mt-6 text-3xl font-semibold">Política de Privacidade</h1>
-      <p className="mt-2 text-sm text-muted-foreground">Última atualização: 30 de julho de 2026</p>
+      <p className="mt-2 text-sm text-muted-foreground">Última atualização: 1º de agosto de 2026</p>
 
       <div className="prose prose-neutral mt-8 max-w-none space-y-6 text-sm leading-relaxed text-foreground/90">
         <section>
@@ -50,7 +50,15 @@ function PrivacyPolicy() {
             <li>Endereço de e-mail e conteúdo de mensagens enviadas por formulários ou e-mail;</li>
             <li>Respostas fornecidas em nosso diagnóstico de IA e automação (Bússola Digital & IA);</li>
             <li>Dados de uso do site (páginas visitadas, origem do tráfego) para fins estatísticos.</li>
+            <li>
+              Nome, telefone e conteúdo das mensagens de clientes dos nossos clientes, quando operamos
+              integrações de WhatsApp Business em nome deles.
+            </li>
           </ul>
+          <p>
+            Nesse último caso atuamos como operadores: os dados pertencem ao nosso cliente contratante,
+            que define as finalidades do tratamento.
+          </p>
         </section>
 
         <section>
@@ -62,7 +70,6 @@ function PrivacyPolicy() {
             <li>Gerar o diagnóstico solicitado e enviar seu resultado por e-mail ou WhatsApp;</li>
             <li>Melhorar nossos serviços e comunicação.</li>
           </ul>
-          <p>Não vendemos seus dados a terceiros.</p>
         </section>
 
         <section>
