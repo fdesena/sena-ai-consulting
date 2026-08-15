@@ -16,6 +16,7 @@ import {
   Globe,
   Scale,
   LayoutGrid,
+  MessageCircle,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PainelHeader } from "@/components/PainelHeader";
@@ -25,6 +26,7 @@ import { APPS } from "@/lib/apps";
 // Ícone por app (mantido fora do registro serializável de @/lib/apps).
 const APP_ICONS: Record<string, any> = {
   jusradar: Scale,
+  whatsapp: MessageCircle,
 };
 
 export const Route = createFileRoute("/_authenticated")({

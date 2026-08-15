@@ -329,6 +329,105 @@ export type Database = {
         }
         Relationships: []
       }
+      whatsapp_connections: {
+        Row: {
+          business_name: string | null
+          connected_at: string | null
+          created_at: string
+          display_phone_number: string | null
+          error_message: string | null
+          id: string
+          phone_number_id: string | null
+          status: string
+          updated_at: string
+          user_id: string
+          verified_name: string | null
+          waba_id: string
+        }
+        Insert: {
+          business_name?: string | null
+          connected_at?: string | null
+          created_at?: string
+          display_phone_number?: string | null
+          error_message?: string | null
+          id?: string
+          phone_number_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          verified_name?: string | null
+          waba_id: string
+        }
+        Update: {
+          business_name?: string | null
+          connected_at?: string | null
+          created_at?: string
+          display_phone_number?: string | null
+          error_message?: string | null
+          id?: string
+          phone_number_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          verified_name?: string | null
+          waba_id?: string
+        }
+        Relationships: []
+      }
+      whatsapp_connection_secrets: {
+        Row: {
+          connection_id: string
+          created_at: string
+          encrypted_access_token: string
+          token_expires_at: string | null
+          token_iv: string
+          updated_at: string
+        }
+        Insert: {
+          connection_id: string
+          created_at?: string
+          encrypted_access_token: string
+          token_expires_at?: string | null
+          token_iv: string
+          updated_at?: string
+        }
+        Update: {
+          connection_id?: string
+          created_at?: string
+          encrypted_access_token?: string
+          token_expires_at?: string | null
+          token_iv?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      whatsapp_events: {
+        Row: {
+          connection_id: string | null
+          event_type: string
+          id: string
+          payload: Json
+          received_at: string
+          waba_id: string
+        }
+        Insert: {
+          connection_id?: string | null
+          event_type: string
+          id?: string
+          payload: Json
+          received_at?: string
+          waba_id: string
+        }
+        Update: {
+          connection_id?: string | null
+          event_type?: string
+          id?: string
+          payload?: Json
+          received_at?: string
+          waba_id?: string
+        }
+        Relationships: []
+      }
       user_app_access: {
         Row: {
           app_slug: string

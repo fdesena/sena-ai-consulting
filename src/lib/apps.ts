@@ -17,6 +17,12 @@ export const APPS: AppDef[] = [
     to: "/painel/jusradar",
     description: "Radar de jurisprudência com IA.",
   },
+  {
+    slug: "whatsapp",
+    name: "WhatsApp",
+    to: "/painel/whatsapp",
+    description: "Conecte seu WhatsApp Business para mensagens automatizadas.",
+  },
 ];
 
 export const APP_SLUGS = APPS.map((a) => a.slug) as [string, ...string[]];
