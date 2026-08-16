@@ -21,12 +21,13 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { PainelHeader } from "@/components/PainelHeader";
 import { useAdminTheme } from "@/lib/admin-theme";
-import { APPS } from "@/lib/apps";
+import { APPS, ADMIN_TOOLS } from "@/lib/apps";
 
 // Ícone por app (mantido fora do registro serializável de @/lib/apps).
 const APP_ICONS: Record<string, any> = {
   jusradar: Scale,
   whatsapp: MessageCircle,
+  whatsapp_admin: MessageCircle,
 };
 
 export const Route = createFileRoute("/_authenticated")({
@@ -119,8 +120,14 @@ function AuthedShell() {
     .filter((a) => isAdmin || appAccess.includes(a.slug))
     .map((a) => ({ to: a.to, label: a.name, Icon: APP_ICONS[a.slug] ?? LayoutGrid }));
 
+  // Ferramentas admin: acesso NUNCA automático por ser admin — só quem foi liberado
+  // explicitamente em Usuários -> Acesso de Apps -> Ferramentas administrativas.
+  const adminToolItems: NavItem[] = ADMIN_TOOLS
+    .filter((a) => appAccess.includes(a.slug))
+    .map((a) => ({ to: a.to, label: a.name, Icon: APP_ICONS[a.slug] ?? LayoutGrid }));
+
   const navGroups: NavGroup[] = inAdmin
-    ? [{ title: "Administração", items: ADMIN_NAV }]
+    ? [{ title: "Administração", items: [...ADMIN_NAV, ...adminToolItems] }]
     : [
         { title: "Geral", items: USER_NAV },
         ...(appItems.length ? [{ title: "Sena Consulting Apps", items: appItems }] : []),

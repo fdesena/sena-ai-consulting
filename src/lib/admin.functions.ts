@@ -1,7 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { APP_SLUGS } from "@/lib/apps";
+import { APP_SLUGS, ADMIN_TOOL_SLUGS } from "@/lib/apps";
+
+const GRANTABLE_SLUGS = [...APP_SLUGS, ...ADMIN_TOOL_SLUGS] as [string, ...string[]];
 
 async function assertAdmin(context: any) {
   const { data, error } = await context.supabase.rpc("has_role", {
@@ -121,7 +123,7 @@ export const adminSetAppAccess = createServerFn({ method: "POST" })
     z
       .object({
         userId: z.string().uuid(),
-        appSlug: z.enum(APP_SLUGS),
+        appSlug: z.enum(GRANTABLE_SLUGS),
         granted: z.boolean(),
       })
       .parse(input),

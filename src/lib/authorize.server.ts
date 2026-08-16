@@ -13,7 +13,13 @@ export type AuthzResult =
 
 export async function authorize(
   request: Request,
-  opts?: { appSlug?: string },
+  opts?: {
+    appSlug?: string;
+    /** Quando true, o bypass automático de admin é ignorado — exige acesso explícito
+     * em user_app_access mesmo para admins. Uso: ferramentas internas do painel admin
+     * que só devem ser vistas por admins escolhidos a dedo, não por todos. */
+    requireExplicitAccess?: boolean;
+  },
 ): Promise<AuthzResult> {
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_PUBLISHABLE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY;
@@ -38,16 +44,19 @@ export async function authorize(
   const admin = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
-  const { data: isAdmin } = await admin.rpc("has_role", { _user_id: userId, _role: "admin" });
-  if (!isAdmin) {
-    const { data: access } = await admin
-      .from("user_app_access")
-      .select("app_slug")
-      .eq("user_id", userId)
-      .eq("app_slug", opts.appSlug)
-      .maybeSingle();
-    if (!access) return { ok: false, status: 403, message: `Sem acesso ao app "${opts.appSlug}".` };
+
+  if (!opts.requireExplicitAccess) {
+    const { data: isAdmin } = await admin.rpc("has_role", { _user_id: userId, _role: "admin" });
+    if (isAdmin) return { ok: true, userId };
   }
+
+  const { data: access } = await admin
+    .from("user_app_access")
+    .select("app_slug")
+    .eq("user_id", userId)
+    .eq("app_slug", opts.appSlug)
+    .maybeSingle();
+  if (!access) return { ok: false, status: 403, message: `Sem acesso ao app "${opts.appSlug}".` };
 
   return { ok: true, userId };
 }
