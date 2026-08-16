@@ -6,7 +6,7 @@ import {
   adminListUsers, adminCreateUser, adminSetUserRole, adminDeleteUser, adminResetPasswordToEmail,
   adminListAppAccess, adminSetAppAccess,
 } from "@/lib/admin.functions";
-import { APPS } from "@/lib/apps";
+import { APPS, ADMIN_TOOLS } from "@/lib/apps";
 
 export const Route = createFileRoute("/_authenticated/painel/admin/usuarios")({
   component: AdminUsuarios,
@@ -326,6 +326,67 @@ function AppAccessPanel({
           </table>
         )}
       </div>
+
+      {ADMIN_TOOLS.length > 0 && (
+        <div className="space-y-2 pt-2">
+          <div>
+            <h2 className="text-sm font-semibold">Ferramentas administrativas</h2>
+            <p className="text-xs text-muted-foreground">
+              Diferente dos apps acima, acesso aqui NÃO é automático para admins — escolha um a um
+              quem pode ver cada ferramenta interna, mesmo entre admins.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-border bg-card overflow-x-auto">
+            {usersLoading || loading ? (
+              <p className="p-6 text-muted-foreground text-sm">Carregando…</p>
+            ) : (
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-mono border-b border-border">
+                    <th className="py-3 px-4">Admin</th>
+                    {ADMIN_TOOLS.map((a) => (
+                      <th key={a.slug} className="py-3 px-4 text-center">{a.name}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.filter((u) => u.roles.includes("admin")).map((u) => (
+                    <tr key={u.id} className="border-b border-border">
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-2">
+                          <Mail className="h-3.5 w-3.5 text-muted-foreground" />
+                          <span>{u.email}</span>
+                        </div>
+                      </td>
+                      {ADMIN_TOOLS.map((a) => {
+                        const key = `${u.id}:${a.slug}`;
+                        const on = granted.has(key);
+                        const busy = pending.has(key);
+                        return (
+                          <td key={a.slug} className="py-3 px-4 text-center">
+                            <button
+                              disabled={busy}
+                              onClick={() => toggle(u.id, a.slug, !on)}
+                              title={on ? "Remover acesso" : "Conceder acesso"}
+                              className={`relative inline-flex h-6 w-11 items-center rounded-full transition disabled:opacity-50 ${
+                                on ? "bg-bronze" : "bg-muted-foreground/30"
+                              }`}
+                            >
+                              <span className={`inline-flex h-5 w-5 items-center justify-center rounded-full bg-white shadow transition ${on ? "translate-x-5" : "translate-x-0.5"}`}>
+                                {on && <Check className="h-3 w-3 text-bronze" />}
+                              </span>
+                            </button>
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

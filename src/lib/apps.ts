@@ -30,3 +30,17 @@ export const APP_SLUGS = APPS.map((a) => a.slug) as [string, ...string[]];
 export function getApp(slug: string): AppDef | undefined {
   return APPS.find((a) => a.slug === slug);
 }
+
+// Ferramentas internas do painel admin (não aparecem na sidebar do cliente).
+// Mesmo mecanismo de user_app_access, mas o acesso NUNCA é automático por ser
+// admin — precisa ser concedido explicitamente por outro admin, um a um.
+export const ADMIN_TOOLS: AppDef[] = [
+  {
+    slug: "whatsapp_admin",
+    name: "WhatsApp (Gestão)",
+    to: "/painel/admin/whatsapp",
+    description: "Gestão centralizada das conexões WhatsApp dos clientes.",
+  },
+];
+
+export const ADMIN_TOOL_SLUGS = ADMIN_TOOLS.map((a) => a.slug) as [string, ...string[]];
