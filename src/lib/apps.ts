@@ -23,6 +23,18 @@ export const APPS: AppDef[] = [
     to: "/painel/whatsapp",
     description: "Conecte seu WhatsApp Business para mensagens automatizadas.",
   },
+  {
+    slug: "alicerce_tools",
+    name: "Alicerce Tools",
+    to: "/painel/alicerce-tools",
+    description: "Ferramentas do Alicerce em um só lugar.",
+  },
+  {
+    slug: "quiz",
+    name: "Quiz ao Vivo",
+    to: "/painel/quiz",
+    description: "Crie e apresente quizzes multiplayer em tempo real, estilo Kahoot.",
+  },
 ];
 
 export const APP_SLUGS = APPS.map((a) => a.slug) as [string, ...string[]];

@@ -26,6 +26,9 @@ import {
   Linkedin,
   Zap,
   Building2,
+  ChevronDown,
+  LogIn,
+  Wrench,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import WhatsAppFAB, { WHATSAPP_URL } from "./WhatsAppFAB";
@@ -242,7 +245,34 @@ export default function LandingPage() {
             <a href="#como-ajudar" className="hover:text-primary">Soluções</a>
             <a href="#cases" className="hover:text-primary">Cases</a>
             <a href="#sobre" className="hover:text-primary">Sobre</a>
-            <a href="/auth" className="hover:text-primary">Área exclusiva</a>
+            <div className="group relative">
+              <a
+                href="/auth"
+                className="inline-flex items-center gap-1 py-2 hover:text-primary"
+              >
+                Área exclusiva
+                <ChevronDown className="h-3.5 w-3.5 transition-transform duration-200 group-hover:rotate-180" />
+              </a>
+              {/* Submenu — abre no hover (desktop) e no foco via teclado */}
+              <div className="invisible absolute left-1/2 top-full z-50 w-56 -translate-x-1/2 pt-3 opacity-0 transition duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                <div className="rounded-2xl border border-border bg-card p-1.5 shadow-lg shadow-black/5">
+                  <a
+                    href="/auth"
+                    className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm transition hover:bg-muted"
+                  >
+                    <LogIn className="h-4 w-4 text-primary" />
+                    Entrar no painel
+                  </a>
+                  <Link
+                    to="/ferramentas"
+                    className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm transition hover:bg-muted"
+                  >
+                    <Wrench className="h-4 w-4 text-primary" />
+                    Ferramentas
+                  </Link>
+                </div>
+              </div>
+            </div>
           </nav>
           <a
             href="https://calendar.app.google/oh4NeMRMtw8v5UP5A"
@@ -823,6 +853,9 @@ export default function LandingPage() {
               <a href="/exclusao-de-dados" className="hover:underline">
                 Exclusão de Dados
               </a>
+              <Link to="/ferramentas" className="hover:underline">
+                Ferramentas
+              </Link>
               <span>São Paulo · Boston · Global</span>
             </div>
           </div>
