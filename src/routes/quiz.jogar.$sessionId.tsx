@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 import { Check, Loader2, Trophy, Clock } from "lucide-react";
 import { useQuizState } from "@/lib/quiz/useQuizState";
 import { submitAnswer } from "@/lib/quiz/db";
@@ -153,6 +154,7 @@ function QuizPlayPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-[#1a1916] text-white">
+      <Toaster />
       <div className="flex items-center justify-between px-4 py-3 text-sm text-white/70">
         <Link to="/quiz" className="shrink-0 rounded-full px-2 py-1 text-xs hover:bg-white/10 hover:text-white">
           ← Sair
@@ -299,6 +301,7 @@ function Centered({
       }`}
       style={accent ? { background: accent } : undefined}
     >
+      <Toaster />
       {showExit && <ExitLink dark={dark ?? true} />}
       <div>{children}</div>
     </div>
@@ -332,6 +335,7 @@ function Podium({
 
   return (
     <div className="min-h-screen bg-[#1a1916] px-6 py-12 text-white">
+      <Toaster />
       <div className="mx-auto max-w-sm text-center">
         <Trophy className="mx-auto h-12 w-12 text-[#c8853a]" />
         <h1 className="mt-3 text-2xl font-semibold">Quiz encerrado!</h1>

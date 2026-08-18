@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Gamepad2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 import { ToolShell } from "@/components/ferramentas/ToolShell";
 import { joinSession } from "@/lib/quiz/db";
 import { TEAM_EMOJIS } from "@/lib/quiz/types";
@@ -16,8 +17,14 @@ export const Route = createFileRoute("/quiz/")({
       },
     ],
   }),
-  validateSearch: (search: Record<string, unknown>): { pin?: string } =>
-    typeof search.pin === "string" ? { pin: search.pin } : {},
+  // O parser de query string do router converte valores só-dígitos (ex.: "560820")
+  // em number automaticamente — por isso aceitamos string OU number aqui e
+  // normalizamos para string, que é o que o resto da página espera.
+  validateSearch: (search: Record<string, unknown>): { pin?: string } => {
+    if (typeof search.pin === "string") return { pin: search.pin };
+    if (typeof search.pin === "number") return { pin: String(search.pin) };
+    return {};
+  },
   component: QuizJoinPage,
 });
 
@@ -121,6 +128,7 @@ function QuizJoinPage() {
           Entrar no quiz
         </button>
       </form>
+      <Toaster />
     </ToolShell>
   );
 }

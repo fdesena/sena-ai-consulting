@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 import { ArrowLeft, Plus, Trash2, ChevronUp, ChevronDown } from "lucide-react";
 import {
   createOption,
@@ -102,6 +103,7 @@ function TemplateEditorPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
+      <Toaster />
       <Link
         to="/painel/quiz"
         className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-bronze"

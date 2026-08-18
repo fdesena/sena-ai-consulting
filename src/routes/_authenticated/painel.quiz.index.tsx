@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Gamepad2, Lock, Plus, Play, Trash2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 import {
   createSession,
@@ -121,6 +122,7 @@ function QuizIndexPage() {
 
   return (
     <div className="max-w-4xl mx-auto">
+      <Toaster />
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="h-11 w-11 rounded-xl bg-bronze/10 text-bronze grid place-items-center">

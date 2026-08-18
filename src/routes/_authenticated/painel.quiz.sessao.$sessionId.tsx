@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 import { QRCodeSVG } from "qrcode.react";
 import { ArrowLeft, ArrowRight, Eye, Loader2, Minus, Plus, Trophy, Users } from "lucide-react";
 import {
@@ -109,6 +110,7 @@ function HostSessionPage() {
 
   return (
     <div className="mx-auto max-w-4xl">
+      <Toaster />
       <div className="mb-6 flex items-center justify-between">
         <Link
           to="/painel/quiz"
