@@ -31,7 +31,7 @@ import {
   Wrench,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import WhatsAppFAB, { WHATSAPP_URL } from "./WhatsAppFAB";
+import { WHATSAPP_URL } from "./WhatsAppFAB";
 import ProcessCycle from "./ProcessCycle";
 import MarketGapChart from "./MarketGapChart";
 import DiagnosticChart from "./DiagnosticChart";
@@ -861,8 +861,6 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
-
-      <WhatsAppFAB />
     </main>
   );
 }
