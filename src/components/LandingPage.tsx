@@ -2,7 +2,7 @@ import TypeWriter from "@/components/TypeWriter";
 import logoIcon from "@/assets/Logo/logo-icon.png";
 import logoFull from "@/assets/Logo/senaconsulting_logo_tight.png";
 import { Link } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { trackEvent, trackPageview } from "@/lib/track";
 import {
   ArrowRight,
@@ -29,6 +29,7 @@ import {
   ChevronDown,
   LogIn,
   Wrench,
+  Menu,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { WHATSAPP_URL } from "./WhatsAppFAB";
@@ -40,6 +41,15 @@ import GlobalExperience from "./GlobalExperience";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 import { RING_1_TOOLS, RING_2_TOOLS, RING_3_TOOLS, type ToolIcon } from "@/data/tool-icons";
 import felipeImg from "@/assets/felipe-sena-profile.png";
+import { cn } from "@/lib/utils";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const COUNTRIES = [
   { code: "BR", name: "Brasil" },
@@ -229,12 +239,35 @@ function HeroOrbital() {
 
 export default function LandingPage() {
   useEffect(() => { trackPageview(); }, []);
+
+  const [submenuOpen, setSubmenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const submenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!submenuOpen) return;
+    function handlePointerDown(e: PointerEvent) {
+      if (submenuRef.current && !submenuRef.current.contains(e.target as Node)) {
+        setSubmenuOpen(false);
+      }
+    }
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setSubmenuOpen(false);
+    }
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [submenuOpen]);
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       {/* NAV */}
       <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <a href="#top" className="inline-flex min-w-[280px] items-center gap-2">
+          <a href="#top" className="inline-flex items-center gap-2 md:min-w-[280px]">
             <img src={logoIcon} alt="Sena Consulting" className="h-8 w-8" />
             <span className="font-display text-lg font-semibold tracking-tight">
               <TypeWriter />
@@ -245,16 +278,29 @@ export default function LandingPage() {
             <a href="#como-ajudar" className="hover:text-primary">Soluções</a>
             <a href="#cases" className="hover:text-primary">Cases</a>
             <a href="#sobre" className="hover:text-primary">Sobre</a>
-            <div className="group relative">
-              <a
-                href="/auth"
+            <div className="relative" ref={submenuRef}>
+              <button
+                type="button"
+                onClick={() => setSubmenuOpen((o) => !o)}
+                aria-expanded={submenuOpen}
+                aria-haspopup="true"
                 className="inline-flex items-center gap-1 py-2 hover:text-primary"
               >
                 Área exclusiva
-                <ChevronDown className="h-3.5 w-3.5 transition-transform duration-200 group-hover:rotate-180" />
-              </a>
-              {/* Submenu — abre no hover (desktop) e no foco via teclado */}
-              <div className="invisible absolute left-1/2 top-full z-50 w-56 -translate-x-1/2 pt-3 opacity-0 transition duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                <ChevronDown
+                  className={cn(
+                    "h-3.5 w-3.5 transition-transform duration-200",
+                    submenuOpen && "rotate-180",
+                  )}
+                />
+              </button>
+              {/* Submenu — abre e fecha ao clicar/tocar no gatilho */}
+              <div
+                className={cn(
+                  "absolute left-1/2 top-full z-50 w-56 -translate-x-1/2 pt-3 transition duration-150",
+                  submenuOpen ? "visible opacity-100" : "invisible opacity-0",
+                )}
+              >
                 <div className="rounded-2xl border border-border bg-card p-1.5 shadow-lg shadow-black/5">
                   <a
                     href="/auth"
@@ -274,15 +320,97 @@ export default function LandingPage() {
               </div>
             </div>
           </nav>
-          <a
-            href="https://calendar.app.google/oh4NeMRMtw8v5UP5A"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 sm:inline-flex"
-          >
-            Fale comigo
-            <ArrowUpRight className="h-4 w-4" />
-          </a>
+          <div className="flex items-center gap-2">
+            <a
+              href="https://calendar.app.google/oh4NeMRMtw8v5UP5A"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 sm:inline-flex"
+            >
+              Fale comigo
+              <ArrowUpRight className="h-4 w-4" />
+            </a>
+
+            {/* Menu mobile */}
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <button
+                  type="button"
+                  aria-label="Abrir menu"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/60 text-foreground transition hover:border-primary hover:text-primary md:hidden"
+                >
+                  <Menu className="h-5 w-5" />
+                </button>
+              </SheetTrigger>
+              <SheetContent side="right" className="flex w-[85%] flex-col sm:max-w-sm">
+                <SheetHeader>
+                  <SheetTitle className="flex items-center gap-2 text-left">
+                    <img src={logoIcon} alt="Sena Consulting" className="h-6 w-6" />
+                    Sena Consulting
+                  </SheetTitle>
+                </SheetHeader>
+                <nav className="mt-4 flex flex-col gap-1 text-base">
+                  <SheetClose asChild>
+                    <a href="#pilares" className="rounded-xl px-3 py-3 transition hover:bg-muted">
+                      O que faço
+                    </a>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <a href="#como-ajudar" className="rounded-xl px-3 py-3 transition hover:bg-muted">
+                      Soluções
+                    </a>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <a href="#cases" className="rounded-xl px-3 py-3 transition hover:bg-muted">
+                      Cases
+                    </a>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <a href="#sobre" className="rounded-xl px-3 py-3 transition hover:bg-muted">
+                      Sobre
+                    </a>
+                  </SheetClose>
+
+                  <div className="my-3 border-t border-border" />
+                  <span className="px-3 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                    Área exclusiva
+                  </span>
+                  <SheetClose asChild>
+                    <a
+                      href="/auth"
+                      className="mt-1 flex items-center gap-2.5 rounded-xl px-3 py-3 transition hover:bg-muted"
+                    >
+                      <LogIn className="h-4 w-4 text-primary" />
+                      Entrar no painel
+                    </a>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <Link
+                      to="/ferramentas"
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-3 transition hover:bg-muted"
+                    >
+                      <Wrench className="h-4 w-4 text-primary" />
+                      Ferramentas
+                    </Link>
+                  </SheetClose>
+                </nav>
+
+                <div className="mt-auto pt-6">
+                  <SheetClose asChild>
+                    <a
+                      href="https://calendar.app.google/oh4NeMRMtw8v5UP5A"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-medium text-primary-foreground hover:opacity-90"
+                    >
+                      Fale comigo
+                      <ArrowUpRight className="h-4 w-4" />
+                    </a>
+                  </SheetClose>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </header>
 
