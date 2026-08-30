@@ -4,9 +4,10 @@ import {
   Bot,
   LineChart as LineChartIcon,
   GraduationCap,
-  Database,
+  Globe,
   Presentation,
   Play,
+  ExternalLink,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -99,30 +100,20 @@ function MockLMS() {
   );
 }
 
-function MockCRM() {
-  const cols = [
-    { label: "Leads", h: [60, 45, 30] },
-    { label: "Quali.", h: [55, 40] },
-    { label: "Prop.", h: [70] },
-  ];
+function MockWebsite() {
   return (
-    <div className="grid h-full grid-cols-3 gap-1.5">
-      {cols.map((c, i) => (
-        <div key={i} className="rounded-md border border-foreground/10 bg-foreground/5 p-1.5">
-          <div className="mb-1 font-mono text-[7px] uppercase tracking-wider text-muted-foreground">
-            {c.label}
-          </div>
-          <div className="space-y-1">
-            {c.h.map((h, j) => (
-              <div
-                key={j}
-                className={`rounded-sm ${i === 2 ? "bg-primary/70" : "bg-foreground/20"}`}
-                style={{ height: `${h * 0.18}px` }}
-              />
-            ))}
-          </div>
-        </div>
-      ))}
+    <div className="space-y-1.5">
+      <div className="flex items-center gap-1.5">
+        <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+        <div className="h-1.5 w-20 rounded-full bg-foreground/70" />
+      </div>
+      <div className="h-1 w-28 rounded-full bg-foreground/15" />
+      <div className="h-1 w-24 rounded-full bg-foreground/15" />
+      <div className="mt-2 grid grid-cols-3 gap-1">
+        <div className="aspect-video rounded-sm bg-primary/25" />
+        <div className="aspect-video rounded-sm bg-foreground/10" />
+        <div className="aspect-video rounded-sm bg-foreground/10" />
+      </div>
     </div>
   );
 }
@@ -166,6 +157,8 @@ type Item = {
   tags: string[];
   /** Quando houver vídeo de demonstração, basta preencher a URL aqui. */
   video?: string;
+  /** URLs de sites já entregues, mostrados como preview embedado no modal. */
+  sites?: string[];
 };
 
 const items: Item[] = [
@@ -216,16 +209,21 @@ const items: Item[] = [
     tags: ["Plataforma", "LMS", "Gamificação"],
   },
   {
-    t: "Website + CRM + Funil próprio",
-    d: "Do site ao fechamento, tudo integrado.",
-    Icon: Database,
-    Mock: MockCRM,
+    t: "Website",
+    d: "Sites sob medida, do zero ao ar.",
+    Icon: Globe,
+    Mock: MockWebsite,
     desafio:
-      "Site sem captura integrada e leads gerenciados em planilhas — sem visão de funil nem métricas confiáveis.",
+      "Site genérico, lento ou dependente de templates prontos — sem controle sobre design, performance ou dados.",
     solucao:
-      "Website sob medida que captura leads direto no CRM próprio, com pipeline e analytics integrados.",
-    resultado: "Do site ao fechamento em um só lugar, com visão clara do funil.",
-    tags: ["Website", "CRM", "Funil", "Analytics"],
+      "Website sob medida, com design, performance e integrações pensadas para o negócio do cliente.",
+    resultado: "Presença digital própria, rápida e alinhada à marca.",
+    tags: ["Website", "Design", "Performance"],
+    sites: [
+      "https://think-big.app/",
+      "https://www.tapetez.com.br/",
+      "http://clinica-lassie.com.br/",
+    ],
   },
   {
     t: "Ferramentas para eventos",
@@ -307,6 +305,45 @@ export default function TrackRecord() {
                     controls
                     className="aspect-video w-full rounded-lg border border-border"
                   />
+                ) : active.sites && active.sites.length > 0 ? (
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    {active.sites.map((url) => {
+                      const hostname = new URL(url).hostname.replace(/^www\./, "");
+                      return (
+                        <a
+                          key={url}
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group/site relative block overflow-hidden rounded-lg border border-border bg-white"
+                        >
+                          <div className="flex items-center gap-1 border-b border-border bg-foreground/5 px-2 py-1">
+                            <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
+                            <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
+                            <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
+                            <span className="ml-1 truncate font-mono text-[8px] text-muted-foreground">
+                              {hostname}
+                            </span>
+                          </div>
+                          <div className="relative h-36 w-full overflow-hidden">
+                            <iframe
+                              src={url}
+                              title={hostname}
+                              loading="lazy"
+                              referrerPolicy="no-referrer"
+                              className="pointer-events-none h-[900px] w-[1600px] origin-top-left border-0"
+                              style={{ transform: "scale(0.225)" }}
+                            />
+                          </div>
+                          <div className="absolute inset-0 flex items-center justify-center bg-background/0 opacity-0 backdrop-blur-[1px] transition duration-200 group-hover/site:bg-background/40 group-hover/site:opacity-100">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-[10px] font-medium text-primary-foreground">
+                              <ExternalLink className="h-3 w-3" /> Abrir site
+                            </span>
+                          </div>
+                        </a>
+                      );
+                    })}
+                  </div>
                 ) : (
                   <>
                     <div className="mx-auto h-44 max-w-[320px]">

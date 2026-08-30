@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Gamepad2, Lock, Plus, Play, Trash2, Loader2 } from "lucide-react";
+import { Gamepad2, Lock, Plus, Play, Trash2, Loader2, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -161,18 +161,20 @@ function QuizIndexPage() {
               className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-surface p-5"
             >
               <div className="min-w-0">
-                <Link
-                  to="/painel/quiz/templates/$templateId"
-                  params={{ templateId: t.id }}
-                  className="font-medium hover:text-bronze"
-                >
-                  {pickLocale(t.title, "pt") || "Sem título"}
-                </Link>
+                <p className="font-medium">{pickLocale(t.title, "pt") || "Sem título"}</p>
                 <p className="mt-0.5 truncate text-sm text-muted-foreground">
                   {pickLocale(t.description, "pt") || "Sem descrição"}
                 </p>
               </div>
               <div className="flex shrink-0 items-center gap-2">
+                <Link
+                  to="/painel/quiz/templates/$templateId"
+                  params={{ templateId: t.id }}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-foreground/15 px-4 py-2 text-sm font-medium hover:border-foreground/40"
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                  Editar
+                </Link>
                 <button
                   onClick={() => iniciarSessao(t.id)}
                   disabled={startingId === t.id}

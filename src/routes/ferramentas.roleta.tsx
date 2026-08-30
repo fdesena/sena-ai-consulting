@@ -13,6 +13,9 @@ import {
   PartyPopper,
   Sparkles,
   Timer as TimerIcon,
+  Hash,
+  Palette,
+  PawPrint,
 } from "lucide-react";
 import { ToolShell } from "@/components/ferramentas/ToolShell";
 import { Timer } from "@/components/ferramentas/Timer";
@@ -52,6 +55,35 @@ const PADRAO = ["Ana", "Bruno", "Carla", "Diego", "Eduarda", "Felipe", "Gabriela
 const K_ENTRADAS = "sena_roleta_entradas";
 const K_LISTAS = "sena_roleta_listas";
 
+/* Listas prontas — atalhos para popular a roleta sem digitar nada. */
+const LISTA_CORES = [
+  "Vermelho",
+  "Azul",
+  "Verde",
+  "Amarelo",
+  "Laranja",
+  "Roxo",
+  "Rosa",
+  "Preto",
+  "Branco",
+  "Cinza",
+  "Marrom",
+  "Turquesa",
+];
+const LISTA_ANIMAIS = [
+  "Leão",
+  "Tigre",
+  "Elefante",
+  "Girafa",
+  "Zebra",
+  "Macaco",
+  "Urso",
+  "Lobo",
+  "Raposa",
+  "Coelho",
+];
+const NUMERICA_MAX_LIMITE = 500;
+
 type Resultado = { nome: string; hora: Date };
 type ListaSalva = { nome: string; entradas: string[] };
 
@@ -61,6 +93,7 @@ function RoletaPage() {
   const [resultados, setResultados] = useState<Resultado[]>([]);
   const [listas, setListas] = useState<ListaSalva[]>([]);
   const [nomeLista, setNomeLista] = useState("");
+  const [numericaMax, setNumericaMax] = useState("100");
   const [duracao, setDuracao] = useState(5);
   const [som, setSom] = useState(true);
   const [removerVencedor, setRemoverVencedor] = useState(false);
@@ -301,6 +334,10 @@ function RoletaPage() {
     setEntradas(v);
     setTexto(v.join("\n"));
   }
+  function aplicarNumerica() {
+    const max = Math.min(NUMERICA_MAX_LIMITE, Math.max(0, parseInt(numericaMax, 10) || 0));
+    aplicarEntradas(Array.from({ length: max + 1 }, (_, i) => String(i)));
+  }
   function embaralhar() {
     const v = [...entradas];
     for (let i = v.length - 1; i > 0; i--) {
@@ -538,6 +575,37 @@ function RoletaPage() {
             <h2 className="mb-3 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
               Listas salvas
             </h2>
+
+            <p className="mb-2 text-sm text-muted-foreground">Listas prontas</p>
+            <div className="mb-4 flex flex-wrap items-center gap-2">
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-foreground/15 py-1 pl-3.5 pr-1.5 text-sm">
+                <Hash className="h-4 w-4" />
+                0–
+                <input
+                  type="number"
+                  min={0}
+                  max={NUMERICA_MAX_LIMITE}
+                  value={numericaMax}
+                  onChange={(e) => setNumericaMax(e.target.value)}
+                  className="w-14 rounded-md border border-border bg-background px-1.5 py-0.5 text-sm outline-none focus:border-primary"
+                />
+                <button
+                  onClick={aplicarNumerica}
+                  className="rounded-full bg-foreground/5 px-2.5 py-1 text-xs font-medium transition hover:bg-foreground/10"
+                >
+                  Usar
+                </button>
+              </div>
+              <button onClick={() => aplicarEntradas(LISTA_CORES)} className={btn}>
+                <Palette className="h-4 w-4" />
+                Cores
+              </button>
+              <button onClick={() => aplicarEntradas(LISTA_ANIMAIS)} className={btn}>
+                <PawPrint className="h-4 w-4" />
+                Animais
+              </button>
+            </div>
+
             <div className="flex gap-2">
               <input
                 value={nomeLista}
