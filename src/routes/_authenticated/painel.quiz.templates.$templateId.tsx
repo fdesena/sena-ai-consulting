@@ -297,7 +297,7 @@ function QuestionCard({
         </div>
       </div>
 
-      <div className="mb-4 grid gap-3 sm:grid-cols-3">
+      <div className={`mb-4 grid gap-3 ${isSurvey ? "sm:grid-cols-4" : "sm:grid-cols-3"}`}>
         <label className="sm:col-span-1">
           <span className="mb-1 block text-xs text-muted-foreground">Tipo</span>
           <select
@@ -312,6 +312,19 @@ function QuestionCard({
             ))}
           </select>
         </label>
+        {isSurvey && (
+          <label>
+            <span className="mb-1 block text-xs text-muted-foreground">
+              Dimensão (agrupa perguntas pra tirar média)
+            </span>
+            <input
+              value={question.dimension ?? ""}
+              onChange={(e) => salvar({ dimension: e.target.value || null })}
+              placeholder="Ex: Prompting e uso prático"
+              className="w-full rounded-lg border border-border bg-background px-2.5 py-1.5 text-sm outline-none focus:border-primary"
+            />
+          </label>
+        )}
         <label>
           <span className="mb-1 block text-xs text-muted-foreground">Pontuação</span>
           <input

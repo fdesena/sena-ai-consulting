@@ -56,11 +56,7 @@ export async function getTemplateWithQuestions(
 ): Promise<{ template: QuizTemplate; questions: QuizQuestion[] }> {
   const [{ data: template, error: e1 }, { data: questions, error: e2 }] = await Promise.all([
     db.from("quiz_templates").select("*").eq("id", id).single(),
-    db
-      .from("quiz_questions")
-      .select("*, quiz_options(*)")
-      .eq("template_id", id)
-      .order("position"),
+    db.from("quiz_questions").select("*, quiz_options(*)").eq("template_id", id).order("position"),
   ]);
   if (e1) throw e1;
   if (e2) throw e2;
@@ -71,10 +67,7 @@ export async function getTemplateWithQuestions(
   return { template, questions: withOptions };
 }
 
-export async function createQuestion(
-  templateId: string,
-  position: number,
-): Promise<QuizQuestion> {
+export async function createQuestion(templateId: string, position: number): Promise<QuizQuestion> {
   const { data, error } = await db
     .from("quiz_questions")
     .insert({ template_id: templateId, position, kind: "single" })
@@ -89,7 +82,15 @@ export async function updateQuestion(
   patch: Partial<
     Pick<
       QuizQuestion,
-      "kind" | "prompt" | "explanation" | "image_url" | "points" | "time_limit_seconds" | "category_labels" | "position"
+      | "kind"
+      | "prompt"
+      | "explanation"
+      | "image_url"
+      | "points"
+      | "time_limit_seconds"
+      | "category_labels"
+      | "position"
+      | "dimension"
     >
   >,
 ): Promise<void> {
@@ -105,10 +106,7 @@ export async function deleteQuestion(id: string): Promise<void> {
   if (error) throw error;
 }
 
-export async function createOption(
-  questionId: string,
-  position: number,
-): Promise<QuizOption> {
+export async function createOption(questionId: string, position: number): Promise<QuizOption> {
   const { data, error } = await db
     .from("quiz_options")
     .insert({ question_id: questionId, position })
@@ -188,6 +186,11 @@ export async function hostGetSession(sessionId: string): Promise<QuizSessionRow>
   return data;
 }
 
+export async function hostDeleteSession(sessionId: string): Promise<void> {
+  const { error } = await db.from("quiz_sessions").delete().eq("id", sessionId);
+  if (error) throw error;
+}
+
 export async function hostListSessions(templateId?: string): Promise<QuizSessionRow[]> {
   let q = db.from("quiz_sessions").select("*").order("created_at", { ascending: false });
   if (templateId) q = q.eq("template_id", templateId);
@@ -231,16 +234,17 @@ export async function hostAdjustTime(sessionId: string, deltaSeconds: number): P
 export async function hostCompleteSession(sessionId: string): Promise<void> {
   const { error } = await db
     .from("quiz_sessions")
-    .update({ status: "completed", completed_at: new Date().toISOString(), question_revealed: true })
+    .update({
+      status: "completed",
+      completed_at: new Date().toISOString(),
+      question_revealed: true,
+    })
     .eq("id", sessionId);
   if (error) throw error;
 }
 
 /* subscreve mudanças de sessão + equipes + respostas para uma sessão */
-export function subscribeToSession(
-  sessionId: string,
-  onChange: () => void,
-): () => void {
+export function subscribeToSession(sessionId: string, onChange: () => void): () => void {
   const channel = supabase
     .channel(`quiz_session_${sessionId}`)
     .on(

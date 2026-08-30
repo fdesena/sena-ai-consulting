@@ -21,6 +21,7 @@ import {
   createSession,
   createTemplate,
   deleteTemplate,
+  hostDeleteSession,
   hostListSessions,
   listMyTemplates,
 } from "@/lib/quiz/db";
@@ -47,6 +48,7 @@ function QuizIndexPage() {
   const [creating, setCreating] = useState(false);
   const [startingId, setStartingId] = useState<string | null>(null);
   const [exportingId, setExportingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -135,6 +137,25 @@ function QuizIndexPage() {
     }
   }
 
+  async function derrubarSessao(session: QuizSessionRow) {
+    const nome = templateTitleById.get(session.template_id) ?? "esta sessão";
+    if (
+      !confirm(
+        `Tem certeza que quer derrubar a sessão de "${nome}" (PIN ${session.pin})? Essa ação não pode ser desfeita.`,
+      )
+    )
+      return;
+    setDeletingId(session.id);
+    try {
+      await hostDeleteSession(session.id);
+      setSessions((s) => s.filter((x) => x.id !== session.id));
+    } catch (e: any) {
+      toast.error("Erro ao derrubar a sessão", { description: e.message });
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
   async function exportar(session: QuizSessionRow) {
     setExportingId(session.id);
     try {
@@ -220,14 +241,28 @@ function QuizIndexPage() {
                     <span>{STATUS_LABEL[s.status] ?? s.status}</span>
                   </p>
                 </div>
-                <Link
-                  to="/painel/quiz/sessao/$sessionId"
-                  params={{ sessionId: s.id }}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground hover:opacity-90"
-                >
-                  <PlayCircle className="h-3.5 w-3.5" />
-                  Continuar
-                </Link>
+                <div className="flex shrink-0 items-center gap-2">
+                  <Link
+                    to="/painel/quiz/sessao/$sessionId"
+                    params={{ sessionId: s.id }}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground hover:opacity-90"
+                  >
+                    <PlayCircle className="h-3.5 w-3.5" />
+                    Continuar
+                  </Link>
+                  <button
+                    onClick={() => derrubarSessao(s)}
+                    disabled={deletingId === s.id}
+                    className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-muted-foreground hover:bg-muted hover:text-destructive disabled:opacity-50"
+                    title="Derrubar sessão"
+                  >
+                    {deletingId === s.id ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Trash2 className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
               </div>
             ))}
           </div>

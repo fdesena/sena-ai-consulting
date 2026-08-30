@@ -60,6 +60,8 @@ export type QuizQuestion = {
   kind: QuestionKind;
   prompt: I18nText;
   explanation: I18nText;
+  /** Agrupa perguntas de autoavaliação (1-5) numa dimensão pra tirar média — ex.: "Prompting e uso prático". */
+  dimension: string | null;
   image_url: string | null;
   points: number;
   time_limit_seconds: number | null;

@@ -2,8 +2,8 @@ import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
-import { ArrowLeft, Download, Loader2, Users } from "lucide-react";
-import { getTemplateWithQuestions, hostListSessions } from "@/lib/quiz/db";
+import { ArrowLeft, Download, Loader2, Trash2, Users } from "lucide-react";
+import { getTemplateWithQuestions, hostDeleteSession, hostListSessions } from "@/lib/quiz/db";
 import { exportSessionResultsXLSX } from "@/lib/quiz/export";
 import { pickLocale, type QuizSessionRow, type QuizTemplate } from "@/lib/quiz/types";
 
@@ -26,6 +26,7 @@ function SessionsHistoryPage() {
   const [sessions, setSessions] = useState<QuizSessionRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [exportingId, setExportingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -43,6 +44,24 @@ function SessionsHistoryPage() {
       }
     })();
   }, [templateId]);
+
+  async function derrubar(session: QuizSessionRow) {
+    if (
+      !confirm(
+        `Tem certeza que quer derrubar a sessão PIN ${session.pin}? Essa ação não pode ser desfeita.`,
+      )
+    )
+      return;
+    setDeletingId(session.id);
+    try {
+      await hostDeleteSession(session.id);
+      setSessions((s) => s.filter((x) => x.id !== session.id));
+    } catch (e: any) {
+      toast.error("Erro ao derrubar a sessão", { description: e.message });
+    } finally {
+      setDeletingId(null);
+    }
+  }
 
   async function exportar(session: QuizSessionRow) {
     setExportingId(session.id);
@@ -103,14 +122,28 @@ function SessionsHistoryPage() {
               </div>
               <div className="flex shrink-0 items-center gap-2">
                 {(s.status === "in_progress" || s.status === "lobby") && (
-                  <Link
-                    to="/painel/quiz/sessao/$sessionId"
-                    params={{ sessionId: s.id }}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-foreground/15 px-4 py-2 text-sm font-medium hover:border-foreground/40"
-                  >
-                    <Users className="h-3.5 w-3.5" />
-                    Abrir sessão
-                  </Link>
+                  <>
+                    <Link
+                      to="/painel/quiz/sessao/$sessionId"
+                      params={{ sessionId: s.id }}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-foreground/15 px-4 py-2 text-sm font-medium hover:border-foreground/40"
+                    >
+                      <Users className="h-3.5 w-3.5" />
+                      Abrir sessão
+                    </Link>
+                    <button
+                      onClick={() => derrubar(s)}
+                      disabled={deletingId === s.id}
+                      className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-muted-foreground hover:bg-muted hover:text-destructive disabled:opacity-50"
+                      title="Derrubar sessão"
+                    >
+                      {deletingId === s.id ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-3.5 w-3.5" />
+                      )}
+                    </button>
+                  </>
                 )}
                 <button
                   onClick={() => exportar(s)}

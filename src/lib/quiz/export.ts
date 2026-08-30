@@ -55,6 +55,14 @@ export async function exportSessionResultsXLSX(
     Pontuação: t.score,
   }));
 
+  // Pergunta 'survey' (autoavaliação 1-5): a nota é a posição da opção
+  // escolhida (0-indexada) + 1 — não usa points_awarded, que é sempre 0.
+  function notaSurvey(q: (typeof questions)[number], a: RawAnswer): number | null {
+    if (q.kind !== "survey" || !a.option_ids?.length) return null;
+    const opt = q.options?.find((o) => o.id === a.option_ids[0]);
+    return opt ? opt.position + 1 : null;
+  }
+
   const respostas = questions.flatMap((q) => {
     const optionLabel = (id: string) =>
       pickLocale(q.options?.find((o) => o.id === id)?.label, locale) || id;
@@ -74,9 +82,11 @@ export async function exportSessionResultsXLSX(
           respostaTexto = (a.option_ids ?? []).map(optionLabel).join("; ");
         }
         return {
+          Dimensão: q.dimension ?? "",
           Pergunta: pickLocale(q.prompt, locale),
           Equipe: time ? `${time.emoji} ${time.name}` : "(equipe removida)",
           Resposta: respostaTexto,
+          "Nota (1-5)": notaSurvey(q, a) ?? "",
           Correta:
             q.kind === "text" ||
             q.kind === "single" ||
@@ -93,8 +103,27 @@ export async function exportSessionResultsXLSX(
       });
   });
 
+  // Média da sala por dimensão (só entra pergunta 'survey' com dimensão marcada).
+  const porDimensao = new Map<string, number[]>();
+  for (const q of questions) {
+    if (q.kind !== "survey" || !q.dimension) continue;
+    for (const a of answers.filter((x) => x.question_id === q.id)) {
+      const nota = notaSurvey(q, a);
+      if (nota == null) continue;
+      porDimensao.set(q.dimension, [...(porDimensao.get(q.dimension) ?? []), nota]);
+    }
+  }
+  const dimensoes = [...porDimensao.entries()].map(([dimensao, notas]) => ({
+    Dimensão: dimensao,
+    "Média (1-5)": Math.round((notas.reduce((s, n) => s + n, 0) / notas.length) * 100) / 100,
+    Respostas: notas.length,
+  }));
+
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(placar), "Placar");
+  if (dimensoes.length) {
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(dimensoes), "Dimensões");
+  }
   XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(respostas), "Respostas");
 
   const nomeTemplate = pickLocale(template.title, locale) || "quiz";
