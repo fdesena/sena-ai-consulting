@@ -107,7 +107,11 @@ function QuizPlayPage() {
   const secondsLeft = deadline ? Math.max(0, Math.ceil((deadline - now) / 1000)) : null;
   const tempoEsgotado = secondsLeft === 0;
 
-  async function enviar(payload: { optionIds?: string[]; assignments?: Record<string, "a" | "b">; text?: string }) {
+  async function enviar(payload: {
+    optionIds?: string[];
+    assignments?: Record<string, "a" | "b">;
+    text?: string;
+  }) {
     if (!token || !q || enviando) return;
     setEnviando(true);
     try {
@@ -119,34 +123,44 @@ function QuizPlayPage() {
     }
   }
 
-  if (revealed) {
-    const acertou = me?.answer?.is_correct;
-    return (
-      <Centered dark accent={acertou ? "#2d5a3d" : "#8f2f1c"}>
-        <div className="text-5xl">{acertou ? "✅" : "❌"}</div>
-        <p className="mt-3 text-2xl font-semibold">
-          {acertou ? "Você acertou!" : "Não foi dessa vez"}
-        </p>
-        {typeof me?.answer?.points_awarded === "number" && (
-          <p className="mt-1 text-white/80">+{me.answer.points_awarded} pontos</p>
-        )}
-        {pickLocale(q.explanation ?? undefined, locale) && (
-          <p className="mx-auto mt-4 max-w-sm text-sm text-white/70">
-            {pickLocale(q.explanation, locale)}
+  // O anfitrião pode revelar a pergunta cedo pra acompanhar a distribuição
+  // ao vivo — quem ainda não respondeu continua podendo responder normalmente
+  // até ele avançar. Só mostramos a tela de resultado pra quem já enviou.
+  if (me?.answered) {
+    if (revealed) {
+      const acertou = me?.answer?.is_correct;
+      return (
+        <Centered dark accent={acertou ? "#2d5a3d" : "#8f2f1c"}>
+          <div className="text-5xl">{acertou ? "✅" : "❌"}</div>
+          <p className="mt-3 text-2xl font-semibold">
+            {acertou ? "Você acertou!" : "Não foi dessa vez"}
           </p>
-        )}
-        <p className="mt-6 text-sm text-white/50">Aguardando a próxima pergunta…</p>
+          {typeof me?.answer?.points_awarded === "number" && (
+            <p className="mt-1 text-white/80">+{me.answer.points_awarded} pontos</p>
+          )}
+          {pickLocale(q.explanation ?? undefined, locale) && (
+            <p className="mx-auto mt-4 max-w-sm text-sm text-white/70">
+              {pickLocale(q.explanation, locale)}
+            </p>
+          )}
+          <p className="mt-6 text-sm text-white/50">Aguardando a próxima pergunta…</p>
+        </Centered>
+      );
+    }
+    return (
+      <Centered dark>
+        <Check className="mx-auto h-10 w-10 text-[#2d5a3d]" />
+        <p className="mt-3 text-xl font-semibold">Resposta enviada!</p>
+        <p className="mt-2 text-white/60">Aguardando os outros participantes…</p>
       </Centered>
     );
   }
 
-  if (me?.answered || tempoEsgotado) {
+  if (tempoEsgotado) {
     return (
       <Centered dark>
         <Check className="mx-auto h-10 w-10 text-[#2d5a3d]" />
-        <p className="mt-3 text-xl font-semibold">
-          {me?.answered ? "Resposta enviada!" : "Tempo esgotado"}
-        </p>
+        <p className="mt-3 text-xl font-semibold">Tempo esgotado</p>
         <p className="mt-2 text-white/60">Aguardando os outros participantes…</p>
       </Centered>
     );
@@ -156,7 +170,10 @@ function QuizPlayPage() {
     <div className="flex min-h-screen flex-col bg-[#1a1916] text-white">
       <Toaster />
       <div className="flex items-center justify-between px-4 py-3 text-sm text-white/70">
-        <Link to="/quiz" className="shrink-0 rounded-full px-2 py-1 text-xs hover:bg-white/10 hover:text-white">
+        <Link
+          to="/quiz"
+          className="shrink-0 rounded-full px-2 py-1 text-xs hover:bg-white/10 hover:text-white"
+        >
           ← Sair
         </Link>
         <span className="min-w-0 flex-1 truncate text-center">
@@ -339,9 +356,7 @@ function Podium({
       <div className="mx-auto max-w-sm text-center">
         <Trophy className="mx-auto h-12 w-12 text-[#c8853a]" />
         <h1 className="mt-3 text-2xl font-semibold">Quiz encerrado!</h1>
-        {minhaPosicao && (
-          <p className="mt-1 text-white/70">Você ficou em {minhaPosicao}º lugar</p>
-        )}
+        {minhaPosicao && <p className="mt-1 text-white/70">Você ficou em {minhaPosicao}º lugar</p>}
 
         <div className="mt-8 space-y-2 text-left">
           {ranked.map((t, i) => (

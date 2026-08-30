@@ -1,15 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Gamepad2, Lock, Plus, Play, Trash2, Loader2, Pencil } from "lucide-react";
+import { Gamepad2, History, Lock, Plus, Play, Trash2, Loader2, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  createSession,
-  createTemplate,
-  deleteTemplate,
-  listMyTemplates,
-} from "@/lib/quiz/db";
+import { createSession, createTemplate, deleteTemplate, listMyTemplates } from "@/lib/quiz/db";
 import { pickLocale, type QuizTemplate } from "@/lib/quiz/types";
 
 export const Route = createFileRoute("/_authenticated/painel/quiz/")({
@@ -86,7 +81,8 @@ function QuizIndexPage() {
   }
 
   async function excluir(id: string) {
-    if (!confirm("Excluir este template e todas as perguntas? Essa ação não pode ser desfeita.")) return;
+    if (!confirm("Excluir este template e todas as perguntas? Essa ação não pode ser desfeita."))
+      return;
     try {
       await deleteTemplate(id);
       setTemplates((t) => t.filter((x) => x.id !== id));
@@ -107,8 +103,8 @@ function QuizIndexPage() {
         </div>
         <h1 className="text-2xl font-semibold">Acesso restrito</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Você ainda não tem acesso ao Quiz ao Vivo. Fale com a equipe Sena Consulting para
-          liberar este app.
+          Você ainda não tem acesso ao Quiz ao Vivo. Fale com a equipe Sena Consulting para liberar
+          este app.
         </p>
         <button
           onClick={() => navigate({ to: "/painel" })}
@@ -174,6 +170,14 @@ function QuizIndexPage() {
                 >
                   <Pencil className="h-3.5 w-3.5" />
                   Editar
+                </Link>
+                <Link
+                  to="/painel/quiz/templates/$templateId/sessoes"
+                  params={{ templateId: t.id }}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-foreground/15 px-4 py-2 text-sm font-medium hover:border-foreground/40"
+                >
+                  <History className="h-3.5 w-3.5" />
+                  Sessões
                 </Link>
                 <button
                   onClick={() => iniciarSessao(t.id)}
