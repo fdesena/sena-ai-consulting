@@ -1,10 +1,7 @@
-import { type I18nText, type Locale, emptyI18n } from "@/lib/quiz/types";
-
-const LOCALES: { key: Locale; label: string }[] = [
-  { key: "pt", label: "PT" },
-  { key: "en", label: "EN" },
-  { key: "es", label: "ES" },
-];
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
+import { type I18nText, emptyI18n } from "@/lib/quiz/types";
+import { translateToEnEs } from "@/lib/quiz/translate";
 
 type Props = {
   value: I18nText | null | undefined;
@@ -15,30 +12,45 @@ type Props = {
 };
 
 /**
- * Campo de texto trilíngue (PT/EN/ES) — usado em todo conteúdo do quiz
- * (títulos, perguntas, opções, explicações). PT é a única aba obrigatória;
- * EN/ES ficam vazias até o usuário preencher (fallback pro PT em runtime,
- * ver `pickLocale`).
+ * Campo de texto do quiz — só edita em português. Ao sair do campo (blur),
+ * traduz em background pra inglês/espanhol via IA e salva os três (a UI
+ * nunca mostra EN/ES; em runtime `pickLocale` cai pro PT se faltar tradução).
  */
 export function I18nField({ value, onChange, placeholder, multiline, className }: Props) {
   const v = value ?? emptyI18n();
+  const [translating, setTranslating] = useState(false);
   const Field = multiline ? "textarea" : "input";
+
+  async function handleBlur() {
+    const text = v.pt.trim();
+    if (!text) return;
+    setTranslating(true);
+    try {
+      const { en, es } = await translateToEnEs(text);
+      onChange({ pt: v.pt, en, es });
+    } catch {
+      // tradução falhou — segue só com o PT, sem travar o preenchimento.
+    } finally {
+      setTranslating(false);
+    }
+  }
+
   return (
-    <div className={`space-y-1.5 ${className ?? ""}`}>
-      {LOCALES.map(({ key, label }) => (
-        <div key={key} className="flex items-start gap-2">
-          <span className="mt-2 w-7 shrink-0 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-            {label}
-          </span>
-          <Field
-            value={v[key]}
-            onChange={(e) => onChange({ ...v, [key]: e.target.value })}
-            placeholder={key === "pt" ? placeholder : `${placeholder ?? ""} (${label.toLowerCase()})`}
-            rows={multiline ? 2 : undefined}
-            className="min-w-0 flex-1 rounded-lg border border-border bg-background px-2.5 py-1.5 text-sm outline-none focus:border-primary"
-          />
-        </div>
-      ))}
+    <div className={`relative ${className ?? ""}`}>
+      <Field
+        value={v.pt}
+        onChange={(e) => onChange({ ...v, pt: e.target.value })}
+        onBlur={handleBlur}
+        placeholder={placeholder}
+        rows={multiline ? 2 : undefined}
+        className="w-full rounded-lg border border-border bg-background px-2.5 py-1.5 pr-8 text-sm outline-none focus:border-primary"
+      />
+      {translating && (
+        <Loader2
+          className="absolute right-2.5 top-2.5 h-3.5 w-3.5 animate-spin text-muted-foreground"
+          aria-label="Traduzindo…"
+        />
+      )}
     </div>
   );
 }
