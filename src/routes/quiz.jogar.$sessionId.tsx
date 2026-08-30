@@ -127,6 +127,21 @@ function QuizPlayPage() {
   // ao vivo — quem ainda não respondeu continua podendo responder normalmente
   // até ele avançar. Só mostramos a tela de resultado pra quem já enviou.
   if (me?.answered) {
+    if (revealed && q.kind === "survey") {
+      // Estatística: não tem certo/errado, só confirma que a resposta contou.
+      return (
+        <Centered dark>
+          <div className="text-5xl">📊</div>
+          <p className="mt-3 text-2xl font-semibold">Resposta registrada!</p>
+          {pickLocale(q.explanation ?? undefined, locale) && (
+            <p className="mx-auto mt-4 max-w-sm text-sm text-white/70">
+              {pickLocale(q.explanation, locale)}
+            </p>
+          )}
+          <p className="mt-6 text-sm text-white/50">Aguardando a próxima pergunta…</p>
+        </Centered>
+      );
+    }
     if (revealed) {
       const acertou = me?.answer?.is_correct;
       return (
@@ -192,7 +207,7 @@ function QuizPlayPage() {
           {pickLocale(q.prompt, locale)}
         </p>
 
-        {(q.kind === "single" || q.kind === "true_false") && (
+        {(q.kind === "single" || q.kind === "true_false" || q.kind === "survey") && (
           <div className="grid gap-3">
             {q.options.map((o, i) => (
               <button

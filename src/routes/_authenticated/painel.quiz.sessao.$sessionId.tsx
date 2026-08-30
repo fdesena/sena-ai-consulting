@@ -474,7 +474,7 @@ function PresentationView({
 }) {
   const LETTERS = ["A", "B", "C", "D", "E", "F"];
   const options = question.options ?? [];
-  const votingKinds: QuizQuestion["kind"][] = ["single", "true_false", "multiple"];
+  const votingKinds: QuizQuestion["kind"][] = ["single", "true_false", "multiple", "survey"];
   const canChart = votingKinds.includes(question.kind) && options.length > 0;
 
   return (

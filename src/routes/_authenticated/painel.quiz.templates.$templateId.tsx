@@ -194,9 +194,11 @@ function QuestionCard({
   }
 
   async function mudarTipo(kind: QuestionKind) {
-    onLocalPatch({ kind });
+    // Estatística nunca pontua — não tem certo/errado, só coleta a distribuição.
+    const patch: Partial<QuizQuestion> = kind === "survey" ? { kind, points: 0 } : { kind };
+    onLocalPatch(patch);
     try {
-      await updateQuestion(question.id, { kind });
+      await updateQuestion(question.id, patch as any);
     } catch (e: any) {
       toast.error("Erro ao mudar o tipo", { description: e.message });
       return;
@@ -206,7 +208,10 @@ function QuestionCard({
       const v = await createOption(question.id, 0);
       const f = await createOption(question.id, 1);
       await Promise.all([
-        updateOption(v.id, { label: { pt: "Verdadeiro", en: "True", es: "Verdadero" }, is_correct: true }),
+        updateOption(v.id, {
+          label: { pt: "Verdadeiro", en: "True", es: "Verdadero" },
+          is_correct: true,
+        }),
         updateOption(f.id, { label: { pt: "Falso", en: "False", es: "Falso" }, is_correct: false }),
       ]);
       onLocalPatch({
@@ -260,6 +265,7 @@ function QuestionCard({
   const isTrueFalse = question.kind === "true_false";
   const isTwoCategories = question.kind === "two_categories";
   const isText = question.kind === "text";
+  const isSurvey = question.kind === "survey";
 
   return (
     <div className="rounded-2xl border border-border bg-surface p-6">
@@ -317,7 +323,9 @@ function QuestionCard({
           />
         </label>
         <label>
-          <span className="mb-1 block text-xs text-muted-foreground">Tempo (segundos, opcional)</span>
+          <span className="mb-1 block text-xs text-muted-foreground">
+            Tempo (segundos, opcional)
+          </span>
           <input
             type="number"
             min={1}
@@ -342,9 +350,7 @@ function QuestionCard({
       </div>
 
       <div className="mb-4">
-        <span className="mb-1.5 block text-xs text-muted-foreground">
-          URL da imagem (opcional)
-        </span>
+        <span className="mb-1.5 block text-xs text-muted-foreground">URL da imagem (opcional)</span>
         <input
           value={question.image_url ?? ""}
           onChange={(e) => salvar({ image_url: e.target.value || null })}
@@ -394,7 +400,9 @@ function QuestionCard({
             ? "Respostas aceitas (qualquer uma delas conta como correta)"
             : isTwoCategories
               ? "Itens a classificar"
-              : "Opções"}
+              : isSurvey
+                ? "Opções (sem certo ou errado — só coletamos a distribuição)"
+                : "Opções"}
         </span>
         {!isTrueFalse && (
           <button
@@ -410,7 +418,7 @@ function QuestionCard({
       <div className="space-y-2">
         {options.map((o) => (
           <div key={o.id} className="flex items-start gap-2 rounded-xl border border-border p-2.5">
-            {!isTwoCategories && !isText && (
+            {!isTwoCategories && !isText && !isSurvey && (
               <input
                 type={question.kind === "multiple" ? "checkbox" : "radio"}
                 name={`correct-${question.id}`}
@@ -430,7 +438,9 @@ function QuestionCard({
             {isTwoCategories && (
               <select
                 value={o.category ?? ""}
-                onChange={(e) => patchOption(o.id, { category: (e.target.value || null) as "a" | "b" | null })}
+                onChange={(e) =>
+                  patchOption(o.id, { category: (e.target.value || null) as "a" | "b" | null })
+                }
                 className="mt-0.5 shrink-0 rounded-lg border border-border bg-background px-2 py-1.5 text-xs outline-none focus:border-primary"
               >
                 <option value="">—</option>

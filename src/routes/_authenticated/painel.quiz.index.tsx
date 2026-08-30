@@ -1,11 +1,38 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Gamepad2, History, Lock, Plus, Play, Trash2, Loader2, Pencil } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  Download,
+  Gamepad2,
+  History,
+  Lock,
+  Plus,
+  Play,
+  PlayCircle,
+  Radio,
+  Trash2,
+  Loader2,
+  Pencil,
+  Trophy,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { createSession, createTemplate, deleteTemplate, listMyTemplates } from "@/lib/quiz/db";
-import { pickLocale, type QuizTemplate } from "@/lib/quiz/types";
+import {
+  createSession,
+  createTemplate,
+  deleteTemplate,
+  hostListSessions,
+  listMyTemplates,
+} from "@/lib/quiz/db";
+import { exportSessionResultsXLSX } from "@/lib/quiz/export";
+import { pickLocale, type QuizSessionRow, type QuizTemplate } from "@/lib/quiz/types";
+
+const STATUS_LABEL: Record<string, string> = {
+  lobby: "Na sala de espera",
+  in_progress: "Em andamento",
+  revealed: "Encerrado",
+  completed: "Encerrado",
+};
 
 export const Route = createFileRoute("/_authenticated/painel/quiz/")({
   component: QuizIndexPage,
@@ -15,9 +42,11 @@ function QuizIndexPage() {
   const navigate = useNavigate();
   const [allowed, setAllowed] = useState<boolean | null>(null);
   const [templates, setTemplates] = useState<QuizTemplate[]>([]);
+  const [sessions, setSessions] = useState<QuizSessionRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [startingId, setStartingId] = useState<string | null>(null);
+  const [exportingId, setExportingId] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -47,7 +76,9 @@ function QuizIndexPage() {
     (async () => {
       setLoading(true);
       try {
-        setTemplates(await listMyTemplates());
+        const [t, s] = await Promise.all([listMyTemplates(), hostListSessions()]);
+        setTemplates(t);
+        setSessions(s);
       } catch (e: any) {
         toast.error("Erro ao carregar templates", { description: e.message });
       } finally {
@@ -55,6 +86,19 @@ function QuizIndexPage() {
       }
     })();
   }, [allowed]);
+
+  const templateTitleById = useMemo(
+    () => new Map(templates.map((t) => [t.id, pickLocale(t.title, "pt") || "Sem título"])),
+    [templates],
+  );
+  const activeSessions = useMemo(
+    () => sessions.filter((s) => s.status === "lobby" || s.status === "in_progress"),
+    [sessions],
+  );
+  const historySessions = useMemo(
+    () => sessions.filter((s) => s.status === "completed" || s.status === "revealed").slice(0, 10),
+    [sessions],
+  );
 
   async function novoTemplate() {
     setCreating(true);
@@ -88,6 +132,18 @@ function QuizIndexPage() {
       setTemplates((t) => t.filter((x) => x.id !== id));
     } catch (e: any) {
       toast.error("Erro ao excluir", { description: e.message });
+    }
+  }
+
+  async function exportar(session: QuizSessionRow) {
+    setExportingId(session.id);
+    try {
+      const label = new Date(session.created_at).toLocaleString("pt-BR");
+      await exportSessionResultsXLSX(session.id, label, session.template_id);
+    } catch (e: any) {
+      toast.error("Erro ao exportar", { description: e.message });
+    } finally {
+      setExportingId(null);
     }
   }
 
@@ -140,6 +196,43 @@ function QuizIndexPage() {
           Novo template
         </button>
       </div>
+
+      {activeSessions.length > 0 && (
+        <div className="mb-8">
+          <div className="mb-3 flex items-center gap-2">
+            <Radio className="h-4 w-4 text-secondary" />
+            <h2 className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+              Sessões ativas
+            </h2>
+          </div>
+          <div className="grid gap-3">
+            {activeSessions.map((s) => (
+              <div
+                key={s.id}
+                className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-secondary/40 bg-secondary/5 p-5"
+              >
+                <div className="min-w-0">
+                  <p className="font-medium">
+                    {templateTitleById.get(s.template_id) ?? "Template removido"}
+                  </p>
+                  <p className="mt-0.5 flex items-center gap-3 text-sm text-muted-foreground">
+                    <span>PIN {s.pin}</span>
+                    <span>{STATUS_LABEL[s.status] ?? s.status}</span>
+                  </p>
+                </div>
+                <Link
+                  to="/painel/quiz/sessao/$sessionId"
+                  params={{ sessionId: s.id }}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground hover:opacity-90"
+                >
+                  <PlayCircle className="h-3.5 w-3.5" />
+                  Continuar
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {loading ? (
         <p className="text-sm text-muted-foreground">Carregando templates…</p>
@@ -201,6 +294,56 @@ function QuizIndexPage() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {historySessions.length > 0 && (
+        <div className="mt-10">
+          <div className="mb-3 flex items-center gap-2">
+            <Trophy className="h-4 w-4 text-bronze" />
+            <h2 className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+              Histórico
+            </h2>
+          </div>
+          <div className="grid gap-3">
+            {historySessions.map((s) => (
+              <div
+                key={s.id}
+                className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-surface p-5"
+              >
+                <div className="min-w-0">
+                  <p className="font-medium">
+                    {templateTitleById.get(s.template_id) ?? "Template removido"}
+                  </p>
+                  <p className="mt-0.5 text-sm text-muted-foreground">
+                    {new Date(s.created_at).toLocaleString("pt-BR")}
+                  </p>
+                </div>
+                <div className="flex shrink-0 items-center gap-2">
+                  <Link
+                    to="/painel/quiz/sessao/$sessionId"
+                    params={{ sessionId: s.id }}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-foreground/15 px-4 py-2 text-sm font-medium hover:border-foreground/40"
+                  >
+                    <Trophy className="h-3.5 w-3.5" />
+                    Ver resultado
+                  </Link>
+                  <button
+                    onClick={() => exportar(s)}
+                    disabled={exportingId === s.id}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-bronze px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
+                  >
+                    {exportingId === s.id ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <Download className="h-3.5 w-3.5" />
+                    )}
+                    Excel
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

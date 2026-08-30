@@ -18,7 +18,13 @@ export function pickLocale(text: I18nText | null | undefined, locale: Locale): s
   return text[locale] || text.pt || text.en || text.es || "";
 }
 
-export type QuestionKind = "single" | "multiple" | "true_false" | "two_categories" | "text";
+export type QuestionKind =
+  | "single"
+  | "multiple"
+  | "true_false"
+  | "two_categories"
+  | "text"
+  | "survey";
 
 export const QUESTION_KIND_LABEL: Record<QuestionKind, string> = {
   single: "Escolha única",
@@ -26,6 +32,7 @@ export const QUESTION_KIND_LABEL: Record<QuestionKind, string> = {
   true_false: "Verdadeiro ou falso",
   two_categories: "Classificação em 2 categorias",
   text: "Texto livre",
+  survey: "Estatística (sem certo ou errado)",
 };
 
 export type QuizTemplate = {
