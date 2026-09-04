@@ -78,10 +78,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Sena Consulting — IA e Automação para Negócios" },
-      { name: "description", content: "Consultoria de IA, automação e transformação digital. São Paulo e Boston — atuando globalmente com diagnóstico, construção e capacitação." },
+      { title: "Sena Labs — Estratégia, IA e Software" },
+      { name: "description", content: "Estratégia, IA e desenvolvimento de software para transformar problemas de negócio em produtos digitais que funcionam." },
       { name: "author", content: "Felipe Sena" },
-      { property: "og:site_name", content: "Sena Consulting" },
+      { property: "og:site_name", content: "Sena Labs" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -108,12 +108,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Organization",
-          name: "Sena Consulting",
+          name: "Sena Labs",
           url: "https://senaconsulting.app",
           logo: "https://senaconsulting.app/apple-touch-icon.png",
           founder: { "@type": "Person", name: "Felipe Sena" },
           areaServed: "Worldwide",
-          description: "Consultoria de IA, automação e transformação digital.",
+          description: "Estratégia, IA e desenvolvimento de software.",
         }),
       },
       {
@@ -121,7 +121,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebSite",
-          name: "Sena Consulting",
+          name: "Sena Labs",
           url: "https://senaconsulting.app",
         }),
       },

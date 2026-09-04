@@ -1,6 +1,6 @@
 export const WHATSAPP_NUMBER = "14043079848";
 export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-  "Olá Felipe, vim pelo site da Sena Consulting e gostaria de conversar.",
+  "Olá Felipe, vim pelo site da Sena Labs e gostaria de conversar.",
 )}`;
 
 export default function WhatsAppFAB() {

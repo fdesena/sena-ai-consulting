@@ -128,7 +128,7 @@ function MockEvent() {
             className="rounded-[1px]"
             style={{
               background:
-                Math.random() > 0.4
+                i % 5 > 1
                   ? "color-mix(in oklab, var(--bronze) 80%, transparent)"
                   : "color-mix(in oklab, white 15%, transparent)",
             }}

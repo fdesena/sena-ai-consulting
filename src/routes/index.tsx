@@ -7,30 +7,30 @@ const OG_IMAGE_URL = `https://senaconsulting.app${ogImage.url}`;
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Sena Consulting — IA, Automação e Transformação Digital" },
+      { title: "Sena Labs — Estratégia, IA e Software" },
       {
         name: "description",
         content:
-          "Consultoria de IA e automação que sai da apresentação e vira sistema rodando. Diagnóstico, construção e capacitação — com resultados mensuráveis.",
+          "Transformamos problemas de negócio em produtos digitais, automações, agentes de IA, dashboards e plataformas que funcionam.",
       },
-      { property: "og:title", content: "Sena Consulting — Onde Estratégia Encontra Execução" },
+      { property: "og:title", content: "Sena Labs — Do problema ao produto" },
       {
         property: "og:description",
         content:
-          "Consultoria de IA, automação e transformação digital. São Paulo · Boston — atuando globalmente.",
+          "Estratégia, IA e desenvolvimento de software. São Paulo · Boston — atuação global.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://senaconsulting.app/" },
       { property: "og:image", content: OG_IMAGE_URL },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },
-      { property: "og:image:alt", content: "Sena Consulting — Onde Estratégia Encontra Execução" },
+      { property: "og:image:alt", content: "Sena Labs — Do problema ao produto" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Sena Consulting — Onde Estratégia Encontra Execução" },
+      { name: "twitter:title", content: "Sena Labs — Do problema ao produto" },
       {
         name: "twitter:description",
         content:
-          "Consultoria de IA, automação e transformação digital. São Paulo · Boston — atuando globalmente.",
+          "Estratégia, IA e desenvolvimento de software. São Paulo · Boston — atuação global.",
       },
       { name: "twitter:image", content: OG_IMAGE_URL },
     ],
