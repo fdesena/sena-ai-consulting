@@ -7,8 +7,7 @@
 import type { Processo } from "./types";
 
 const DJEN_URL = "https://comunicaapi.pje.jus.br/api/v1/comunicacao";
-const UA =
-  "Mozilla/5.0 (compatible; Jurisprudencia.ai/1.0; +https://jurisprudencias.ai)";
+const UA = "Mozilla/5.0 (compatible; Jurisprudencia.ai/1.0; +https://jurisprudencias.ai)";
 
 interface DjenDestinatario {
   nome?: string;
@@ -105,10 +104,7 @@ function normalizeNome(s: string): string {
  * @param nome  Razão social ou nome do administrador.
  * @param limite Máximo de comunicações a varrer (padrão 30).
  */
-export async function buscarProcessosPorParte(
-  nome: string,
-  limite = 30,
-): Promise<Processo[]> {
+export async function buscarProcessosPorParte(nome: string, limite = 30): Promise<Processo[]> {
   const url = new URL(DJEN_URL);
   url.searchParams.set("nomeParte", nome);
   url.searchParams.set("pagina", "1");
@@ -162,8 +158,6 @@ export async function buscarProcessosPorParte(
   // Ordena movimentos por data (mais recentes ao final) e limita a 5 por processo.
   return [...porProcesso.values()].map((p) => ({
     ...p,
-    movimentos: p.movimentos
-      .sort((a, b) => String(a.data).localeCompare(String(b.data)))
-      .slice(-5),
+    movimentos: p.movimentos.sort((a, b) => String(a.data).localeCompare(String(b.data))).slice(-5),
   }));
 }

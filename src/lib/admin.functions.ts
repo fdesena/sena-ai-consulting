@@ -22,9 +22,12 @@ export const adminListUsers = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
 
     const ids = data.users.map((u) => u.id);
-    let rolesMap = new Map<string, string[]>();
+    const rolesMap = new Map<string, string[]>();
     if (ids.length) {
-      const { data: roles } = await supabaseAdmin.from("user_roles").select("user_id, role").in("user_id", ids);
+      const { data: roles } = await supabaseAdmin
+        .from("user_roles")
+        .select("user_id, role")
+        .in("user_id", ids);
       (roles ?? []).forEach((r: any) => {
         const arr = rolesMap.get(r.user_id) ?? [];
         arr.push(r.role);
@@ -110,9 +113,7 @@ export const adminListAppAccess = createServerFn({ method: "POST" })
   .handler(async ({ context }) => {
     await assertAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data, error } = await supabaseAdmin
-      .from("user_app_access")
-      .select("user_id, app_slug");
+    const { data, error } = await supabaseAdmin.from("user_app_access").select("user_id, app_slug");
     if (error) throw new Error(error.message);
     return { access: (data ?? []) as { user_id: string; app_slug: string }[] };
   });
@@ -160,7 +161,9 @@ export const adminResetPasswordToEmail = createServerFn({ method: "POST" })
     if (gErr || !got?.user?.email) throw new Error(gErr?.message ?? "Usuário não encontrado");
     const email = got.user.email;
     if (email.length < 6) throw new Error("E-mail muito curto para servir de senha.");
-    const { error } = await supabaseAdmin.auth.admin.updateUserById(data.userId, { password: email });
+    const { error } = await supabaseAdmin.auth.admin.updateUserById(data.userId, {
+      password: email,
+    });
     if (error) throw new Error(error.message);
     return { ok: true, password: email };
   });

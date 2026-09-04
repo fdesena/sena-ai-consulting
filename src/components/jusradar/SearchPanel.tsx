@@ -52,9 +52,15 @@ export function SearchPanel({
 
       <div className="mt-4 flex items-center justify-between gap-3">
         <p className="text-xs text-muted-foreground">
-          Etapa 1: processos no DataJud (por assunto). Etapa 2: jurisprudência por tema. Ou informe um CNPJ para empresa + administradores e links de busca processual.
+          Etapa 1: processos no DataJud (por assunto). Etapa 2: jurisprudência por tema. Ou informe
+          um CNPJ para empresa + administradores e links de busca processual.
         </p>
-        <Button onClick={onSubmit} disabled={running || !value.trim()} size="lg" className="bg-bronze hover:bg-bronze/90 text-white shrink-0">
+        <Button
+          onClick={onSubmit}
+          disabled={running || !value.trim()}
+          size="lg"
+          className="bg-bronze hover:bg-bronze/90 text-white shrink-0"
+        >
           {running ? "Pesquisando…" : "Pesquisar"}
         </Button>
       </div>

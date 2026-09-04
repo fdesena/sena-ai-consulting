@@ -242,7 +242,9 @@ export function Timer({ embedded, onRemove, alicerce }: Props) {
     <div>
       {embedded && (
         <div className="mb-4 flex items-center justify-between">
-          <h2 className={`inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] ${mutedCls}`}>
+          <h2
+            className={`inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] ${mutedCls}`}
+          >
             <TimerIcon className="h-3.5 w-3.5" />
             Temporizador
           </h2>
@@ -274,7 +276,9 @@ export function Timer({ embedded, onRemove, alicerce }: Props) {
             </button>
           </div>
 
-          <div className={`h-2.5 w-full max-w-xl overflow-hidden rounded-full ${alicerce ? "bg-white/10" : "bg-muted"}`}>
+          <div
+            className={`h-2.5 w-full max-w-xl overflow-hidden rounded-full ${alicerce ? "bg-white/10" : "bg-muted"}`}
+          >
             <div
               className={`h-full rounded-full transition-[width] duration-1000 ease-linear ${corBarra}`}
               style={{ width: `${pct}%` }}
@@ -321,9 +325,7 @@ export function Timer({ embedded, onRemove, alicerce }: Props) {
             </button>
           )}
 
-          {acabou && (
-            <p className="text-lg font-semibold text-destructive">⏰ Tempo esgotado!</p>
-          )}
+          {acabou && <p className="text-lg font-semibold text-destructive">⏰ Tempo esgotado!</p>}
 
           <div className="flex flex-wrap items-center justify-center gap-3">
             <button
@@ -380,7 +382,9 @@ export function Timer({ embedded, onRemove, alicerce }: Props) {
 
         <div className="flex flex-col gap-6">
           <div className={card}>
-            <h2 className={`mb-3 flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] ${mutedCls}`}>
+            <h2
+              className={`mb-3 flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] ${mutedCls}`}
+            >
               <Music className="h-3.5 w-3.5" /> Música de fundo
             </h2>
             <select

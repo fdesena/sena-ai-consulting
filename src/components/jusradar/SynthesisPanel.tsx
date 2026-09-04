@@ -69,14 +69,19 @@ export function SynthesisPanel({
             </div>
           ),
           th: (p) => (
-            <th className="border border-border bg-muted px-3 py-2 text-left font-semibold" {...p} />
+            <th
+              className="border border-border bg-muted px-3 py-2 text-left font-semibold"
+              {...p}
+            />
           ),
           td: (p) => <td className="border border-border px-3 py-2 align-top" {...p} />,
         }}
       >
         {text}
       </ReactMarkdown>
-      {running && <span className="ml-0.5 inline-block h-4 w-2 animate-pulse bg-bronze/70 align-middle" />}
+      {running && (
+        <span className="ml-0.5 inline-block h-4 w-2 animate-pulse bg-bronze/70 align-middle" />
+      )}
     </div>
   );
 }

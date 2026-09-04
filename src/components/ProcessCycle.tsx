@@ -84,14 +84,10 @@ export default function ProcessCycle() {
   const radius = 150;
 
   // Wrap-around navigation — reforça que é um ciclo, sem início/fim travados
-  const go = (delta: number) =>
-    setActive((a) => (a + delta + steps.length) % steps.length);
+  const go = (delta: number) => setActive((a) => (a + delta + steps.length) % steps.length);
 
   return (
-    <div
-      ref={containerRef}
-      className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center"
-    >
+    <div ref={containerRef} className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center">
       {/* Orbit — cada fatia do círculo é uma fase do ciclo */}
       <div className="relative mx-auto aspect-square w-full max-w-[420px]">
         <svg viewBox="-200 -200 400 400" className="absolute inset-0 h-full w-full">

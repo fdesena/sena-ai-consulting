@@ -8,8 +8,7 @@ import type { Processo } from "./types";
 // Chave pública oficial do CNJ (a mesma para todos; pode ser trocada pelo CNJ).
 // Pode ser sobrescrita via variável de ambiente DATAJUD_API_KEY.
 const API_KEY =
-  process.env.DATAJUD_API_KEY ||
-  "cDZHYzlZa0JadVREZDJCendQbXY6SkJlTzNjLV9TRENyQk1RdnFKZGRQdw==";
+  process.env.DATAJUD_API_KEY || "cDZHYzlZa0JadVREZDJCendQbXY6SkJlTzNjLV9TRENyQk1RdnFKZGRQdw==";
 
 const BASE = "https://api-publica.datajud.cnj.jus.br";
 
@@ -44,16 +43,15 @@ const ALIASES: Record<string, string> = {
 };
 
 function resolveAlias(t: string): string {
-  const key = String(t || "").toLowerCase().trim();
+  const key = String(t || "")
+    .toLowerCase()
+    .trim();
   if (ALIASES[key]) return ALIASES[key];
   if (key.startsWith("api_publica_")) return key;
   return `api_publica_${key}`;
 }
 
-async function datajud(
-  tribunal: string,
-  body: Record<string, unknown>,
-): Promise<unknown> {
+async function datajud(tribunal: string, body: Record<string, unknown>): Promise<unknown> {
   const alias = resolveAlias(tribunal);
   const url = `${BASE}/${alias}/_search`;
   const res = await fetch(url, {
@@ -86,8 +84,7 @@ interface EsHit {
 }
 
 function resumirHits(json: unknown): Processo[] {
-  const hits: EsHit[] =
-    (json as { hits?: { hits?: EsHit[] } })?.hits?.hits ?? [];
+  const hits: EsHit[] = (json as { hits?: { hits?: EsHit[] } })?.hits?.hits ?? [];
   return hits.map((h) => {
     const s = h._source ?? {};
     return {
@@ -99,9 +96,7 @@ function resumirHits(json: unknown): Processo[] {
       orgaoJulgador: s.orgaoJulgador?.nome,
       dataAjuizamento: s.dataAjuizamento,
       ultimaAtualizacao: s.dataHoraUltimaAtualizacao,
-      movimentos: (s.movimentos ?? [])
-        .slice(-5)
-        .map((m) => ({ data: m.dataHora, nome: m.nome })),
+      movimentos: (s.movimentos ?? []).slice(-5).map((m) => ({ data: m.dataHora, nome: m.nome })),
     };
   });
 }

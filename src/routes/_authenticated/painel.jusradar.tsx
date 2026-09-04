@@ -29,10 +29,16 @@ function JusRadar() {
     (async () => {
       const { data: u } = await supabase.auth.getUser();
       const uid = u.user?.id;
-      if (!uid) { setAllowed(false); return; }
+      if (!uid) {
+        setAllowed(false);
+        return;
+      }
 
       const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", uid);
-      if ((roles ?? []).some((r: any) => r.role === "admin")) { setAllowed(true); return; }
+      if ((roles ?? []).some((r: any) => r.role === "admin")) {
+        setAllowed(true);
+        return;
+      }
 
       const { data: access } = await supabase
         .from("user_app_access")
@@ -56,7 +62,8 @@ function JusRadar() {
         </div>
         <h1 className="text-2xl font-semibold">Acesso restrito</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Você ainda não tem acesso ao JusRadar. Fale com a equipe Sena Consulting para liberar este app.
+          Você ainda não tem acesso ao JusRadar. Fale com a equipe Sena Consulting para liberar este
+          app.
         </p>
         <button
           onClick={() => navigate({ to: "/painel" })}
@@ -97,7 +104,15 @@ function JusRadarApp() {
     if (exporting) return;
     setExporting(true);
     try {
-      await exportarRelatorioDocx({ contexto, synthesis, defesa, requerente, processos, decisoes, quotaExceeded });
+      await exportarRelatorioDocx({
+        contexto,
+        synthesis,
+        defesa,
+        requerente,
+        processos,
+        decisoes,
+        quotaExceeded,
+      });
       toast.success("Relatório .docx gerado", { description: "O download foi iniciado." });
     } catch (err) {
       toast.error("Falha ao gerar o relatório", {
@@ -223,7 +238,9 @@ function JusRadarApp() {
             <Scale className="h-5 w-5" />
           </div>
           <div>
-            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">Sena Consulting Apps</span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">
+              Sena Consulting Apps
+            </span>
             <h1 className="text-3xl font-semibold leading-tight">JusRadar</h1>
             <p className="text-sm text-muted-foreground">Pesquisa jurídica em linguagem natural.</p>
           </div>
@@ -234,18 +251,13 @@ function JusRadarApp() {
         </div>
       </div>
 
-      <SearchPanel
-        value={contexto}
-        onChange={setContexto}
-        onSubmit={onSubmit}
-        running={running}
-      />
+      <SearchPanel value={contexto} onChange={setContexto} onSubmit={onSubmit} running={running} />
 
       {!started && (
         <div className="rounded-2xl border border-dashed border-border bg-muted/30 p-6 text-center text-sm text-muted-foreground">
           Descreva um caso acima e clique em <strong>Pesquisar</strong>. O agente identifica a
-          competência, rastreia processos no DataJud por assunto e analisa a jurisprudência sobre
-          o tema, montando uma síntese fundamentada.
+          competência, rastreia processos no DataJud por assunto e analisa a jurisprudência sobre o
+          tema, montando uma síntese fundamentada.
         </div>
       )}
 
@@ -359,9 +371,10 @@ function JusRadarApp() {
                 <>
                   {decisoes.some((d) => d.source) && (
                     <p className="mb-3 text-xs text-muted-foreground">
-                      Quando a API não retorna decisões, incluímos <strong>links de pesquisa web</strong>{" "}
-                      (Escavador, Jusbrasil, site do tribunal, Google) para você continuar a busca
-                      manualmente — marcados com a etiqueta <strong>Pesquisa web</strong>.
+                      Quando a API não retorna decisões, incluímos{" "}
+                      <strong>links de pesquisa web</strong> (Escavador, Jusbrasil, site do
+                      tribunal, Google) para você continuar a busca manualmente — marcados com a
+                      etiqueta <strong>Pesquisa web</strong>.
                     </p>
                   )}
                   <div className="grid gap-3">

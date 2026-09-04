@@ -8,7 +8,8 @@ export const Route = createFileRoute("/exclusao-de-dados")({
       { title: "Exclusão de Dados do Usuário — Sena Consulting" },
       {
         name: "description",
-        content: "Instruções para solicitar a exclusão dos seus dados pessoais junto à Sena Consulting.",
+        content:
+          "Instruções para solicitar a exclusão dos seus dados pessoais junto à Sena Consulting.",
       },
       { property: "og:title", content: "Exclusão de Dados do Usuário — Sena Consulting" },
       { property: "og:url", content: "https://senaconsulting.app/exclusao-de-dados" },
@@ -33,9 +34,10 @@ function DataDeletion() {
       <div className="prose prose-neutral mt-8 max-w-none space-y-6 text-sm leading-relaxed text-foreground/90">
         <section>
           <p>
-            Se você trocou mensagens com a Sena Consulting pelo WhatsApp, e-mail, LinkedIn ou preencheu
-            algum formulário em nosso site (como o diagnóstico Bússola Digital & IA), você pode solicitar a
-            exclusão dos seus dados pessoais armazenados por nós a qualquer momento.
+            Se você trocou mensagens com a Sena Consulting pelo WhatsApp, e-mail, LinkedIn ou
+            preencheu algum formulário em nosso site (como o diagnóstico Bússola Digital & IA), você
+            pode solicitar a exclusão dos seus dados pessoais armazenados por nós a qualquer
+            momento.
           </p>
         </section>
 
@@ -43,7 +45,10 @@ function DataDeletion() {
           <h2 className="text-lg font-semibold">Como solicitar a exclusão</h2>
           <p>Envie um e-mail para:</p>
           <p>
-            <a href={`mailto:${EMAIL}?subject=Solicitação de exclusão de dados`} className="font-medium underline">
+            <a
+              href={`mailto:${EMAIL}?subject=Solicitação de exclusão de dados`}
+              className="font-medium underline"
+            >
               {EMAIL}
             </a>
           </p>
@@ -58,9 +63,9 @@ function DataDeletion() {
         <section>
           <h2 className="text-lg font-semibold">O que acontece depois</h2>
           <p>
-            Confirmamos o recebimento da solicitação em até 3 dias úteis e concluímos a exclusão dos dados
-            associados à sua identidade (mensagens, respostas de formulários e dados de contato) em até 15
-            dias úteis, salvo obrigação legal de retenção por período maior.
+            Confirmamos o recebimento da solicitação em até 3 dias úteis e concluímos a exclusão dos
+            dados associados à sua identidade (mensagens, respostas de formulários e dados de
+            contato) em até 15 dias úteis, salvo obrigação legal de retenção por período maior.
           </p>
         </section>
 

@@ -50,9 +50,14 @@ function PerfilPage() {
 
   async function saveInfo(e: React.FormEvent) {
     e.preventDefault();
-    setInfoErr(null); setInfoMsg(null); setSavingInfo(true);
+    setInfoErr(null);
+    setInfoMsg(null);
+    setSavingInfo(true);
     const { data: u } = await supabase.auth.getUser();
-    if (!u.user) { setSavingInfo(false); return; }
+    if (!u.user) {
+      setSavingInfo(false);
+      return;
+    }
     const { error } = await supabase
       .from("profiles")
       .upsert({ id: u.user.id, full_name: name }, { onConflict: "id" });
@@ -66,18 +71,29 @@ function PerfilPage() {
 
   async function savePassword(e: React.FormEvent) {
     e.preventDefault();
-    setPwdErr(null); setPwdMsg(null);
-    if (pwd !== pwd2) { setPwdErr("As senhas não coincidem."); return; }
+    setPwdErr(null);
+    setPwdMsg(null);
+    if (pwd !== pwd2) {
+      setPwdErr("As senhas não coincidem.");
+      return;
+    }
     setSavingPwd(true);
     // Re-auth with current password to confirm identity
     const { error: signErr } = await supabase.auth.signInWithPassword({ email, password: cur });
     if (signErr) {
-      setSavingPwd(false); setPwdErr("Senha atual incorreta."); return;
+      setSavingPwd(false);
+      setPwdErr("Senha atual incorreta.");
+      return;
     }
     const { error } = await supabase.auth.updateUser({ password: pwd });
     setSavingPwd(false);
     if (error) setPwdErr(error.message);
-    else { setPwdMsg("Senha atualizada com sucesso."); setCur(""); setPwd(""); setPwd2(""); }
+    else {
+      setPwdMsg("Senha atualizada com sucesso.");
+      setCur("");
+      setPwd("");
+      setPwd2("");
+    }
   }
 
   function pickAvatar() {
@@ -88,9 +104,16 @@ function PerfilPage() {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
-    if (!file.type.startsWith("image/")) { setInfoErr("Selecione uma imagem."); return; }
-    if (file.size > 4 * 1024 * 1024) { setInfoErr("Imagem muito grande (máx 4MB)."); return; }
-    setUploadingAv(true); setInfoErr(null);
+    if (!file.type.startsWith("image/")) {
+      setInfoErr("Selecione uma imagem.");
+      return;
+    }
+    if (file.size > 4 * 1024 * 1024) {
+      setInfoErr("Imagem muito grande (máx 4MB).");
+      return;
+    }
+    setUploadingAv(true);
+    setInfoErr(null);
     try {
       const dataUrl = await resizeImageToDataUrl(file, 320, 0.85);
       const { data: u } = await supabase.auth.getUser();
@@ -115,7 +138,12 @@ function PerfilPage() {
 
   if (loading) return <p className="text-muted-foreground">Carregando…</p>;
 
-  const initials = (name || email || "?").split(/\s+/).map((s) => s[0]).slice(0, 2).join("").toUpperCase();
+  const initials = (name || email || "?")
+    .split(/\s+/)
+    .map((s) => s[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -154,7 +182,11 @@ function PerfilPage() {
                 className="absolute -bottom-1 -right-1 h-9 w-9 rounded-full bg-white border border-border text-foreground grid place-items-center shadow hover:bg-muted disabled:opacity-60"
                 aria-label="Alterar foto"
               >
-                {uploadingAv ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
+                {uploadingAv ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Camera className="h-4 w-4" />
+                )}
               </button>
               <input
                 ref={fileRef}
@@ -217,9 +249,29 @@ function PerfilPage() {
           </div>
 
           <form onSubmit={savePassword} className="space-y-4">
-            <Field label="Senha Atual" type="password" value={cur} onChange={setCur} placeholder="Digite sua senha atual" />
-            <Field label="Nova Senha" type="password" value={pwd} onChange={setPwd} placeholder="Digite a nova senha" min={6} />
-            <Field label="Confirmar Nova Senha" type="password" value={pwd2} onChange={setPwd2} placeholder="Confirme a nova senha" min={6} />
+            <Field
+              label="Senha Atual"
+              type="password"
+              value={cur}
+              onChange={setCur}
+              placeholder="Digite sua senha atual"
+            />
+            <Field
+              label="Nova Senha"
+              type="password"
+              value={pwd}
+              onChange={setPwd}
+              placeholder="Digite a nova senha"
+              min={6}
+            />
+            <Field
+              label="Confirmar Nova Senha"
+              type="password"
+              value={pwd2}
+              onChange={setPwd2}
+              placeholder="Confirme a nova senha"
+              min={6}
+            />
 
             {pwdErr && <p className="text-sm text-[#A6492F]">{pwdErr}</p>}
             {pwdMsg && (
@@ -256,10 +308,19 @@ function PerfilPage() {
 }
 
 function Field({
-  label, type, value, onChange, placeholder, min,
+  label,
+  type,
+  value,
+  onChange,
+  placeholder,
+  min,
 }: {
-  label: string; type: string; value: string;
-  onChange: (v: string) => void; placeholder?: string; min?: number;
+  label: string;
+  type: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  min?: number;
 }) {
   return (
     <div>
@@ -289,7 +350,8 @@ function resizeImageToDataUrl(file: File, maxDim: number, quality: number): Prom
         const w = Math.round(img.width * ratio);
         const h = Math.round(img.height * ratio);
         const canvas = document.createElement("canvas");
-        canvas.width = w; canvas.height = h;
+        canvas.width = w;
+        canvas.height = h;
         const ctx = canvas.getContext("2d")!;
         ctx.drawImage(img, 0, 0, w, h);
         resolve(canvas.toDataURL("image/jpeg", quality));

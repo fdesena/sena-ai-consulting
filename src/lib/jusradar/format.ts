@@ -46,7 +46,11 @@ export function buildProcessLinks(numero?: string, tribunal?: string) {
       tst: "tst.jus.br",
     };
     const d = map[t];
-    if (d) links.unshift({ label: `Pesquisar no ${tribunal.toUpperCase()}`, url: `https://www.google.com/search?q=site:${d}+${enc}` });
+    if (d)
+      links.unshift({
+        label: `Pesquisar no ${tribunal.toUpperCase()}`,
+        url: `https://www.google.com/search?q=site:${d}+${enc}`,
+      });
   }
 
   return links;

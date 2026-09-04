@@ -27,7 +27,15 @@ type Props = {
  * Casca compartilhada das páginas de /ferramentas — mesma barra, tipografia e
  * paleta do site público, para as ferramentas não parecerem um app à parte.
  */
-export function ToolShell({ eyebrow, title, description, actions, back = true, coBrand, children }: Props) {
+export function ToolShell({
+  eyebrow,
+  title,
+  description,
+  actions,
+  back = true,
+  coBrand,
+  children,
+}: Props) {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur">
@@ -79,9 +87,7 @@ export function ToolShell({ eyebrow, title, description, actions, back = true, c
               </span>
             )}
             <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">{title}</h1>
-            {description && (
-              <p className="mt-3 max-w-2xl text-muted-foreground">{description}</p>
-            )}
+            {description && <p className="mt-3 max-w-2xl text-muted-foreground">{description}</p>}
           </div>
           {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
         </div>

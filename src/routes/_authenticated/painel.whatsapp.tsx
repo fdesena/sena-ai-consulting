@@ -7,7 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Toaster } from "@/components/ui/sonner";
 import { loadFacebookSdk } from "@/lib/whatsapp/fbsdk";
-import type { EmbeddedSignupMessage, WhatsAppConnection, WhatsAppConnectionStatus } from "@/lib/whatsapp/types";
+import type {
+  EmbeddedSignupMessage,
+  WhatsAppConnection,
+  WhatsAppConnectionStatus,
+} from "@/lib/whatsapp/types";
 
 export const Route = createFileRoute("/_authenticated/painel/whatsapp")({
   component: WhatsAppPage,
@@ -22,10 +26,16 @@ function WhatsAppPage() {
     (async () => {
       const { data: u } = await supabase.auth.getUser();
       const uid = u.user?.id;
-      if (!uid) { setAllowed(false); return; }
+      if (!uid) {
+        setAllowed(false);
+        return;
+      }
 
       const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", uid);
-      if ((roles ?? []).some((r: any) => r.role === "admin")) { setAllowed(true); return; }
+      if ((roles ?? []).some((r: any) => r.role === "admin")) {
+        setAllowed(true);
+        return;
+      }
 
       const { data: access } = await supabase
         .from("user_app_access")
@@ -73,7 +83,10 @@ const STATUS_LABEL: Record<WhatsAppConnectionStatus, string> = {
   revoked: "Revogado",
 };
 
-const STATUS_VARIANT: Record<WhatsAppConnectionStatus, "default" | "secondary" | "destructive" | "outline"> = {
+const STATUS_VARIANT: Record<
+  WhatsAppConnectionStatus,
+  "default" | "secondary" | "destructive" | "outline"
+> = {
   pending: "secondary",
   registering: "secondary",
   connected: "default",
@@ -162,7 +175,10 @@ function WhatsAppApp() {
       }
       if (data.type !== "WA_EMBEDDED_SIGNUP") return;
       if (data.event === "FINISH" && data.data?.waba_id && data.data?.phone_number_id) {
-        pendingWaba.current = { wabaId: data.data.waba_id, phoneNumberId: data.data.phone_number_id };
+        pendingWaba.current = {
+          wabaId: data.data.waba_id,
+          phoneNumberId: data.data.phone_number_id,
+        };
         finishIfReady();
       } else if (data.event === "ERROR") {
         toast.error("Cadastro incorporado cancelado", { description: data.data?.error_message });
@@ -199,9 +215,13 @@ function WhatsAppApp() {
             <MessageCircle className="h-5 w-5" />
           </div>
           <div>
-            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">Sena Consulting Apps</span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">
+              Sena Consulting Apps
+            </span>
             <h1 className="text-3xl font-semibold leading-tight">WhatsApp Business</h1>
-            <p className="text-sm text-muted-foreground">Conecte seu número via Meta para gestão centralizada.</p>
+            <p className="text-sm text-muted-foreground">
+              Conecte seu número via Meta para gestão centralizada.
+            </p>
           </div>
         </div>
         <Button onClick={onConnect} disabled={connecting || !sdkReady}>
@@ -222,7 +242,8 @@ function WhatsAppApp() {
           <p className="text-sm text-muted-foreground">Carregando…</p>
         ) : connections.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            Nenhum número conectado ainda. Clique em <strong>Conectar WhatsApp</strong> para iniciar.
+            Nenhum número conectado ainda. Clique em <strong>Conectar WhatsApp</strong> para
+            iniciar.
           </p>
         ) : (
           <div className="grid gap-3">

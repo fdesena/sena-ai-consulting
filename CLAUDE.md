@@ -1,6 +1,7 @@
 # CLAUDE.md - Sena Consulting Website
 
 ## Stack & Tech
+
 - **Framework:** TanStack Start (SSR, not Next.js)
 - **Styling:** Tailwind CSS v4 with `md:` breakpoint for responsive
 - **Package Manager:** Bun
@@ -12,11 +13,13 @@
 ## Git Workflow & Commit Process
 
 ### Before committing:
+
 1. **Always use `/pr-description` skill** to generate PR description from your changes
 2. This ensures proper documentation before pushing to GitHub
 3. Command: `/pr-description` (skill reads `git diff` and generates structured description)
 
 ### Committing strategy:
+
 - Prefer `git revert` over `git reset --hard` for undoing changes
   - **Why:** Safe with Lovable 2-way sync; preserves commit history for debugging
   - Use reset only for uncommitted changes in working directory
@@ -24,6 +27,7 @@
 - Co-author commits when working with tools/automations
 
 ### When syncing from Lovable:
+
 ```bash
 git fetch origin
 git pull origin main  # Bring in Lovable changes
@@ -31,6 +35,7 @@ git pull origin main  # Bring in Lovable changes
 ```
 
 ### Push & PR flow:
+
 1. Make changes in feature branch
 2. Run `/pr-description` skill to generate description
 3. Create commit with generated description
@@ -41,16 +46,19 @@ git pull origin main  # Bring in Lovable changes
 ## Key Project Files & Components
 
 ### Components
+
 - **`src/components/LandingPage.tsx`** — hero, "A Oportunidade", "Como Posso Ajudar", contact section
 - **`src/components/GlobalExperience.tsx`** — marquee carousel with continuous infinite scroll animation
 - **`src/components/`** — modular component structure (avoid monolithic files)
 
 ### Routes
+
 - **`src/routes/__root.tsx`** — root layout, meta tags, SEO (schema.org JSON-LD)
 - **`src/routes/diagnostico.tsx`** — assessment form page (Bussola Digital & IA)
 - **`src/routes/sitemap[.]xml.ts`** — dynamic XML sitemap for SEO
 
 ### Public Assets
+
 - **`public/robots.txt`** — crawler instructions
 - **`public/llms.txt`** — brand description for LLMs
 - **`public/`** — static assets (images, icons)
@@ -67,17 +75,20 @@ bun run dev --port 8080
 ## Code Conventions
 
 ### Responsive Design
+
 - Mobile-first approach with Tailwind
 - Use `md:` breakpoint for desktop changes
 - Test both mobile and desktop layouts
 
 ### Components
+
 - Keep components focused and reusable
 - Use Framer-motion for complex animations
 - Use CSS @keyframes for simpler, continuous animations (like marquee)
 - No unnecessary abstractions — three similar lines is OK
 
 ### Commits & Code
+
 - Only add comments when WHY is non-obvious
 - Don't reference current task/issue in code (belongs in PR description)
 - Delete unused code completely (no `// removed` comments)

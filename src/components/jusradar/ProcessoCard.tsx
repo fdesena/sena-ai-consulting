@@ -33,17 +33,16 @@ export function ProcessoCard({ processo }: { processo: Processo }) {
         </p>
       )}
 
-      {p.classe && (
-        <p className="mt-2 font-medium text-foreground/90">{p.classe}</p>
-      )}
-      {p.orgaoJulgador && (
-        <p className="text-sm text-muted-foreground">{p.orgaoJulgador}</p>
-      )}
+      {p.classe && <p className="mt-2 font-medium text-foreground/90">{p.classe}</p>}
+      {p.orgaoJulgador && <p className="text-sm text-muted-foreground">{p.orgaoJulgador}</p>}
 
       {p.assuntos?.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-1.5">
           {Array.from(new Set(p.assuntos)).map((a, i) => (
-            <Badge key={i} className="border-transparent bg-bronze/15 text-bronze hover:bg-bronze/20">
+            <Badge
+              key={i}
+              className="border-transparent bg-bronze/15 text-bronze hover:bg-bronze/20"
+            >
               {a}
             </Badge>
           ))}

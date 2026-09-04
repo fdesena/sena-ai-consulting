@@ -33,7 +33,10 @@ function MeuDiagnostico() {
   useEffect(() => {
     (async () => {
       const { data: u } = await supabase.auth.getUser();
-      if (!u.user) { setLoading(false); return; }
+      if (!u.user) {
+        setLoading(false);
+        return;
+      }
       const { data } = await supabase
         .from("diagnostico_respostas")
         .select("*")
@@ -75,7 +78,9 @@ function MeuDiagnostico() {
     window.addEventListener("message", onMessage);
 
     // Caso o iframe já esteja pronto (cache), envia direto.
-    try { iframe.contentWindow?.postMessage(payload, window.location.origin); } catch {}
+    try {
+      iframe.contentWindow?.postMessage(payload, window.location.origin);
+    } catch {}
 
     const syncHeight = () => {
       try {
@@ -98,11 +103,13 @@ function MeuDiagnostico() {
   if (!resp) {
     return (
       <div className="max-w-2xl mx-auto">
-        <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">Meu diagnóstico</span>
+        <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">
+          Meu diagnóstico
+        </span>
         <h1 className="mt-2 text-3xl font-semibold">Você ainda não fez o diagnóstico</h1>
         <p className="mt-3 text-muted-foreground">
-          Em poucos minutos, mapeie onde IA e automação podem gerar retorno real no seu
-          negócio. Ao final, você verá seu arquétipo, nível e plano de 30 dias.
+          Em poucos minutos, mapeie onde IA e automação podem gerar retorno real no seu negócio. Ao
+          final, você verá seu arquétipo, nível e plano de 30 dias.
         </p>
         <Link
           to="/diagnostico"
@@ -118,7 +125,9 @@ function MeuDiagnostico() {
     <div className="max-w-3xl mx-auto space-y-5">
       <div className="flex items-end justify-between gap-4 flex-wrap">
         <div>
-          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">Meu diagnóstico</span>
+          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">
+            Meu diagnóstico
+          </span>
           <h1 className="mt-2 text-3xl font-semibold">Seu resultado</h1>
           <p className="text-sm text-muted-foreground">
             Respondido em {new Date(resp.created_at).toLocaleDateString("pt-BR")}

@@ -86,10 +86,7 @@ function Section({
   className?: string;
 }) {
   return (
-    <section
-      id={id}
-      className={`mx-auto w-full max-w-6xl px-6 py-20 sm:py-28 ${className}`}
-    >
+    <section id={id} className={`mx-auto w-full max-w-6xl px-6 py-20 sm:py-28 ${className}`}>
       {children}
     </section>
   );
@@ -191,20 +188,38 @@ function HeroOrbital() {
       <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_50%_50%,rgba(200,133,58,0.10)_0%,transparent_70%)]" />
 
       {/* Static decorative rings */}
-      <svg
-        className="absolute inset-0"
-        width="420"
-        height="420"
-        viewBox="0 0 420 420"
-        fill="none"
-      >
-        <circle cx="210" cy="210" r="75"  stroke="#c8853a" strokeOpacity=".35" strokeWidth="1" strokeDasharray="3 6"/>
-        <circle cx="210" cy="210" r="130" stroke="#c8853a" strokeOpacity=".28" strokeWidth="1" strokeDasharray="3 6"/>
-        <circle cx="210" cy="210" r="185" stroke="#c8853a" strokeOpacity=".20" strokeWidth="1" strokeDasharray="3 6"/>
+      <svg className="absolute inset-0" width="420" height="420" viewBox="0 0 420 420" fill="none">
+        <circle
+          cx="210"
+          cy="210"
+          r="75"
+          stroke="#c8853a"
+          strokeOpacity=".35"
+          strokeWidth="1"
+          strokeDasharray="3 6"
+        />
+        <circle
+          cx="210"
+          cy="210"
+          r="130"
+          stroke="#c8853a"
+          strokeOpacity=".28"
+          strokeWidth="1"
+          strokeDasharray="3 6"
+        />
+        <circle
+          cx="210"
+          cy="210"
+          r="185"
+          stroke="#c8853a"
+          strokeOpacity=".20"
+          strokeWidth="1"
+          strokeDasharray="3 6"
+        />
       </svg>
 
       {/* Orbital rings — each ring rotates, icons counter-rotate to stay upright */}
-      <OrbitalRing tools={RING_1_TOOLS} radius={75}  duration={18} />
+      <OrbitalRing tools={RING_1_TOOLS} radius={75} duration={18} />
       <OrbitalRing tools={RING_2_TOOLS} radius={130} duration={26} reverse />
       <OrbitalRing tools={RING_3_TOOLS} radius={185} duration={36} />
 
@@ -222,7 +237,9 @@ function HeroOrbital() {
 }
 
 export default function LandingPage() {
-  useEffect(() => { trackPageview(); }, []);
+  useEffect(() => {
+    trackPageview();
+  }, []);
 
   const [submenuOpen, setSubmenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -253,15 +270,21 @@ export default function LandingPage() {
         <div className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <a href="#top" className="inline-flex items-center gap-2 md:min-w-[280px]">
             <img src={logoIcon} alt="Sena Labs" className="h-8 w-8" />
-            <span className="font-display text-lg font-semibold tracking-tight">
-              Sena Labs
-            </span>
+            <span className="font-display text-lg font-semibold tracking-tight">Sena Labs</span>
           </a>
           <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 text-sm md:flex">
-            <a href="#pilares" className="hover:text-primary">O que fazemos</a>
-            <a href="#processo" className="hover:text-primary">Como trabalhamos</a>
-            <a href="#cases" className="hover:text-primary">Cases</a>
-            <a href="#sobre" className="hover:text-primary">Sobre</a>
+            <a href="#pilares" className="hover:text-primary">
+              O que fazemos
+            </a>
+            <a href="#processo" className="hover:text-primary">
+              Como trabalhamos
+            </a>
+            <a href="#cases" className="hover:text-primary">
+              Cases
+            </a>
+            <a href="#sobre" className="hover:text-primary">
+              Sobre
+            </a>
             <div className="relative" ref={submenuRef}>
               <button
                 type="button"
@@ -399,7 +422,10 @@ export default function LandingPage() {
       </header>
 
       {/* HERO */}
-      <Section id="top" className="!pt-16 sm:!pt-24 min-h-[calc(100svh-64px)] flex flex-col justify-between">
+      <Section
+        id="top"
+        className="!pt-16 sm:!pt-24 min-h-[calc(100svh-64px)] flex flex-col justify-between"
+      >
         <div className="grid items-center gap-12 md:grid-cols-[1fr_1fr]">
           {/* Left: copy + CTAs */}
           <div>
@@ -411,7 +437,8 @@ export default function LandingPage() {
               Do problema ao produto.
             </h1>
             <p className="mt-6 max-w-lg text-lg text-muted-foreground sm:text-xl">
-              Entendemos o problema, desenhamos a solução e construímos tecnologia que funciona — de automações e agentes de IA a apps, dashboards e plataformas.
+              Entendemos o problema, desenhamos a solução e construímos tecnologia que funciona — de
+              automações e agentes de IA a apps, dashboards e plataformas.
             </p>
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
               <Link
@@ -438,10 +465,25 @@ export default function LandingPage() {
         </div>
 
         {/* Scroll cue — bottom of first fold */}
-        <a href="#oportunidade" className="group mt-16 flex items-center gap-2 self-start text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground transition hover:text-foreground sm:mt-0 sm:self-end">
+        <a
+          href="#oportunidade"
+          className="group mt-16 flex items-center gap-2 self-start text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground transition hover:text-foreground sm:mt-0 sm:self-end"
+        >
           Descobrir a oportunidade
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="transition-transform group-hover:translate-y-0.5">
-            <path d="M8 3v10M4 9l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            className="transition-transform group-hover:translate-y-0.5"
+          >
+            <path
+              d="M8 3v10M4 9l4 4 4-4"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </a>
       </Section>
@@ -475,14 +517,17 @@ export default function LandingPage() {
                 </div>
                 <div>
                   <p className="text-muted-foreground">
-                    Dados da pesquisa da Anthropic mostram o <b className="text-foreground">tamanho da oportunidade</b> no mercado. Cada ponta é uma categoria profissional: o{" "}
-                    <b style={{ color: "#4F86C6" }}>azul</b> é o que a IA já consegue fazer hoje; o{" "}
-                    <b style={{ color: "#D14B3D" }}>vermelho</b> é o que de fato se usa, em média.
-                    A distância entre eles representa o gap — e quem agir primeiro leva vantagem.
+                    Dados da pesquisa da Anthropic mostram o{" "}
+                    <b className="text-foreground">tamanho da oportunidade</b> no mercado. Cada
+                    ponta é uma categoria profissional: o <b style={{ color: "#4F86C6" }}>azul</b> é
+                    o que a IA já consegue fazer hoje; o{" "}
+                    <b style={{ color: "#D14B3D" }}>vermelho</b> é o que de fato se usa, em média. A
+                    distância entre eles representa o gap — e quem agir primeiro leva vantagem.
                   </p>
                   <div className="mt-5 rounded-2xl border border-border/70 bg-card p-5">
                     <p className="text-sm text-muted-foreground">
-                      Agora é a sua vez: descubra o quanto você entende, usa e aplica IA — e onde estão os gaps para transformar essa oportunidade em resultado na sua empresa.
+                      Agora é a sua vez: descubra o quanto você entende, usa e aplica IA — e onde
+                      estão os gaps para transformar essa oportunidade em resultado na sua empresa.
                     </p>
                   </div>
                 </div>
@@ -515,15 +560,17 @@ export default function LandingPage() {
                 <MarketGapChart />
                 <div className="mt-2 flex items-center justify-center gap-6 text-[11px] font-mono uppercase tracking-wider">
                   <span className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-sm" style={{ background: "#4F86C6" }} /> Poderia fazer
+                    <span className="h-2 w-2 rounded-sm" style={{ background: "#4F86C6" }} />{" "}
+                    Poderia fazer
                   </span>
                   <span className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-sm" style={{ background: "#D14B3D" }} /> Já se usa
+                    <span className="h-2 w-2 rounded-sm" style={{ background: "#D14B3D" }} /> Já se
+                    usa
                   </span>
                 </div>
                 <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
-                  Fonte: Massenkoff &amp; McCrory (2026), "Labor market impacts of AI", Anthropic — Fig.
-                  2. Valores aproximados, lidos da figura. Adaptado pela Sena.
+                  Fonte: Massenkoff &amp; McCrory (2026), "Labor market impacts of AI", Anthropic —
+                  Fig. 2. Valores aproximados, lidos da figura. Adaptado pela Sena.
                 </p>
               </div>
             </div>
@@ -538,8 +585,8 @@ export default function LandingPage() {
           Entre o discurso da IA e o resultado real, existe um abismo.
         </h2>
         <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-          A dificuldade não está mais no acesso às ferramentas — está em
-          transformá-las em processos melhores, produtividade e decisões mais rápidas.
+          A dificuldade não está mais no acesso às ferramentas — está em transformá-las em processos
+          melhores, produtividade e decisões mais rápidas.
         </p>
 
         <p className="mt-14 eyebrow text-primary">Soa familiar?</p>
@@ -553,7 +600,8 @@ export default function LandingPage() {
               Quer produzir mais. Continua preso ao manual.
             </h3>
             <p className="mt-4 border-l-2 border-primary/50 pl-4 text-lg italic leading-relaxed text-foreground/90">
-              “Sei que a IA podia me poupar horas por dia — mas no fim continuo fazendo quase tudo na mão.”
+              “Sei que a IA podia me poupar horas por dia — mas no fim continuo fazendo quase tudo
+              na mão.”
             </p>
           </article>
           <article className="rounded-2xl border border-border/40 bg-card p-8 transition hover:border-primary hover:shadow-md sm:p-10">
@@ -565,7 +613,8 @@ export default function LandingPage() {
               Quer soluções próprias. Não sabe o que dá pra construir.
             </h3>
             <p className="mt-4 border-l-2 border-primary/50 pl-4 text-lg italic leading-relaxed text-foreground/90">
-              “Preciso de algo sob medida pra minha operação — só não sei por onde começar nem se o time vai adotar.”
+              “Preciso de algo sob medida pra minha operação — só não sei por onde começar nem se o
+              time vai adotar.”
             </p>
           </article>
         </div>
@@ -614,8 +663,8 @@ export default function LandingPage() {
           Entender → Desenhar → Construir → Implementar → Evoluir.
         </h2>
         <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-          Da investigação do problema à evolução do produto, estratégia e execução
-          caminham juntas. Cada entrega gera dados para o próximo ciclo.
+          Da investigação do problema à evolução do produto, estratégia e execução caminham juntas.
+          Cada entrega gera dados para o próximo ciclo.
         </p>
         <div className="mt-16">
           <ProcessCycle />
@@ -672,7 +721,9 @@ export default function LandingPage() {
                 <Icon className="h-5 w-5 text-primary" strokeWidth={1.5} />
               </div>
               <h3 className="mt-8 text-2xl font-semibold">{title}</h3>
-              <p className={cn("mt-4", index === 2 ? "text-white/70" : "text-muted-foreground")}>{text}</p>
+              <p className={cn("mt-4", index === 2 ? "text-white/70" : "text-muted-foreground")}>
+                {text}
+              </p>
               <a
                 href="https://calendar.app.google/oh4NeMRMtw8v5UP5A"
                 target="_blank"
@@ -694,7 +745,8 @@ export default function LandingPage() {
             Resultados concretos. Sistemas em produção.
           </h2>
           <p className="mt-5 max-w-2xl text-lg text-muted-foreground">
-            Não paramos no diagnóstico. Desenhamos, construímos e colocamos soluções reais para funcionar.
+            Não paramos no diagnóstico. Desenhamos, construímos e colocamos soluções reais para
+            funcionar.
           </p>
         </div>
         <div className="mt-12">
@@ -711,9 +763,9 @@ export default function LandingPage() {
               Uma empresa de estratégia e tecnologia feita para construir.
             </h2>
             <p className="mt-6 max-w-2xl text-lg text-white/70">
-              A Sena Labs transforma problemas de negócio em soluções digitais úteis.
-              Combinamos visão estratégica, IA, dados e desenvolvimento de software para
-              entregar produtos que entram na operação — e evoluem com ela.
+              A Sena Labs transforma problemas de negócio em soluções digitais úteis. Combinamos
+              visão estratégica, IA, dados e desenvolvimento de software para entregar produtos que
+              entram na operação — e evoluem com ela.
             </p>
             <div className="mt-10 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-3">
               {[
@@ -779,33 +831,49 @@ export default function LandingPage() {
               Felipe Sena. Estratégia, produto e execução em escala global.
             </h2>
             <p className="mt-5 text-lg text-muted-foreground">
-              <span className="font-medium text-foreground">Consultor de Estratégia e Tecnologia</span> pela{" "}
-              <span className="font-medium text-foreground">Boston Innovation Gateway</span>. Desde 2022, desenvolve e integra soluções de IA, dados e automação para aumentar produtividade, reduzir trabalho manual e apoiar decisões em empresas, governos e ecossistemas de inovação globais.
+              <span className="font-medium text-foreground">
+                Consultor de Estratégia e Tecnologia
+              </span>{" "}
+              pela <span className="font-medium text-foreground">Boston Innovation Gateway</span>.
+              Desde 2022, desenvolve e integra soluções de IA, dados e automação para aumentar
+              produtividade, reduzir trabalho manual e apoiar decisões em empresas, governos e
+              ecossistemas de inovação globais.
             </p>
 
             <ul className="mt-8 space-y-3 text-muted-foreground">
               <li className="flex gap-3">
                 <Target className="mt-1 h-5 w-5 shrink-0 text-primary" strokeWidth={1.6} />
                 <span>
-                  <span className="font-medium text-foreground">Liderança de Produto e Projetos Digitais Globais</span> — Think-Big / Boston Innovation Gateway.
+                  <span className="font-medium text-foreground">
+                    Liderança de Produto e Projetos Digitais Globais
+                  </span>{" "}
+                  — Think-Big / Boston Innovation Gateway.
                 </span>
               </li>
               <li className="flex gap-3">
                 <TrendingUp className="mt-1 h-5 w-5 shrink-0 text-primary" strokeWidth={1.6} />
                 <span>
-                  Passagem por grandes empresas como <span className="font-medium text-foreground">Sicredi</span>, <span className="font-medium text-foreground">XP Investimentos</span> e <span className="font-medium text-foreground">HP Tech Ventures</span>. Empreendeu na <span className="font-medium text-foreground">Rivool Finance</span> como Chefe de Produto (CPO), onde desenvolveu e automatizou a plataforma de tokenização de crédito agrícola.
+                  Passagem por grandes empresas como{" "}
+                  <span className="font-medium text-foreground">Sicredi</span>,{" "}
+                  <span className="font-medium text-foreground">XP Investimentos</span> e{" "}
+                  <span className="font-medium text-foreground">HP Tech Ventures</span>. Empreendeu
+                  na <span className="font-medium text-foreground">Rivool Finance</span> como Chefe
+                  de Produto (CPO), onde desenvolveu e automatizou a plataforma de tokenização de
+                  crédito agrícola.
                 </span>
               </li>
               <li className="flex gap-3">
                 <GraduationCap className="mt-1 h-5 w-5 shrink-0 text-primary" strokeWidth={1.6} />
                 <span>
-                  <span className="font-medium text-foreground">Mestrado duplo</span> em Negócios Internacionais &amp; Business Analytics — Hult International Business School.
+                  <span className="font-medium text-foreground">Mestrado duplo</span> em Negócios
+                  Internacionais &amp; Business Analytics — Hult International Business School.
                 </span>
               </li>
               <li className="flex gap-3">
                 <Compass className="mt-1 h-5 w-5 shrink-0 text-primary" strokeWidth={1.6} />
                 <span>
-                  Atuação em <span className="font-medium text-foreground">São Paulo · Boston</span> · projetos em 4 continentes &amp; 22 países.
+                  Atuação em <span className="font-medium text-foreground">São Paulo · Boston</span>{" "}
+                  · projetos em 4 continentes &amp; 22 países.
                 </span>
               </li>
             </ul>
@@ -835,8 +903,6 @@ export default function LandingPage() {
           <GlobalExperience />
         </div>
       </Section>
-
-
 
       {/* CTA FINAL */}
       <Section id="contato" className="border-t border-border">
@@ -954,9 +1020,7 @@ function PillarBlock({
               Pilar {n}
             </span>
             <h2 className="mt-3 text-4xl font-semibold sm:text-6xl">{title}.</h2>
-            <p className={`mt-4 text-lg ${dark ? "opacity-80" : "text-muted-foreground"}`}>
-              {sub}
-            </p>
+            <p className={`mt-4 text-lg ${dark ? "opacity-80" : "text-muted-foreground"}`}>{sub}</p>
           </div>
           <div className="grid gap-3">
             {items.map((it) => (

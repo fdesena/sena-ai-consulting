@@ -14,9 +14,13 @@ function WebsiteLayout() {
   return (
     <div className="max-w-6xl mx-auto space-y-6 text-foreground">
       <div>
-        <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">Administrador</span>
+        <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">
+          Administrador
+        </span>
         <h1 className="mt-2 text-3xl font-semibold">Website</h1>
-        <p className="text-sm text-muted-foreground">Acompanhe o tráfego do site e gerencie o conteúdo da seção Experiências internacionais.</p>
+        <p className="text-sm text-muted-foreground">
+          Acompanhe o tráfego do site e gerencie o conteúdo da seção Experiências internacionais.
+        </p>
       </div>
       <div className="flex gap-2 border-b border-border">
         {tabs.map((t) => {

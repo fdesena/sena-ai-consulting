@@ -1,10 +1,26 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { UserPlus, Shield, Trash2, RefreshCw, Mail, X, KeyRound, Users, AppWindow, Check } from "lucide-react";
 import {
-  adminListUsers, adminCreateUser, adminSetUserRole, adminDeleteUser, adminResetPasswordToEmail,
-  adminListAppAccess, adminSetAppAccess,
+  UserPlus,
+  Shield,
+  Trash2,
+  RefreshCw,
+  Mail,
+  X,
+  KeyRound,
+  Users,
+  AppWindow,
+  Check,
+} from "lucide-react";
+import {
+  adminListUsers,
+  adminCreateUser,
+  adminSetUserRole,
+  adminDeleteUser,
+  adminResetPasswordToEmail,
+  adminListAppAccess,
+  adminSetAppAccess,
 } from "@/lib/admin.functions";
 import { APPS, ADMIN_TOOLS } from "@/lib/apps";
 
@@ -13,8 +29,12 @@ export const Route = createFileRoute("/_authenticated/painel/admin/usuarios")({
 });
 
 type U = {
-  id: string; email: string; created_at: string;
-  last_sign_in_at: string | null; confirmed: boolean; roles: string[];
+  id: string;
+  email: string;
+  created_at: string;
+  last_sign_in_at: string | null;
+  confirmed: boolean;
+  roles: string[];
 };
 
 type Tab = "usuarios" | "apps";
@@ -38,45 +58,73 @@ function AdminUsuarios() {
   const [submitting, setSubmitting] = useState(false);
 
   async function load() {
-    setLoading(true); setErr(null);
+    setLoading(true);
+    setErr(null);
     try {
       const r = await list();
       setUsers(r.users);
-    } catch (e: any) { setErr(e?.message ?? "Erro ao carregar"); }
-    finally { setLoading(false); }
+    } catch (e: any) {
+      setErr(e?.message ?? "Erro ao carregar");
+    } finally {
+      setLoading(false);
+    }
   }
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+  }, []);
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitting(true); setErr(null); setMsg(null);
+    setSubmitting(true);
+    setErr(null);
+    setMsg(null);
     try {
       await create({ data: { email: nEmail, password: nPwd, role: nRole } });
       setMsg("Usuário criado.");
-      setNEmail(""); setNPwd(""); setNRole("user"); setShowNew(false);
+      setNEmail("");
+      setNPwd("");
+      setNRole("user");
+      setShowNew(false);
       await load();
-    } catch (e: any) { setErr(e?.message ?? "Erro ao criar"); }
-    finally { setSubmitting(false); }
+    } catch (e: any) {
+      setErr(e?.message ?? "Erro ao criar");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   async function handleChangeRole(u: U, role: "admin" | "user" | "moderator") {
-    try { await setRole({ data: { userId: u.id, role } }); await load(); }
-    catch (e: any) { setErr(e?.message ?? "Erro"); }
+    try {
+      await setRole({ data: { userId: u.id, role } });
+      await load();
+    } catch (e: any) {
+      setErr(e?.message ?? "Erro");
+    }
   }
 
   async function handleDelete(u: U) {
     if (!confirm(`Excluir ${u.email}? Esta ação é permanente.`)) return;
-    try { await del({ data: { userId: u.id } }); await load(); }
-    catch (e: any) { setErr(e?.message ?? "Erro"); }
+    try {
+      await del({ data: { userId: u.id } });
+      await load();
+    } catch (e: any) {
+      setErr(e?.message ?? "Erro");
+    }
   }
 
   async function handleResetPwd(u: U) {
-    if (!confirm(`Resetar a senha de ${u.email}?\n\nA nova senha será o próprio e-mail:\n${u.email}`)) return;
-    setErr(null); setMsg(null);
+    if (
+      !confirm(`Resetar a senha de ${u.email}?\n\nA nova senha será o próprio e-mail:\n${u.email}`)
+    )
+      return;
+    setErr(null);
+    setMsg(null);
     try {
       await resetPwd({ data: { userId: u.id } });
       setMsg(`Senha de ${u.email} redefinida para o próprio e-mail.`);
-    } catch (e: any) { setErr(e?.message ?? "Erro ao resetar senha"); }
+    } catch (e: any) {
+      setErr(e?.message ?? "Erro ao resetar senha");
+    }
   }
 
   const tabCls = (t: Tab) =>
@@ -88,16 +136,26 @@ function AdminUsuarios() {
     <div className="max-w-6xl mx-auto space-y-6 text-foreground">
       <div className="flex items-end justify-between gap-3 flex-wrap">
         <div>
-          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">Administrador</span>
+          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">
+            Administrador
+          </span>
           <h1 className="mt-2 text-3xl font-semibold">Usuários</h1>
-          <p className="text-sm text-muted-foreground">Crie contas, defina papéis e gerencie acessos.</p>
+          <p className="text-sm text-muted-foreground">
+            Crie contas, defina papéis e gerencie acessos.
+          </p>
         </div>
         <div className="flex gap-2">
-          <button onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-border bg-muted px-4 py-2.5 text-sm hover:bg-muted">
+          <button
+            onClick={load}
+            className="inline-flex items-center gap-2 rounded-xl border border-border bg-muted px-4 py-2.5 text-sm hover:bg-muted"
+          >
             <RefreshCw className="h-4 w-4" /> Atualizar
           </button>
           {tab === "usuarios" && (
-            <button onClick={() => setShowNew(true)} className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-bronze to-[#a36c2e] px-4 py-2.5 text-sm font-semibold text-white">
+            <button
+              onClick={() => setShowNew(true)}
+              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-bronze to-[#a36c2e] px-4 py-2.5 text-sm font-semibold text-white"
+            >
               <UserPlus className="h-4 w-4" /> Novo usuário
             </button>
           )}
@@ -113,8 +171,16 @@ function AdminUsuarios() {
         </button>
       </div>
 
-      {err && <div className="rounded-lg bg-red-950/40 border border-red-900 text-red-300 px-3 py-2.5 text-sm">{err}</div>}
-      {msg && <div className="rounded-lg bg-emerald-950/40 border border-emerald-900 text-emerald-300 px-3 py-2.5 text-sm">{msg}</div>}
+      {err && (
+        <div className="rounded-lg bg-red-950/40 border border-red-900 text-red-300 px-3 py-2.5 text-sm">
+          {err}
+        </div>
+      )}
+      {msg && (
+        <div className="rounded-lg bg-emerald-950/40 border border-emerald-900 text-emerald-300 px-3 py-2.5 text-sm">
+          {msg}
+        </div>
+      )}
 
       {tab === "usuarios" ? (
         <div className="rounded-2xl border border-border bg-card overflow-hidden">
@@ -133,14 +199,21 @@ function AdminUsuarios() {
               </thead>
               <tbody>
                 {users.map((u) => {
-                  const role = (u.roles.includes("admin") ? "admin" : u.roles[0] ?? "user") as "admin" | "user" | "moderator";
+                  const role = (u.roles.includes("admin") ? "admin" : (u.roles[0] ?? "user")) as
+                    | "admin"
+                    | "user"
+                    | "moderator";
                   return (
                     <tr key={u.id} className="border-b border-border">
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
                           <Mail className="h-3.5 w-3.5 text-muted-foreground" />
                           <span>{u.email}</span>
-                          {!u.confirmed && <span className="text-[10px] bg-amber-900/40 text-amber-300 px-1.5 py-0.5 rounded">pendente</span>}
+                          {!u.confirmed && (
+                            <span className="text-[10px] bg-amber-900/40 text-amber-300 px-1.5 py-0.5 rounded">
+                              pendente
+                            </span>
+                          )}
                         </div>
                       </td>
                       <td className="py-3 px-4">
@@ -153,16 +226,32 @@ function AdminUsuarios() {
                           <option value="moderator">moderator</option>
                           <option value="admin">admin</option>
                         </select>
-                        {role === "admin" && <Shield className="inline ml-2 h-3.5 w-3.5 text-bronze" />}
+                        {role === "admin" && (
+                          <Shield className="inline ml-2 h-3.5 w-3.5 text-bronze" />
+                        )}
                       </td>
-                      <td className="py-3 px-4 font-mono text-[12px] text-muted-foreground">{new Date(u.created_at).toLocaleDateString("pt-BR")}</td>
-                      <td className="py-3 px-4 font-mono text-[12px] text-muted-foreground">{u.last_sign_in_at ? new Date(u.last_sign_in_at).toLocaleDateString("pt-BR") : "—"}</td>
+                      <td className="py-3 px-4 font-mono text-[12px] text-muted-foreground">
+                        {new Date(u.created_at).toLocaleDateString("pt-BR")}
+                      </td>
+                      <td className="py-3 px-4 font-mono text-[12px] text-muted-foreground">
+                        {u.last_sign_in_at
+                          ? new Date(u.last_sign_in_at).toLocaleDateString("pt-BR")
+                          : "—"}
+                      </td>
                       <td className="py-3 px-4 text-right">
                         <div className="inline-flex items-center gap-1">
-                          <button onClick={() => handleResetPwd(u)} title="Resetar senha para o e-mail" className="text-muted-foreground hover:text-bronze p-1">
+                          <button
+                            onClick={() => handleResetPwd(u)}
+                            title="Resetar senha para o e-mail"
+                            className="text-muted-foreground hover:text-bronze p-1"
+                          >
                             <KeyRound className="h-4 w-4" />
                           </button>
-                          <button onClick={() => handleDelete(u)} title="Excluir usuário" className="text-muted-foreground hover:text-red-400 p-1">
+                          <button
+                            onClick={() => handleDelete(u)}
+                            title="Excluir usuário"
+                            className="text-muted-foreground hover:text-red-400 p-1"
+                          >
                             <Trash2 className="h-4 w-4" />
                           </button>
                         </div>
@@ -179,24 +268,55 @@ function AdminUsuarios() {
       )}
 
       {showNew && (
-        <div className="fixed inset-0 z-50 bg-black/60 grid place-items-center p-4" onClick={() => setShowNew(false)}>
-          <form onClick={(e) => e.stopPropagation()} onSubmit={handleCreate}
-            className="bg-card rounded-2xl w-full max-w-md p-6 border border-border text-foreground space-y-4">
+        <div
+          className="fixed inset-0 z-50 bg-black/60 grid place-items-center p-4"
+          onClick={() => setShowNew(false)}
+        >
+          <form
+            onClick={(e) => e.stopPropagation()}
+            onSubmit={handleCreate}
+            className="bg-card rounded-2xl w-full max-w-md p-6 border border-border text-foreground space-y-4"
+          >
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-semibold">Novo usuário</h2>
-              <button type="button" onClick={() => setShowNew(false)} className="text-muted-foreground"><X className="h-5 w-5" /></button>
+              <button
+                type="button"
+                onClick={() => setShowNew(false)}
+                className="text-muted-foreground"
+              >
+                <X className="h-5 w-5" />
+              </button>
             </div>
-            <input type="email" required value={nEmail} onChange={(e) => setNEmail(e.target.value)} placeholder="E-mail"
-              className="w-full rounded-xl border border-border bg-muted px-4 py-2.5 text-sm" />
-            <input type="text" required minLength={6} value={nPwd} onChange={(e) => setNPwd(e.target.value)} placeholder="Senha (mín. 6)"
-              className="w-full rounded-xl border border-border bg-muted px-4 py-2.5 text-sm" />
-            <select value={nRole} onChange={(e) => setNRole(e.target.value as any)}
-              className="w-full rounded-xl border border-border bg-muted px-4 py-2.5 text-sm">
+            <input
+              type="email"
+              required
+              value={nEmail}
+              onChange={(e) => setNEmail(e.target.value)}
+              placeholder="E-mail"
+              className="w-full rounded-xl border border-border bg-muted px-4 py-2.5 text-sm"
+            />
+            <input
+              type="text"
+              required
+              minLength={6}
+              value={nPwd}
+              onChange={(e) => setNPwd(e.target.value)}
+              placeholder="Senha (mín. 6)"
+              className="w-full rounded-xl border border-border bg-muted px-4 py-2.5 text-sm"
+            />
+            <select
+              value={nRole}
+              onChange={(e) => setNRole(e.target.value as any)}
+              className="w-full rounded-xl border border-border bg-muted px-4 py-2.5 text-sm"
+            >
               <option value="user">user</option>
               <option value="moderator">moderator</option>
               <option value="admin">admin</option>
             </select>
-            <button disabled={submitting} className="w-full rounded-xl bg-gradient-to-r from-bronze to-[#a36c2e] px-4 py-3 text-sm font-semibold text-white disabled:opacity-60">
+            <button
+              disabled={submitting}
+              className="w-full rounded-xl bg-gradient-to-r from-bronze to-[#a36c2e] px-4 py-3 text-sm font-semibold text-white disabled:opacity-60"
+            >
               {submitting ? "Criando…" : "Criar usuário"}
             </button>
           </form>
@@ -207,7 +327,9 @@ function AdminUsuarios() {
 }
 
 function AppAccessPanel({
-  users, usersLoading, onError,
+  users,
+  usersLoading,
+  onError,
 }: {
   users: U[];
   usersLoading: boolean;
@@ -228,10 +350,15 @@ function AppAccessPanel({
     try {
       const r = await listAccess();
       setGranted(new Set(r.access.map((a) => `${a.user_id}:${a.app_slug}`)));
-    } catch (e: any) { onError(e?.message ?? "Erro ao carregar acessos"); }
-    finally { setLoading(false); }
+    } catch (e: any) {
+      onError(e?.message ?? "Erro ao carregar acessos");
+    } finally {
+      setLoading(false);
+    }
   }
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+  }, []);
 
   async function toggle(userId: string, appSlug: string, next: boolean) {
     const key = `${userId}:${appSlug}`;
@@ -239,7 +366,8 @@ function AppAccessPanel({
     // Atualização otimista.
     setGranted((g) => {
       const n = new Set(g);
-      if (next) n.add(key); else n.delete(key);
+      if (next) n.add(key);
+      else n.delete(key);
       return n;
     });
     try {
@@ -249,11 +377,16 @@ function AppAccessPanel({
       // Reverte em caso de erro.
       setGranted((g) => {
         const n = new Set(g);
-        if (next) n.delete(key); else n.add(key);
+        if (next) n.delete(key);
+        else n.add(key);
         return n;
       });
     } finally {
-      setPending((p) => { const n = new Set(p); n.delete(key); return n; });
+      setPending((p) => {
+        const n = new Set(p);
+        n.delete(key);
+        return n;
+      });
     }
   }
 
@@ -282,7 +415,9 @@ function AppAccessPanel({
               <tr className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-mono border-b border-border">
                 <th className="py-3 px-4">Usuário</th>
                 {APPS.map((a) => (
-                  <th key={a.slug} className="py-3 px-4 text-center">{a.name}</th>
+                  <th key={a.slug} className="py-3 px-4 text-center">
+                    {a.name}
+                  </th>
                 ))}
               </tr>
             </thead>
@@ -307,12 +442,20 @@ function AppAccessPanel({
                           <button
                             disabled={isAdmin || busy}
                             onClick={() => toggle(u.id, a.slug, !granted.has(key))}
-                            title={isAdmin ? "Admins têm acesso a todos os apps" : on ? "Remover acesso" : "Conceder acesso"}
+                            title={
+                              isAdmin
+                                ? "Admins têm acesso a todos os apps"
+                                : on
+                                  ? "Remover acesso"
+                                  : "Conceder acesso"
+                            }
                             className={`relative inline-flex h-6 w-11 items-center rounded-full transition disabled:opacity-50 ${
                               on ? "bg-bronze" : "bg-muted-foreground/30"
                             }`}
                           >
-                            <span className={`inline-flex h-5 w-5 items-center justify-center rounded-full bg-white shadow transition ${on ? "translate-x-5" : "translate-x-0.5"}`}>
+                            <span
+                              className={`inline-flex h-5 w-5 items-center justify-center rounded-full bg-white shadow transition ${on ? "translate-x-5" : "translate-x-0.5"}`}
+                            >
                               {on && <Check className="h-3 w-3 text-bronze" />}
                             </span>
                           </button>
@@ -345,42 +488,48 @@ function AppAccessPanel({
                   <tr className="text-left text-[11px] uppercase tracking-wider text-muted-foreground font-mono border-b border-border">
                     <th className="py-3 px-4">Admin</th>
                     {ADMIN_TOOLS.map((a) => (
-                      <th key={a.slug} className="py-3 px-4 text-center">{a.name}</th>
+                      <th key={a.slug} className="py-3 px-4 text-center">
+                        {a.name}
+                      </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {filtered.filter((u) => u.roles.includes("admin")).map((u) => (
-                    <tr key={u.id} className="border-b border-border">
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-2">
-                          <Mail className="h-3.5 w-3.5 text-muted-foreground" />
-                          <span>{u.email}</span>
-                        </div>
-                      </td>
-                      {ADMIN_TOOLS.map((a) => {
-                        const key = `${u.id}:${a.slug}`;
-                        const on = granted.has(key);
-                        const busy = pending.has(key);
-                        return (
-                          <td key={a.slug} className="py-3 px-4 text-center">
-                            <button
-                              disabled={busy}
-                              onClick={() => toggle(u.id, a.slug, !on)}
-                              title={on ? "Remover acesso" : "Conceder acesso"}
-                              className={`relative inline-flex h-6 w-11 items-center rounded-full transition disabled:opacity-50 ${
-                                on ? "bg-bronze" : "bg-muted-foreground/30"
-                              }`}
-                            >
-                              <span className={`inline-flex h-5 w-5 items-center justify-center rounded-full bg-white shadow transition ${on ? "translate-x-5" : "translate-x-0.5"}`}>
-                                {on && <Check className="h-3 w-3 text-bronze" />}
-                              </span>
-                            </button>
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
+                  {filtered
+                    .filter((u) => u.roles.includes("admin"))
+                    .map((u) => (
+                      <tr key={u.id} className="border-b border-border">
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-2">
+                            <Mail className="h-3.5 w-3.5 text-muted-foreground" />
+                            <span>{u.email}</span>
+                          </div>
+                        </td>
+                        {ADMIN_TOOLS.map((a) => {
+                          const key = `${u.id}:${a.slug}`;
+                          const on = granted.has(key);
+                          const busy = pending.has(key);
+                          return (
+                            <td key={a.slug} className="py-3 px-4 text-center">
+                              <button
+                                disabled={busy}
+                                onClick={() => toggle(u.id, a.slug, !on)}
+                                title={on ? "Remover acesso" : "Conceder acesso"}
+                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition disabled:opacity-50 ${
+                                  on ? "bg-bronze" : "bg-muted-foreground/30"
+                                }`}
+                              >
+                                <span
+                                  className={`inline-flex h-5 w-5 items-center justify-center rounded-full bg-white shadow transition ${on ? "translate-x-5" : "translate-x-0.5"}`}
+                                >
+                                  {on && <Check className="h-3 w-3 text-bronze" />}
+                                </span>
+                              </button>
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             )}

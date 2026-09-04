@@ -3,11 +3,7 @@
 
 import OpenAI from "openai";
 import { buscarProcessos, consultarProcesso } from "./datajud";
-import {
-  buscarJurisprudencia,
-  QuotaExceededError,
-  hasToken,
-} from "./jurisprudencias";
+import { buscarJurisprudencia, QuotaExceededError, hasToken } from "./jurisprudencias";
 import { buildJurisprudenciaFallbackLinks } from "./webresearch";
 import { consultarCnpj, buildBuscaProcessosPorParte } from "./cnpj";
 import { buscarProcessosPorParte, consultarTeorPorNumero } from "./djen";
@@ -104,7 +100,10 @@ const TOOLS: OpenAI.Chat.Completions.ChatCompletionTool[] = [
       parameters: {
         type: "object",
         properties: {
-          numeroProcesso: { type: "string", description: "Número único do processo (com ou sem pontuação)." },
+          numeroProcesso: {
+            type: "string",
+            description: "Número único do processo (com ou sem pontuação).",
+          },
           tribunal: { type: "string", description: "Alias do tribunal (ex.: tjsp, trt15)." },
         },
         required: ["numeroProcesso", "tribunal"],
@@ -135,7 +134,10 @@ const TOOLS: OpenAI.Chat.Completions.ChatCompletionTool[] = [
       parameters: {
         type: "object",
         properties: {
-          numeroProcesso: { type: "string", description: "Número único do processo (com ou sem máscara)." },
+          numeroProcesso: {
+            type: "string",
+            description: "Número único do processo (com ou sem máscara).",
+          },
         },
         required: ["numeroProcesso"],
       },
@@ -150,9 +152,19 @@ const TOOLS: OpenAI.Chat.Completions.ChatCompletionTool[] = [
       parameters: {
         type: "object",
         properties: {
-          court: { type: "string", description: "Tribunal: stf, stj, tst, trf3, trf4, tjmg, tjpr, tjrj, tjrs, tjsc, tjsp, carf." },
-          q: { type: "string", description: "Descrição do caso em linguagem natural (sem aspas/operadores)." },
-          pub_from: { type: "string", description: "Filtro de data inicial (YYYY-MM-DD), opcional." },
+          court: {
+            type: "string",
+            description:
+              "Tribunal: stf, stj, tst, trf3, trf4, tjmg, tjpr, tjrj, tjrs, tjsc, tjsp, carf.",
+          },
+          q: {
+            type: "string",
+            description: "Descrição do caso em linguagem natural (sem aspas/operadores).",
+          },
+          pub_from: {
+            type: "string",
+            description: "Filtro de data inicial (YYYY-MM-DD), opcional.",
+          },
           pub_to: { type: "string", description: "Filtro de data final (YYYY-MM-DD), opcional." },
         },
         required: ["court", "q"],
@@ -172,7 +184,11 @@ async function runTool(
   try {
     if (name === "buscar_processos") {
       const tribunal = String(input.tribunal);
-      emit({ type: "step", phase: "datajud", message: `Buscando processos no ${tribunal.toUpperCase()}…` });
+      emit({
+        type: "step",
+        phase: "datajud",
+        message: `Buscando processos no ${tribunal.toUpperCase()}…`,
+      });
       const found = await buscarProcessos(
         tribunal,
         input.query as Record<string, unknown>,
@@ -180,14 +196,22 @@ async function runTool(
       );
       acc.processos = dedupeProcessos([...acc.processos, ...found]);
       emit({ type: "processos", data: acc.processos });
-      emit({ type: "step", phase: "datajud", message: `${found.length} processo(s) encontrado(s) no ${tribunal.toUpperCase()}.` });
+      emit({
+        type: "step",
+        phase: "datajud",
+        message: `${found.length} processo(s) encontrado(s) no ${tribunal.toUpperCase()}.`,
+      });
       return JSON.stringify(found, null, 2);
     }
 
     if (name === "consultar_processo") {
       const tribunal = String(input.tribunal);
       const num = String(input.numeroProcesso);
-      emit({ type: "step", phase: "datajud", message: `Consultando processo ${num} (${tribunal.toUpperCase()})…` });
+      emit({
+        type: "step",
+        phase: "datajud",
+        message: `Consultando processo ${num} (${tribunal.toUpperCase()})…`,
+      });
       const found = await consultarProcesso(num, tribunal);
       acc.processos = dedupeProcessos([...acc.processos, ...found]);
       emit({ type: "processos", data: acc.processos });
@@ -200,10 +224,9 @@ async function runTool(
       const cnpj = String(input.cnpj ?? "");
       emit({ type: "step", phase: "cnpj", message: `Consultando CNPJ ${cnpj} (BrasilAPI)…` });
       const empresa = await consultarCnpj(cnpj);
-      const nomes = [
-        empresa.razaoSocial,
-        ...empresa.socios.map((s) => s.nome),
-      ].filter(Boolean) as string[];
+      const nomes = [empresa.razaoSocial, ...empresa.socios.map((s) => s.nome)].filter(
+        Boolean,
+      ) as string[];
       emit({
         type: "step",
         phase: "cnpj",
@@ -216,11 +239,19 @@ async function runTool(
         try {
           const procs = await buscarProcessosPorParte(nome);
           if (procs.length) {
-            emit({ type: "step", phase: "cnpj", message: `${procs.length} processo(s) para "${nome}" no DJEN.` });
+            emit({
+              type: "step",
+              phase: "cnpj",
+              message: `${procs.length} processo(s) para "${nome}" no DJEN.`,
+            });
           }
           encontrados.push(...procs);
         } catch (e) {
-          emit({ type: "step", phase: "cnpj", message: `DJEN falhou para "${nome}": ${e instanceof Error ? e.message : String(e)}` });
+          emit({
+            type: "step",
+            phase: "cnpj",
+            message: `DJEN falhou para "${nome}": ${e instanceof Error ? e.message : String(e)}`,
+          });
         }
       }
       if (encontrados.length) {
@@ -250,10 +281,18 @@ async function runTool(
 
     if (name === "consultar_teor") {
       const num = String(input.numeroProcesso ?? "");
-      emit({ type: "step", phase: "teor", message: `Buscando teor das publicações de ${num} (DJEN/CNJ)…` });
+      emit({
+        type: "step",
+        phase: "teor",
+        message: `Buscando teor das publicações de ${num} (DJEN/CNJ)…`,
+      });
       const pubs = await consultarTeorPorNumero(num);
       if (pubs.length === 0) {
-        emit({ type: "step", phase: "teor", message: `Nenhuma publicação encontrada no DJEN para ${num}. As peças integrais podem estar no PJe sob login.` });
+        emit({
+          type: "step",
+          phase: "teor",
+          message: `Nenhuma publicação encontrada no DJEN para ${num}. As peças integrais podem estar no PJe sob login.`,
+        });
         return `Nenhuma publicação oficial encontrada no DJEN para o processo ${num}. Os autos integrais (petição, contestação, PDFs) ficam no PJe do tribunal e exigem login.`;
       }
       // Exibe cada publicação como cartão (reaproveita o painel de decisões: texto + link).
@@ -267,14 +306,22 @@ async function runTool(
       }));
       acc.decisoes = dedupeDecisoes([...acc.decisoes, ...cards]);
       emit({ type: "decisoes", data: acc.decisoes });
-      emit({ type: "step", phase: "teor", message: `${pubs.length} publicação(ões) com teor encontradas para ${num}.` });
+      emit({
+        type: "step",
+        phase: "teor",
+        message: `${pubs.length} publicação(ões) com teor encontradas para ${num}.`,
+      });
       return JSON.stringify(cards.map(stripFullText), null, 2);
     }
 
     if (name === "buscar_jurisprudencia") {
       const court = String(input.court);
       const q = String(input.q);
-      emit({ type: "step", phase: "jurisprudencia", message: `Analisando jurisprudência no ${court.toUpperCase()}…` });
+      emit({
+        type: "step",
+        phase: "jurisprudencia",
+        message: `Analisando jurisprudência no ${court.toUpperCase()}…`,
+      });
 
       // Sempre que a API não entrega decisões (sem token, sem resultados ou cota
       // esgotada), trazemos links de pesquisa web (Escavador, Jusbrasil, tribunal,
@@ -288,7 +335,11 @@ async function runTool(
         }));
         acc.decisoes = dedupeDecisoes([...acc.decisoes, ...fb]);
         emit({ type: "decisoes", data: acc.decisoes });
-        emit({ type: "step", phase: "jurisprudencia", message: `${motivo} — adicionados ${fb.length} link(s) de pesquisa web (Escavador, Jusbrasil, ${court.toUpperCase()}, Google).` });
+        emit({
+          type: "step",
+          phase: "jurisprudencia",
+          message: `${motivo} — adicionados ${fb.length} link(s) de pesquisa web (Escavador, Jusbrasil, ${court.toUpperCase()}, Google).`,
+        });
         return fb;
       };
 
@@ -305,7 +356,11 @@ async function runTool(
         if (found.length > 0) {
           acc.decisoes = dedupeDecisoes([...acc.decisoes, ...found]);
           emit({ type: "decisoes", data: acc.decisoes });
-          emit({ type: "step", phase: "jurisprudencia", message: `${found.length} decisão(ões) encontrada(s) no ${court.toUpperCase()}.` });
+          emit({
+            type: "step",
+            phase: "jurisprudencia",
+            message: `${found.length} decisão(ões) encontrada(s) no ${court.toUpperCase()}.`,
+          });
           return JSON.stringify(found.map(stripFullText), null, 2);
         }
         // Busca válida, porém sem resultados na API → fallback web.
@@ -518,7 +573,8 @@ async function gerarArgumentos(
   emit({
     type: "step",
     phase: lado,
-    message: lado === "defesa" ? "Construindo a linha de defesa…" : "Construindo a tese do requerente…",
+    message:
+      lado === "defesa" ? "Construindo a linha de defesa…" : "Construindo a tese do requerente…",
   });
 
   const stream = await client.chat.completions.create({

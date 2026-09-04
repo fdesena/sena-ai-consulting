@@ -13,22 +13,14 @@ const PHASE_COLOR: Record<string, string> = {
   erro: "bg-destructive",
 };
 
-export function ProgressTimeline({
-  steps,
-  running,
-}: {
-  steps: Step[];
-  running: boolean;
-}) {
+export function ProgressTimeline({ steps, running }: { steps: Step[]; running: boolean }) {
   if (steps.length === 0 && !running) return null;
 
   return (
     <div className="rounded-2xl border border-border bg-muted/40 p-4">
       <div className="mb-3 flex items-center gap-2">
         <span className="font-display text-sm font-semibold">Progresso do agente</span>
-        {running && (
-          <span className="h-2 w-2 animate-pulse rounded-full bg-bronze" aria-hidden />
-        )}
+        {running && <span className="h-2 w-2 animate-pulse rounded-full bg-bronze" aria-hidden />}
       </div>
       <ol className="space-y-2">
         {steps.map((s, i) => {
