@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
 
-const phrases = [
-  "Sena.",
-  "Consulting.",
-  "IA sem complicação.",
-  "Automação.",
-];
+const phrases = ["Sena.", "Consulting.", "IA sem complicação.", "Automação."];
 
 export default function TypeWriter({ className }: { className?: string }) {
   const [currentPhrase, setCurrentPhrase] = useState(0);
@@ -34,7 +29,7 @@ export default function TypeWriter({ className }: { className?: string }) {
           }
         }
       },
-      isDeleting && displayed.length === 0 ? 300 : speed
+      isDeleting && displayed.length === 0 ? 300 : speed,
     );
 
     return () => clearTimeout(timeout);

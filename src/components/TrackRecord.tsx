@@ -10,12 +10,7 @@ import {
   ExternalLink,
   type LucideIcon,
 } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 /* ---------- Mini visual mockups (pure SVG/CSS) ---------- */
 
@@ -241,7 +236,9 @@ const items: Item[] = [
 function CaseRow({ label, text }: { label: string; text: string }) {
   return (
     <div>
-      <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-primary">{label}</span>
+      <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-primary">
+        {label}
+      </span>
       <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{text}</p>
     </div>
   );

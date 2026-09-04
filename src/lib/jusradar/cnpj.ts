@@ -61,8 +61,7 @@ const CNPJ_ENDPOINTS = [
   (d: string) => `https://minhareceita.org/${d}`,
 ];
 
-const UA =
-  "Mozilla/5.0 (compatible; Jurisprudencia.ai/1.0; +https://jurisprudencias.ai)";
+const UA = "Mozilla/5.0 (compatible; Jurisprudencia.ai/1.0; +https://jurisprudencias.ai)";
 
 /** Consulta os dados cadastrais e o QSA de um CNPJ (BrasilAPI, com fallback minhareceita.org). */
 export async function consultarCnpj(cnpj: string): Promise<EmpresaCnpj> {
@@ -103,10 +102,12 @@ export async function consultarCnpj(cnpj: string): Promise<EmpresaCnpj> {
     cnaeDescricao: d.cnae_fiscal_descricao,
     municipio: d.municipio,
     uf: d.uf,
-    socios: (d.qsa ?? []).map((s) => ({
-      nome: s.nome_socio ?? "",
-      qualificacao: s.qualificacao_socio,
-    })).filter((s) => s.nome),
+    socios: (d.qsa ?? [])
+      .map((s) => ({
+        nome: s.nome_socio ?? "",
+        qualificacao: s.qualificacao_socio,
+      }))
+      .filter((s) => s.nome),
   };
 }
 
@@ -124,7 +125,10 @@ export function buildBuscaProcessosPorParte(nome: string, cnpj?: string): Search
       source: `e-SAJ TJSP (consulta por nome da parte)`,
       url: `https://esaj.tjsp.jus.br/cpopg/open.do`,
     },
-    { source: `Google — processos de "${nome}"`, url: `https://www.google.com/search?q=${enc}+processo+r%C3%A9u+OR+requerido` },
+    {
+      source: `Google — processos de "${nome}"`,
+      url: `https://www.google.com/search?q=${enc}+processo+r%C3%A9u+OR+requerido`,
+    },
   ];
   if (cnpj) {
     const encCnpj = encodeURIComponent(formatarCnpj(cnpj));

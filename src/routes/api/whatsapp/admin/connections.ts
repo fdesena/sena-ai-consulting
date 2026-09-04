@@ -25,7 +25,10 @@ export const Route = createFileRoute("/api/whatsapp/admin/connections")({
         const userIds = Array.from(new Set((connections ?? []).map((c) => c.user_id)));
         const emailByUser: Record<string, string> = {};
         if (userIds.length) {
-          const { data: usersData } = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 200 });
+          const { data: usersData } = await supabaseAdmin.auth.admin.listUsers({
+            page: 1,
+            perPage: 200,
+          });
           for (const u of usersData?.users ?? []) {
             if (userIds.includes(u.id)) emailByUser[u.id] = u.email ?? "";
           }

@@ -18,11 +18,12 @@ export const Route = createFileRoute("/diagnostico")({
       { property: "og:url", content: "https://senaconsulting.app/diagnostico" },
       { property: "og:type", content: "website" },
       { name: "twitter:title", content: "Diagnóstico Bússola Digital & IA — Sena Consulting" },
-      { name: "twitter:description", content: "Mapeie suas maiores oportunidades com IA e automação antes de investir." },
+      {
+        name: "twitter:description",
+        content: "Mapeie suas maiores oportunidades com IA e automação antes de investir.",
+      },
     ],
-    links: [
-      { rel: "canonical", href: "https://senaconsulting.app/diagnostico" },
-    ],
+    links: [{ rel: "canonical", href: "https://senaconsulting.app/diagnostico" }],
   }),
   component: DiagnosticoRedirect,
 });
@@ -32,7 +33,16 @@ function DiagnosticoRedirect() {
     window.location.replace("/diagnostico.html");
   }, []);
   return (
-    <main style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: "#F8F7F4", color: "#1A1916", fontFamily: "system-ui" }}>
+    <main
+      style={{
+        minHeight: "100vh",
+        display: "grid",
+        placeItems: "center",
+        background: "#F8F7F4",
+        color: "#1A1916",
+        fontFamily: "system-ui",
+      }}
+    >
       <p>Abrindo o diagnóstico…</p>
     </main>
   );

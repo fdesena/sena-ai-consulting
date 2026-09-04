@@ -16,10 +16,16 @@ function AlicerceToolsPage() {
     (async () => {
       const { data: u } = await supabase.auth.getUser();
       const uid = u.user?.id;
-      if (!uid) { setAllowed(false); return; }
+      if (!uid) {
+        setAllowed(false);
+        return;
+      }
 
       const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", uid);
-      if ((roles ?? []).some((r: any) => r.role === "admin")) { setAllowed(true); return; }
+      if ((roles ?? []).some((r: any) => r.role === "admin")) {
+        setAllowed(true);
+        return;
+      }
 
       const { data: access } = await supabase
         .from("user_app_access")

@@ -188,7 +188,7 @@ export default function GlobalExperience() {
             image: p.cover_url ?? undefined,
             link: p.link_url ?? "#",
             linkLabel: p.link_label ?? "Ver post",
-          }))
+          })),
         );
       }
     })();
@@ -204,7 +204,7 @@ export default function GlobalExperience() {
   const SPEED = 100; // px por segundo
   const duration = useMemo(
     () => Math.max(20, (experiences.length * CARD_W) / SPEED),
-    [experiences.length]
+    [experiences.length],
   );
 
   return (
@@ -217,8 +217,8 @@ export default function GlobalExperience() {
           Onde a estratégia foi aplicada — ao vivo, com instituições e líderes globais.
         </h3>
         <p className="mt-3 max-w-2xl text-muted-foreground">
-          Uma seleção de programas, projetos e palestras conduzidos ao lado de universidades, governos
-          e empresas em diferentes países.
+          Uma seleção de programas, projetos e palestras conduzidos ao lado de universidades,
+          governos e empresas em diferentes países.
         </p>
       </div>
 
@@ -245,8 +245,10 @@ export default function GlobalExperience() {
         ref={scrollerRef}
         className="mt-4 overflow-hidden"
         style={{
-          maskImage: "linear-gradient(to right, transparent, black 60px, black calc(100% - 60px), transparent)",
-          WebkitMaskImage: "linear-gradient(to right, transparent, black 60px, black calc(100% - 60px), transparent)",
+          maskImage:
+            "linear-gradient(to right, transparent, black 60px, black calc(100% - 60px), transparent)",
+          WebkitMaskImage:
+            "linear-gradient(to right, transparent, black 60px, black calc(100% - 60px), transparent)",
         }}
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
@@ -287,11 +289,15 @@ export default function GlobalExperience() {
                 </div>
               )}
               <div className="flex flex-1 flex-col gap-3 p-5">
-                <p className="text-xs uppercase tracking-wider text-muted-foreground">{exp.context}</p>
+                <p className="text-xs uppercase tracking-wider text-muted-foreground">
+                  {exp.context}
+                </p>
                 <h4 className="text-base font-semibold leading-snug">{exp.title}</h4>
                 <p className="text-sm text-muted-foreground line-clamp-3">{exp.description}</p>
                 <div className="mt-auto flex items-center justify-between pt-3 text-sm">
-                  <span className="text-muted-foreground text-xs">{exp.flags} {exp.location}</span>
+                  <span className="text-muted-foreground text-xs">
+                    {exp.flags} {exp.location}
+                  </span>
                   <span className="inline-flex items-center gap-1.5 font-medium text-primary text-xs">
                     {exp.linkLabel}
                     <ExternalLink className="h-3.5 w-3.5" />

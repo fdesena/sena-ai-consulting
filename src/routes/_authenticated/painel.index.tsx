@@ -16,8 +16,8 @@ function PainelHome() {
           Bem-vindo de volta<span className="text-bronze">.</span>
         </h1>
         <p className="mt-3 text-muted-foreground max-w-xl">
-          Escolha um módulo para começar. Aqui você acompanha leads, diagnósticos
-          e oportunidades geradas pelo seu site.
+          Escolha um módulo para começar. Aqui você acompanha leads, diagnósticos e oportunidades
+          geradas pelo seu site.
         </p>
       </div>
 
@@ -31,8 +31,8 @@ function PainelHome() {
           </div>
           <h3 className="mt-5 text-xl font-semibold">Diagnóstico</h3>
           <p className="mt-2 text-sm text-muted-foreground">
-            KPIs, gráficos e exportação em Excel das respostas do diagnóstico
-            Bússola Digital &amp; IA.
+            KPIs, gráficos e exportação em Excel das respostas do diagnóstico Bússola Digital &amp;
+            IA.
           </p>
           <span className="mt-5 inline-flex items-center gap-1.5 text-sm text-bronze font-medium">
             Acessar dashboard

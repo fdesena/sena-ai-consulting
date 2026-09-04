@@ -7,7 +7,9 @@ export const Route = createFileRoute("/_authenticated/painel/admin")({
     const uid = userData.user?.id;
     if (!uid) throw redirect({ to: "/auth" });
     // Allow seed admins to claim role on first visit
-    try { await supabase.rpc("claim_seed_admin"); } catch {}
+    try {
+      await supabase.rpc("claim_seed_admin");
+    } catch {}
     const { data: isAdmin } = await supabase.rpc("has_role", {
       _user_id: uid,
       _role: "admin",

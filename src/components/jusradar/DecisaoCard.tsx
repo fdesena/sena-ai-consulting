@@ -26,17 +26,13 @@ export function DecisaoCard({ decisao }: { decisao: Decisao }) {
             d.court && <Badge variant="outline">{d.court.toUpperCase()}</Badge>
           )}
           {d.publication_date && (
-            <span className="text-xs text-muted-foreground">
-              {formatData(d.publication_date)}
-            </span>
+            <span className="text-xs text-muted-foreground">{formatData(d.publication_date)}</span>
           )}
         </div>
       </div>
 
       {d.excerpt && (
-        <p className="mt-2 text-sm leading-relaxed text-foreground/90 line-clamp-5">
-          {d.excerpt}
-        </p>
+        <p className="mt-2 text-sm leading-relaxed text-foreground/90 line-clamp-5">{d.excerpt}</p>
       )}
 
       {d.full_text && (

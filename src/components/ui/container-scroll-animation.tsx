@@ -38,10 +38,7 @@ export const ContainerScroll = ({
   const translate = useTransform(scrollYProgress, [0, 1], [0, -60]);
 
   return (
-    <div
-      className="flex items-center justify-center relative p-2 md:py-10"
-      ref={containerRef}
-    >
+    <div className="flex items-center justify-center relative p-2 md:py-10" ref={containerRef}>
       <div className="w-full relative" style={{ perspective: "1000px" }}>
         <Header translate={translate} titleComponent={titleComponent} />
         <Card rotate={rotate} translate={translate} scale={scale}>
@@ -60,10 +57,7 @@ export const Header = ({
   titleComponent: string | React.ReactNode;
 }) => {
   return (
-    <motion.div
-      style={{ translateY: translate }}
-      className="mx-auto max-w-3xl text-center"
-    >
+    <motion.div style={{ translateY: translate }} className="mx-auto max-w-3xl text-center">
       {titleComponent}
     </motion.div>
   );
@@ -84,9 +78,7 @@ export const Card = ({
       style={{ rotateX: rotate, scale }}
       className="mx-auto mt-8 w-full max-w-5xl rounded-[30px] border border-border bg-card p-2 shadow-2xl md:p-4"
     >
-      <div className="h-full w-full overflow-hidden rounded-2xl bg-[var(--paper)]">
-        {children}
-      </div>
+      <div className="h-full w-full overflow-hidden rounded-2xl bg-[var(--paper)]">{children}</div>
     </motion.div>
   );
 };

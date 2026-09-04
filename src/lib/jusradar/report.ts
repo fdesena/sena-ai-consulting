@@ -85,20 +85,25 @@ function mdTable(rows: string[]): Table {
   const cols = Math.max(...cells.map((c) => c.length));
   return new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
-    rows: cells.map((cols0, ri) =>
-      new TableRow({
-        children: Array.from({ length: cols }).map((_, ci) =>
-          new TableCell({
-            shading: ri === 0 ? { type: ShadingType.CLEAR, fill: HEADER_BG, color: "auto" } : undefined,
-            children: [
-              new Paragraph({
-                children: inlineRuns(cols0[ci] ?? "", { size: 18 }),
-                spacing: { before: 40, after: 40 },
+    rows: cells.map(
+      (cols0, ri) =>
+        new TableRow({
+          children: Array.from({ length: cols }).map(
+            (_, ci) =>
+              new TableCell({
+                shading:
+                  ri === 0
+                    ? { type: ShadingType.CLEAR, fill: HEADER_BG, color: "auto" }
+                    : undefined,
+                children: [
+                  new Paragraph({
+                    children: inlineRuns(cols0[ci] ?? "", { size: 18 }),
+                    spacing: { before: 40, after: 40 },
+                  }),
+                ],
               }),
-            ],
-          }),
-        ),
-      }),
+          ),
+        }),
     ),
   });
 }
@@ -117,7 +122,11 @@ function markdownToDocx(md: string): (Paragraph | Table)[] {
     }
 
     // tabela markdown (bloco contíguo de linhas com "|")
-    if (trimmed.includes("|") && i + 1 < lines.length && /^\s*\|?[\s:|-]+\|?\s*$/.test(lines[i + 1])) {
+    if (
+      trimmed.includes("|") &&
+      i + 1 < lines.length &&
+      /^\s*\|?[\s:|-]+\|?\s*$/.test(lines[i + 1])
+    ) {
       const block: string[] = [];
       while (i < lines.length && lines[i].includes("|") && lines[i].trim()) {
         block.push(lines[i]);
@@ -215,7 +224,10 @@ function sectionTitle(text: string): Paragraph {
   });
 }
 
-function plain(text: string, opts: { italics?: boolean; color?: string; after?: number } = {}): Paragraph {
+function plain(
+  text: string,
+  opts: { italics?: boolean; color?: string; after?: number } = {},
+): Paragraph {
   return new Paragraph({
     children: [new TextRun({ text, italics: opts.italics, color: opts.color })],
     spacing: { after: opts.after ?? 120 },
@@ -223,7 +235,11 @@ function plain(text: string, opts: { italics?: boolean; color?: string; after?: 
 }
 
 function bullet(text: string): Paragraph {
-  return new Paragraph({ children: inlineRuns(text), bullet: { level: 0 }, spacing: { after: 60 } });
+  return new Paragraph({
+    children: inlineRuns(text),
+    bullet: { level: 0 },
+    spacing: { after: 60 },
+  });
 }
 
 function headerCell(text: string): TableCell {
@@ -292,17 +308,32 @@ function buildDoc(input: ReportInput): Document {
     new Paragraph({
       alignment: AlignmentType.CENTER,
       spacing: { after: 40 },
-      children: [new TextRun({ text: "Relatório de Pesquisa Jurídica", bold: true, size: 40, color: ACCENT })],
+      children: [
+        new TextRun({
+          text: "Relatório de Pesquisa Jurídica",
+          bold: true,
+          size: 40,
+          color: ACCENT,
+        }),
+      ],
     }),
     new Paragraph({
       alignment: AlignmentType.CENTER,
       spacing: { after: 40 },
-      children: [new TextRun({ text: "Jurisprudência.ai — pesquisa em linguagem natural", size: 22, color: MUTED })],
+      children: [
+        new TextRun({
+          text: "Jurisprudência.ai — pesquisa em linguagem natural",
+          size: 22,
+          color: MUTED,
+        }),
+      ],
     }),
     new Paragraph({
       alignment: AlignmentType.CENTER,
       spacing: { after: 240 },
-      children: [new TextRun({ text: `Data-base da consulta: ${dataBase()}`, size: 20, color: MUTED })],
+      children: [
+        new TextRun({ text: `Data-base da consulta: ${dataBase()}`, size: 20, color: MUTED }),
+      ],
     }),
   );
 
@@ -318,7 +349,10 @@ function buildDoc(input: ReportInput): Document {
   );
   children.push(
     new Paragraph({
-      children: [new TextRun({ text: "Caso consultado: ", bold: true }), ...inlineRuns(contexto || "—")],
+      children: [
+        new TextRun({ text: "Caso consultado: ", bold: true }),
+        ...inlineRuns(contexto || "—"),
+      ],
       spacing: { after: 120 },
       border: { left: { style: BorderStyle.SINGLE, size: 12, color: ACCENT, space: 8 } },
       indent: { left: 200 },
@@ -375,7 +409,9 @@ function buildDoc(input: ReportInput): Document {
   if (defesa && defesa.trim()) {
     children.push(...markdownToDocx(defesa));
   } else {
-    children.push(plain("Sem análise de defesa gerada nesta consulta.", { italics: true, color: MUTED }));
+    children.push(
+      plain("Sem análise de defesa gerada nesta consulta.", { italics: true, color: MUTED }),
+    );
   }
 
   // --- 5. Estratégia do requerente (aba Requerente) ---
@@ -390,7 +426,9 @@ function buildDoc(input: ReportInput): Document {
   if (requerente && requerente.trim()) {
     children.push(...markdownToDocx(requerente));
   } else {
-    children.push(plain("Sem análise do requerente gerada nesta consulta.", { italics: true, color: MUTED }));
+    children.push(
+      plain("Sem análise do requerente gerada nesta consulta.", { italics: true, color: MUTED }),
+    );
   }
 
   // --- 6. Processos identificados (aba Processos) ---
@@ -435,7 +473,13 @@ function buildDoc(input: ReportInput): Document {
             new TextRun({ text: `${idx + 1}. `, bold: true }),
             new TextRun({ text: titulo || "Decisão", bold: true }),
             ...(d.publication_date
-              ? [new TextRun({ text: `  ·  ${formatData(d.publication_date)}`, color: MUTED, size: 18 })]
+              ? [
+                  new TextRun({
+                    text: `  ·  ${formatData(d.publication_date)}`,
+                    color: MUTED,
+                    size: 18,
+                  }),
+                ]
               : []),
           ],
           spacing: { before: 120, after: 40 },
@@ -471,10 +515,13 @@ function buildDoc(input: ReportInput): Document {
     ),
   );
   children.push(
-    plain("Documento de natureza informativa, gerado automaticamente pela plataforma Jurisprudência.ai.", {
-      italics: true,
-      color: MUTED,
-    }),
+    plain(
+      "Documento de natureza informativa, gerado automaticamente pela plataforma Jurisprudência.ai.",
+      {
+        italics: true,
+        color: MUTED,
+      },
+    ),
   );
 
   return new Document({

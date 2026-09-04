@@ -79,7 +79,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Sena Labs — Estratégia, IA e Software" },
-      { name: "description", content: "Estratégia, IA e desenvolvimento de software para transformar problemas de negócio em produtos digitais que funcionam." },
+      {
+        name: "description",
+        content:
+          "Estratégia, IA e desenvolvimento de software para transformar problemas de negócio em produtos digitais que funcionam.",
+      },
       { name: "author", content: "Felipe Sena" },
       { property: "og:site_name", content: "Sena Labs" },
       { property: "og:type", content: "website" },

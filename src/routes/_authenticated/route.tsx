@@ -1,4 +1,11 @@
-import { createFileRoute, Outlet, redirect, Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Outlet,
+  redirect,
+  Link,
+  useNavigate,
+  useRouterState,
+} from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
   Home,
@@ -88,7 +95,9 @@ function AuthedShell() {
       const uid = data.user?.id;
       setEmail(data.user?.email ?? "");
       if (!uid) return;
-      try { await supabase.rpc("claim_seed_admin"); } catch {}
+      try {
+        await supabase.rpc("claim_seed_admin");
+      } catch {}
       const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", uid);
       let admin = (roles ?? []).some((r: any) => r.role === "admin");
       if (!admin) {
@@ -103,8 +112,12 @@ function AuthedShell() {
       setAppAccess((access ?? []).map((a: any) => a.app_slug));
     };
     load();
-    const { data: sub } = supabase.auth.onAuthStateChange(() => { load(); });
-    return () => { sub.subscription.unsubscribe(); };
+    const { data: sub } = supabase.auth.onAuthStateChange(() => {
+      load();
+    });
+    return () => {
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
   // Block non-admins from admin routes
@@ -120,15 +133,15 @@ function AuthedShell() {
   }
 
   // Apps liberados ao usuário (admin enxerga todos para preview).
-  const appItems: NavItem[] = APPS
-    .filter((a) => isAdmin || appAccess.includes(a.slug))
-    .map((a) => ({ to: a.to, label: a.name, Icon: APP_ICONS[a.slug] ?? LayoutGrid }));
+  const appItems: NavItem[] = APPS.filter((a) => isAdmin || appAccess.includes(a.slug)).map(
+    (a) => ({ to: a.to, label: a.name, Icon: APP_ICONS[a.slug] ?? LayoutGrid }),
+  );
 
   // Ferramentas admin: acesso NUNCA automático por ser admin — só quem foi liberado
   // explicitamente em Usuários -> Acesso de Apps -> Ferramentas administrativas.
-  const adminToolItems: NavItem[] = ADMIN_TOOLS
-    .filter((a) => appAccess.includes(a.slug))
-    .map((a) => ({ to: a.to, label: a.name, Icon: APP_ICONS[a.slug] ?? LayoutGrid }));
+  const adminToolItems: NavItem[] = ADMIN_TOOLS.filter((a) => appAccess.includes(a.slug)).map(
+    (a) => ({ to: a.to, label: a.name, Icon: APP_ICONS[a.slug] ?? LayoutGrid }),
+  );
 
   const navGroups: NavGroup[] = inAdmin
     ? [{ title: "Administração", items: [...ADMIN_NAV, ...adminToolItems] }]
@@ -155,9 +168,14 @@ function AuthedShell() {
           isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
-        <div className={`p-5 border-b flex items-center justify-between ${borderC} ${collapsed ? "px-3 justify-center" : ""}`}>
+        <div
+          className={`p-5 border-b flex items-center justify-between ${borderC} ${collapsed ? "px-3 justify-center" : ""}`}
+        >
           {!collapsed && (
-            <Link to={inAdmin ? "/painel/admin" : "/painel"} className="font-semibold text-lg tracking-tight">
+            <Link
+              to={inAdmin ? "/painel/admin" : "/painel"}
+              className="font-semibold text-lg tracking-tight"
+            >
               Sena<span className="text-bronze">.</span>
               <span className={`ml-2 text-xs font-mono ${mutedTxt}`}>
                 {inAdmin ? "Admin" : "Painel"}
@@ -170,7 +188,11 @@ function AuthedShell() {
               className={`hidden md:grid p-1.5 rounded-md ${hoverBg} ${mutedTxt} hover:text-current place-items-center`}
               title={collapsed ? "Expandir menu" : "Recolher menu"}
             >
-              {collapsed ? <PanelLeft className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+              {collapsed ? (
+                <PanelLeft className="h-4 w-4" />
+              ) : (
+                <PanelLeftClose className="h-4 w-4" />
+              )}
             </button>
             <button onClick={() => setOpen(false)} className={`md:hidden p-1 ${mutedTxt}`}>
               <X className="h-5 w-5" />
@@ -193,14 +215,18 @@ function AuthedShell() {
           {navGroups.map((group, gi) => (
             <div key={group.title} className={gi > 0 ? "mt-4" : ""}>
               {!collapsed ? (
-                <div className={`px-3 py-2 text-[10px] uppercase tracking-widest font-mono ${mutedTxt}`}>
+                <div
+                  className={`px-3 py-2 text-[10px] uppercase tracking-widest font-mono ${mutedTxt}`}
+                >
                   {group.title}
                 </div>
               ) : gi > 0 ? (
                 <div className={`mx-2 my-2 border-t ${borderC}`} />
               ) : null}
               {group.items.map(({ to, label, Icon, exact }) => {
-                const active = exact ? pathname === to : pathname === to || pathname.startsWith(to + "/");
+                const active = exact
+                  ? pathname === to
+                  : pathname === to || pathname.startsWith(to + "/");
                 return (
                   <Link
                     key={to}
@@ -258,8 +284,12 @@ function AuthedShell() {
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <header className="md:hidden sticky top-0 z-30 backdrop-blur border-b px-4 py-3 flex items-center justify-between bg-background/90 border-border">
-          <button onClick={() => setOpen(true)} className="p-1"><MenuIcon className="h-5 w-5" /></button>
-          <span className="font-semibold">Sena<span className="text-bronze">.</span></span>
+          <button onClick={() => setOpen(true)} className="p-1">
+            <MenuIcon className="h-5 w-5" />
+          </button>
+          <span className="font-semibold">
+            Sena<span className="text-bronze">.</span>
+          </span>
           <div className="w-6" />
         </header>
         <PainelHeader title={inAdmin ? "Administrador" : "Painel"} />

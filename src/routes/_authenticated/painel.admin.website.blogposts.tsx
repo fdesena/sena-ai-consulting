@@ -23,8 +23,17 @@ type Post = {
 };
 
 const EMPTY: Post = {
-  title: "", context: "", excerpt: "", cover_url: "", link_url: "",
-  link_label: "Ver post", tag: "", location: "", flags: "", published: true, sort_order: 0,
+  title: "",
+  context: "",
+  excerpt: "",
+  cover_url: "",
+  link_url: "",
+  link_label: "Ver post",
+  tag: "",
+  location: "",
+  flags: "",
+  published: true,
+  sort_order: 0,
 };
 
 function BlogPostsPage() {
@@ -35,14 +44,20 @@ function BlogPostsPage() {
 
   const load = async () => {
     const { data } = await supabase
-      .from("blog_posts").select("*").order("sort_order", { ascending: true }).order("created_at", { ascending: false });
+      .from("blog_posts")
+      .select("*")
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: false });
     setPosts((data as any) ?? []);
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+  }, []);
 
   const save = async () => {
     if (!editing) return;
-    setSaving(true); setMsg(null);
+    setSaving(true);
+    setMsg(null);
     const payload: any = { ...editing };
     let res;
     if (editing.id) {
@@ -52,8 +67,13 @@ function BlogPostsPage() {
       res = await supabase.from("blog_posts").insert(payload);
     }
     setSaving(false);
-    if (res.error) { setMsg("Erro: " + res.error.message); return; }
-    setEditing(null); setMsg("Salvo!"); await load();
+    if (res.error) {
+      setMsg("Erro: " + res.error.message);
+      return;
+    }
+    setEditing(null);
+    setMsg("Salvo!");
+    await load();
   };
 
   const remove = async (id: string) => {
@@ -70,40 +90,123 @@ function BlogPostsPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <p className="text-sm text-muted-foreground">Posts exibidos na seção "Experiências internacionais" do site.</p>
-        <button onClick={() => setEditing({ ...EMPTY })} className="inline-flex items-center gap-2 rounded-full bg-bronze text-black px-4 py-2 text-sm font-semibold hover:opacity-90">
+        <p className="text-sm text-muted-foreground">
+          Posts exibidos na seção "Experiências internacionais" do site.
+        </p>
+        <button
+          onClick={() => setEditing({ ...EMPTY })}
+          className="inline-flex items-center gap-2 rounded-full bg-bronze text-black px-4 py-2 text-sm font-semibold hover:opacity-90"
+        >
           <Plus className="h-4 w-4" /> Novo post
         </button>
       </div>
 
-      {msg && <div className="rounded-lg border border-border bg-card px-4 py-2 text-sm text-foreground">{msg}</div>}
+      {msg && (
+        <div className="rounded-lg border border-border bg-card px-4 py-2 text-sm text-foreground">
+          {msg}
+        </div>
+      )}
 
       {editing && (
         <div className="rounded-2xl border border-bronze/40 bg-card p-6 space-y-4">
           <h3 className="font-semibold">{editing.id ? "Editar post" : "Novo post"}</h3>
           <div className="grid sm:grid-cols-2 gap-3">
-            <Field label="Título"><input className={inputCls} value={editing.title} onChange={(e) => setEditing({ ...editing, title: e.target.value })} /></Field>
-            <Field label="Tag (ex.: Internacionalização)"><input className={inputCls} value={editing.tag ?? ""} onChange={(e) => setEditing({ ...editing, tag: e.target.value })} /></Field>
-            <Field label="Contexto (instituição · cidade)"><input className={inputCls} value={editing.context ?? ""} onChange={(e) => setEditing({ ...editing, context: e.target.value })} /></Field>
-            <Field label="Localização"><input className={inputCls} value={editing.location ?? ""} onChange={(e) => setEditing({ ...editing, location: e.target.value })} /></Field>
-            <Field label="Bandeiras (emoji)"><input className={inputCls} value={editing.flags ?? ""} onChange={(e) => setEditing({ ...editing, flags: e.target.value })} placeholder="🇺🇸 🇧🇷" /></Field>
-            <Field label="Ordem"><input type="number" className={inputCls} value={editing.sort_order} onChange={(e) => setEditing({ ...editing, sort_order: Number(e.target.value) })} /></Field>
-            <Field label="URL da imagem de capa" full><input className={inputCls} value={editing.cover_url ?? ""} onChange={(e) => setEditing({ ...editing, cover_url: e.target.value })} placeholder="https://..." /></Field>
-            <Field label="URL do link (LinkedIn, matéria…)" full><input className={inputCls} value={editing.link_url ?? ""} onChange={(e) => setEditing({ ...editing, link_url: e.target.value })} /></Field>
-            <Field label="Texto do link"><input className={inputCls} value={editing.link_label ?? ""} onChange={(e) => setEditing({ ...editing, link_label: e.target.value })} /></Field>
+            <Field label="Título">
+              <input
+                className={inputCls}
+                value={editing.title}
+                onChange={(e) => setEditing({ ...editing, title: e.target.value })}
+              />
+            </Field>
+            <Field label="Tag (ex.: Internacionalização)">
+              <input
+                className={inputCls}
+                value={editing.tag ?? ""}
+                onChange={(e) => setEditing({ ...editing, tag: e.target.value })}
+              />
+            </Field>
+            <Field label="Contexto (instituição · cidade)">
+              <input
+                className={inputCls}
+                value={editing.context ?? ""}
+                onChange={(e) => setEditing({ ...editing, context: e.target.value })}
+              />
+            </Field>
+            <Field label="Localização">
+              <input
+                className={inputCls}
+                value={editing.location ?? ""}
+                onChange={(e) => setEditing({ ...editing, location: e.target.value })}
+              />
+            </Field>
+            <Field label="Bandeiras (emoji)">
+              <input
+                className={inputCls}
+                value={editing.flags ?? ""}
+                onChange={(e) => setEditing({ ...editing, flags: e.target.value })}
+                placeholder="🇺🇸 🇧🇷"
+              />
+            </Field>
+            <Field label="Ordem">
+              <input
+                type="number"
+                className={inputCls}
+                value={editing.sort_order}
+                onChange={(e) => setEditing({ ...editing, sort_order: Number(e.target.value) })}
+              />
+            </Field>
+            <Field label="URL da imagem de capa" full>
+              <input
+                className={inputCls}
+                value={editing.cover_url ?? ""}
+                onChange={(e) => setEditing({ ...editing, cover_url: e.target.value })}
+                placeholder="https://..."
+              />
+            </Field>
+            <Field label="URL do link (LinkedIn, matéria…)" full>
+              <input
+                className={inputCls}
+                value={editing.link_url ?? ""}
+                onChange={(e) => setEditing({ ...editing, link_url: e.target.value })}
+              />
+            </Field>
+            <Field label="Texto do link">
+              <input
+                className={inputCls}
+                value={editing.link_label ?? ""}
+                onChange={(e) => setEditing({ ...editing, link_label: e.target.value })}
+              />
+            </Field>
             <Field label="Descrição" full>
-              <textarea className={inputCls + " min-h-[90px]"} value={editing.excerpt ?? ""} onChange={(e) => setEditing({ ...editing, excerpt: e.target.value })} />
+              <textarea
+                className={inputCls + " min-h-[90px]"}
+                value={editing.excerpt ?? ""}
+                onChange={(e) => setEditing({ ...editing, excerpt: e.target.value })}
+              />
             </Field>
           </div>
           <label className="inline-flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={editing.published} onChange={(e) => setEditing({ ...editing, published: e.target.checked })} />
+            <input
+              type="checkbox"
+              checked={editing.published}
+              onChange={(e) => setEditing({ ...editing, published: e.target.checked })}
+            />
             Publicado
           </label>
           <div className="flex gap-2">
-            <button disabled={saving} onClick={save} className="inline-flex items-center gap-2 rounded-full bg-bronze text-black px-4 py-2 text-sm font-semibold disabled:opacity-50">
+            <button
+              disabled={saving}
+              onClick={save}
+              className="inline-flex items-center gap-2 rounded-full bg-bronze text-black px-4 py-2 text-sm font-semibold disabled:opacity-50"
+            >
               <Save className="h-4 w-4" /> {saving ? "Salvando…" : "Salvar"}
             </button>
-            <button onClick={() => setEditing(null)} className="rounded-full border border-border px-4 py-2 text-sm">Cancelar</button>
+            <button
+              onClick={() => setEditing(null)}
+              className="rounded-full border border-border px-4 py-2 text-sm"
+            >
+              Cancelar
+            </button>
           </div>
         </div>
       )}
@@ -111,31 +214,59 @@ function BlogPostsPage() {
       <div className="rounded-2xl border border-border bg-card divide-y divide-border">
         {posts.length === 0 ? (
           <div className="p-6 text-sm text-muted-foreground">Nenhum post cadastrado ainda.</div>
-        ) : posts.map((p) => (
-          <div key={p.id} className="p-4 flex items-center gap-4">
-            {p.cover_url ? <img src={p.cover_url} alt="" className="h-14 w-20 object-cover rounded-md" /> : <div className="h-14 w-20 bg-muted rounded-md" />}
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium truncate">{p.title}</div>
-              <div className="text-xs text-muted-foreground truncate">{p.context}</div>
+        ) : (
+          posts.map((p) => (
+            <div key={p.id} className="p-4 flex items-center gap-4">
+              {p.cover_url ? (
+                <img src={p.cover_url} alt="" className="h-14 w-20 object-cover rounded-md" />
+              ) : (
+                <div className="h-14 w-20 bg-muted rounded-md" />
+              )}
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-medium truncate">{p.title}</div>
+                <div className="text-xs text-muted-foreground truncate">{p.context}</div>
+              </div>
+              <span
+                className={`text-[10px] uppercase font-mono px-2 py-0.5 rounded-full ${p.published ? "bg-emerald-500/15 text-emerald-400" : "bg-muted/40 text-muted-foreground"}`}
+              >
+                {p.published ? "Publicado" : "Rascunho"}
+              </span>
+              <button
+                onClick={() => togglePublish(p)}
+                className="text-muted-foreground hover:text-bronze p-2"
+                title="Publicar/despublicar"
+              >
+                {p.published ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+              <button onClick={() => setEditing(p)} className="text-xs text-bronze">
+                Editar
+              </button>
+              <button
+                onClick={() => remove(p.id!)}
+                className="text-muted-foreground hover:text-red-400 p-2"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
             </div>
-            <span className={`text-[10px] uppercase font-mono px-2 py-0.5 rounded-full ${p.published ? "bg-emerald-500/15 text-emerald-400" : "bg-muted/40 text-muted-foreground"}`}>
-              {p.published ? "Publicado" : "Rascunho"}
-            </span>
-            <button onClick={() => togglePublish(p)} className="text-muted-foreground hover:text-bronze p-2" title="Publicar/despublicar">
-              {p.published ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-            </button>
-            <button onClick={() => setEditing(p)} className="text-xs text-bronze">Editar</button>
-            <button onClick={() => remove(p.id!)} className="text-muted-foreground hover:text-red-400 p-2"><Trash2 className="h-4 w-4" /></button>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );
 }
 
-const inputCls = "w-full rounded-lg bg-card border border-border px-3 py-2 text-sm text-foreground focus:border-bronze focus:outline-none";
+const inputCls =
+  "w-full rounded-lg bg-card border border-border px-3 py-2 text-sm text-foreground focus:border-bronze focus:outline-none";
 
-function Field({ label, full, children }: { label: string; full?: boolean; children: React.ReactNode }) {
+function Field({
+  label,
+  full,
+  children,
+}: {
+  label: string;
+  full?: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <label className={`block ${full ? "sm:col-span-2" : ""}`}>
       <span className="block text-xs text-muted-foreground mb-1">{label}</span>

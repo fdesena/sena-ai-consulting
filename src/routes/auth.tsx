@@ -7,7 +7,10 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "Entrar — Área exclusiva Sena Consulting" },
-      { name: "description", content: "Acesso à área exclusiva de clientes e parceiros da Sena Consulting." },
+      {
+        name: "description",
+        content: "Acesso à área exclusiva de clientes e parceiros da Sena Consulting.",
+      },
       { name: "robots", content: "noindex,follow" },
     ],
     links: [{ rel: "canonical", href: "https://senaconsulting.app/auth" }],
@@ -77,7 +80,10 @@ function AuthPage() {
           }}
         />
         <div className="relative">
-          <Link to="/" className="inline-flex items-center gap-2 text-sm text-paper/70 hover:text-paper">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-sm text-paper/70 hover:text-paper"
+          >
             <ArrowLeft className="h-4 w-4" />
             Voltar ao site
           </Link>
@@ -91,8 +97,8 @@ function AuthPage() {
             Área exclusiva<span className="text-bronze">.</span>
           </h2>
           <p className="text-paper/70 text-base leading-relaxed">
-            O espaço dos clientes Sena. Acompanhe seu diagnóstico, o andamento
-            dos seus projetos e os materiais da consultoria — tudo em um só lugar.
+            O espaço dos clientes Sena. Acompanhe seu diagnóstico, o andamento dos seus projetos e
+            os materiais da consultoria — tudo em um só lugar.
           </p>
           <div className="grid grid-cols-3 gap-4 pt-6">
             {[
@@ -101,7 +107,9 @@ function AuthPage() {
               { k: "Materiais", v: "Relatórios e acessos" },
             ].map((it) => (
               <div key={it.k} className="rounded-lg border border-paper/10 bg-paper/5 p-3">
-                <div className="font-mono text-[10px] uppercase tracking-widest text-bronze">{it.k}</div>
+                <div className="font-mono text-[10px] uppercase tracking-widest text-bronze">
+                  {it.k}
+                </div>
                 <div className="mt-1 text-xs text-paper/80">{it.v}</div>
               </div>
             ))}
@@ -201,9 +209,13 @@ function AuthPage() {
                 className="text-sm text-muted-foreground hover:text-foreground"
               >
                 {mode === "signin" ? (
-                  <>Não tem uma conta? <span className="text-bronze font-medium">Criar Conta</span></>
+                  <>
+                    Não tem uma conta? <span className="text-bronze font-medium">Criar Conta</span>
+                  </>
                 ) : (
-                  <>Já tem conta? <span className="text-bronze font-medium">Entrar</span></>
+                  <>
+                    Já tem conta? <span className="text-bronze font-medium">Entrar</span>
+                  </>
                 )}
               </button>
             </div>

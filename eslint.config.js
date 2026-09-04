@@ -6,7 +6,7 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", ".output", ".vinxi"] },
+  { ignores: ["dist", "dist-ssr", ".output", ".vinxi", ".nitro", ".vercel", ".wrangler"] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
@@ -34,6 +34,10 @@ export default tseslint.config(
       ],
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
       "@typescript-eslint/no-unused-vars": "off",
+      // Pre-existing debt across the codebase (webhook payloads, admin routes) — downgraded to
+      // warn so CI can gate on lint without blocking merges on unrelated cleanup.
+      "@typescript-eslint/no-explicit-any": "warn",
+      "no-empty": "warn",
     },
   },
   eslintPluginPrettier,

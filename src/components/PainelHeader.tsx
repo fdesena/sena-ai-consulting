@@ -27,7 +27,9 @@ export function PainelHeader({ title }: Props) {
     setAvatar(data?.avatar_url ?? null);
   }
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+  }, []);
 
   // Re-fetch when window receives focus (after profile updates)
   useEffect(() => {
@@ -54,13 +56,21 @@ export function PainelHeader({ title }: Props) {
   const dropdownCls = "bg-popover border-border text-popover-foreground";
 
   const initials = (name || email || "?")
-    .split(/\s+/).map((s) => s[0]).slice(0, 2).join("").toUpperCase();
+    .split(/\s+/)
+    .map((s) => s[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 
   return (
-    <header className={`sticky top-0 z-30 backdrop-blur border-b px-5 sm:px-7 py-3 flex items-center justify-between gap-4 ${headerCls}`}>
+    <header
+      className={`sticky top-0 z-30 backdrop-blur border-b px-5 sm:px-7 py-3 flex items-center justify-between gap-4 ${headerCls}`}
+    >
       <div className="min-w-0 hidden md:block">
         <div className="text-sm font-semibold truncate">{title}</div>
-        <div className={`text-xs font-mono ${subTxt}`}>Bem-vindo(a), {name || email.split("@")[0] || "—"}</div>
+        <div className={`text-xs font-mono ${subTxt}`}>
+          Bem-vindo(a), {name || email.split("@")[0] || "—"}
+        </div>
       </div>
 
       <div className="flex items-center gap-2 ml-auto">
@@ -75,13 +85,18 @@ export function PainelHeader({ title }: Props) {
             <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-bronze" />
           </button>
           {openBell && (
-            <div className={`absolute right-0 mt-2 w-80 rounded-2xl border shadow-lg p-4 ${dropdownCls}`}>
-              <div className="font-mono text-[10px] uppercase tracking-widest text-bronze mb-2">Notificações</div>
+            <div
+              className={`absolute right-0 mt-2 w-80 rounded-2xl border shadow-lg p-4 ${dropdownCls}`}
+            >
+              <div className="font-mono text-[10px] uppercase tracking-widest text-bronze mb-2">
+                Notificações
+              </div>
               <div className="space-y-3">
                 <div>
                   <div className="text-sm font-semibold">Bem-vindo à Sena Consulting 👋</div>
                   <p className={`text-xs mt-1 ${subTxt}`}>
-                    Que bom ter você aqui! Comece descobrindo onde IA e automação podem destravar resultado no seu negócio.
+                    Que bom ter você aqui! Comece descobrindo onde IA e automação podem destravar
+                    resultado no seu negócio.
                   </p>
                 </div>
                 <Link

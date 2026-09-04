@@ -20,11 +20,17 @@ function WhatsAppAdminPage() {
     (async () => {
       const { data: u } = await supabase.auth.getUser();
       const uid = u.user?.id;
-      if (!uid) { setAllowed(false); return; }
+      if (!uid) {
+        setAllowed(false);
+        return;
+      }
 
       const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", uid);
       const isAdmin = (roles ?? []).some((r: any) => r.role === "admin");
-      if (!isAdmin) { setAllowed(false); return; }
+      if (!isAdmin) {
+        setAllowed(false);
+        return;
+      }
 
       // Diferente das telas de app do cliente: ser admin NÃO basta aqui.
       // Precisa de acesso explícito ao slug "whatsapp_admin".
@@ -50,8 +56,8 @@ function WhatsAppAdminPage() {
         </div>
         <h1 className="text-2xl font-semibold">Acesso restrito</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Você não tem acesso à gestão de WhatsApp. Peça a outro admin para liberar em
-          Usuários → Acesso de Apps → Ferramentas administrativas.
+          Você não tem acesso à gestão de WhatsApp. Peça a outro admin para liberar em Usuários →
+          Acesso de Apps → Ferramentas administrativas.
         </p>
       </div>
     );
@@ -68,7 +74,10 @@ const STATUS_LABEL: Record<WhatsAppConnectionStatus, string> = {
   revoked: "Revogado",
 };
 
-const STATUS_VARIANT: Record<WhatsAppConnectionStatus, "default" | "secondary" | "destructive" | "outline"> = {
+const STATUS_VARIANT: Record<
+  WhatsAppConnectionStatus,
+  "default" | "secondary" | "destructive" | "outline"
+> = {
   pending: "secondary",
   registering: "secondary",
   connected: "default",
@@ -163,9 +172,13 @@ function WhatsAppAdminApp() {
             <MessageCircle className="h-5 w-5" />
           </div>
           <div>
-            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">Administrador</span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-bronze">
+              Administrador
+            </span>
             <h1 className="text-3xl font-semibold leading-tight">WhatsApp — Gestão</h1>
-            <p className="text-sm text-muted-foreground">Conexões de todos os clientes e eventos recebidos.</p>
+            <p className="text-sm text-muted-foreground">
+              Conexões de todos os clientes e eventos recebidos.
+            </p>
           </div>
         </div>
         <Button variant="outline" size="sm" onClick={load} disabled={loading}>
@@ -178,7 +191,9 @@ function WhatsAppAdminApp() {
         {loading ? (
           <p className="p-6 text-sm text-muted-foreground">Carregando…</p>
         ) : connections.length === 0 ? (
-          <p className="p-6 text-sm text-muted-foreground">Nenhum cliente conectou o WhatsApp ainda.</p>
+          <p className="p-6 text-sm text-muted-foreground">
+            Nenhum cliente conectou o WhatsApp ainda.
+          </p>
         ) : (
           <div className="divide-y divide-border">
             {connections.map((c) => (
@@ -198,7 +213,11 @@ function WhatsAppAdminApp() {
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant={STATUS_VARIANT[c.status]}>{STATUS_LABEL[c.status]}</Badge>
-                    {expanded === c.id ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                    {expanded === c.id ? (
+                      <ChevronUp className="h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4" />
+                    )}
                   </div>
                 </button>
 
@@ -207,13 +226,20 @@ function WhatsAppAdminApp() {
                     {eventsLoading === c.id ? (
                       <p className="py-2 text-sm text-muted-foreground">Carregando eventos…</p>
                     ) : (events[c.id]?.length ?? 0) === 0 ? (
-                      <p className="py-2 text-sm text-muted-foreground">Nenhum evento recebido ainda.</p>
+                      <p className="py-2 text-sm text-muted-foreground">
+                        Nenhum evento recebido ainda.
+                      </p>
                     ) : (
                       <div className="space-y-2 pt-2">
                         {events[c.id].map((ev) => (
-                          <div key={ev.id} className="rounded-lg border border-border bg-card p-3 text-xs">
+                          <div
+                            key={ev.id}
+                            className="rounded-lg border border-border bg-card p-3 text-xs"
+                          >
                             <div className="mb-1 flex items-center justify-between">
-                              <span className="font-mono uppercase text-bronze">{ev.event_type}</span>
+                              <span className="font-mono uppercase text-bronze">
+                                {ev.event_type}
+                              </span>
                               <span className="text-muted-foreground">
                                 {new Date(ev.received_at).toLocaleString("pt-BR")}
                               </span>

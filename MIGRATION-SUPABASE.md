@@ -20,6 +20,7 @@ projeto Supabase próprio (`npbqewavtpptqzzxoqzr`).
 ## Variáveis de ambiente
 
 ### Públicas (commitadas em `.env`)
+
 ```
 SUPABASE_URL / VITE_SUPABASE_URL                = https://npbqewavtpptqzzxoqzr.supabase.co
 SUPABASE_PUBLISHABLE_KEY / VITE_...             = sb_publishable_SUqI9g...
@@ -27,12 +28,14 @@ SUPABASE_PROJECT_ID / VITE_...                  = npbqewavtpptqzzxoqzr
 ```
 
 ### Secretas (em `.env.local` no dev; no painel do host em produção)
+
 ```
 SUPABASE_SERVICE_ROLE_KEY   = (Dashboard → Settings → API → service_role)
 RESEND_API_KEY              = (resend.com → API Keys)
 RESEND_FROM                 = contato@senaconsulting.app   (domínio verificado no Resend)
 PUBLIC_SITE_URL             = https://senaconsulting.app   (opcional; usado no link de unsubscribe)
 ```
+
 > `SUPABASE_DB_PASSWORD` em `.env.local` é usado SÓ para rodar migrations via CLI — não vai pro app/produção.
 
 ## Deploy na VERCEL
@@ -42,26 +45,28 @@ O build usa o preset Nitro **vercel** (forçado em `vite.config.ts`), gerando
 `bun run build` e `framework: null`. O `vite dev` continua igual (preset é build-only).
 
 ### Env vars a definir na Vercel (Project → Settings → Environment Variables)
+
 Marcar todas para **Production** (e Preview, se usar). A Vercel as expõe tanto no
 build quanto no runtime — necessário porque as `VITE_*` são lidas em build e as
 demais em runtime pela função de servidor.
 
-| Variável | Valor | Tipo |
-|---|---|---|
-| `VITE_SUPABASE_URL` | https://npbqewavtpptqzzxoqzr.supabase.co | pública |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` | sb_publishable_SUqI9g... | pública |
-| `VITE_SUPABASE_PROJECT_ID` | npbqewavtpptqzzxoqzr | pública |
-| `SUPABASE_URL` | https://npbqewavtpptqzzxoqzr.supabase.co | pública |
-| `SUPABASE_PUBLISHABLE_KEY` | sb_publishable_SUqI9g... | pública |
-| `SUPABASE_SERVICE_ROLE_KEY` | (Dashboard → Settings → API → service_role) | **secret** |
-| `RESEND_API_KEY` | (resend.com → API Keys) | **secret** |
-| `RESEND_FROM` | contato@senaconsulting.app | pública |
-| `RESEND_WEBHOOK_SECRET` | `whsec_...` (resend.com → Webhooks) — opcional, p/ supressão de bounces | **secret** |
-| `PUBLIC_SITE_URL` | https://www.senaconsulting.app | pública |
+| Variável                        | Valor                                                                   | Tipo       |
+| ------------------------------- | ----------------------------------------------------------------------- | ---------- |
+| `VITE_SUPABASE_URL`             | https://npbqewavtpptqzzxoqzr.supabase.co                                | pública    |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | sb_publishable_SUqI9g...                                                | pública    |
+| `VITE_SUPABASE_PROJECT_ID`      | npbqewavtpptqzzxoqzr                                                    | pública    |
+| `SUPABASE_URL`                  | https://npbqewavtpptqzzxoqzr.supabase.co                                | pública    |
+| `SUPABASE_PUBLISHABLE_KEY`      | sb_publishable_SUqI9g...                                                | pública    |
+| `SUPABASE_SERVICE_ROLE_KEY`     | (Dashboard → Settings → API → service_role)                             | **secret** |
+| `RESEND_API_KEY`                | (resend.com → API Keys)                                                 | **secret** |
+| `RESEND_FROM`                   | contato@senaconsulting.app                                              | pública    |
+| `RESEND_WEBHOOK_SECRET`         | `whsec_...` (resend.com → Webhooks) — opcional, p/ supressão de bounces | **secret** |
+| `PUBLIC_SITE_URL`               | https://www.senaconsulting.app                                          | pública    |
 
 > `SUPABASE_DB_PASSWORD` NÃO vai pra Vercel (é só pra CLI de migrations).
 
 ### Passo a passo (ordem segura, sem downtime)
+
 1. **Conta/projeto na Vercel** → "Add New Project" → importar o repo do GitHub
    `fdesena/sena-ai-consulting`. A Vercel lê o `vercel.json` automaticamente.
 2. **Definir as env vars** da tabela acima.
@@ -84,10 +89,12 @@ demais em runtime pela função de servidor.
 
 O secret do Vault carrega a service_role key e por isso NÃO é versionado. Para
 (re)criar, conectado ao banco novo:
+
 ```sql
 delete from vault.secrets where name = 'email_queue_service_role_key';
 select vault.create_secret('<SERVICE_ROLE_KEY>', 'email_queue_service_role_key', 'Service role key for email queue cron');
 ```
+
 Depois rode `supabase/setup_email_queue_cron.sql` para agendar o job (`process-email-queue`, a cada 10s).
 
 ## Webhook de bounce/complaint do Resend (supressão automática)

@@ -214,7 +214,9 @@ function RoletaPage() {
       c.moveTo(0, 0);
       c.arc(0, 0, r, a0, a0 + fatia);
       c.closePath();
-      c.fillStyle = (modoAlicerce ? CORES_ALICERCE : CORES)[i % (modoAlicerce ? CORES_ALICERCE.length : CORES.length)];
+      c.fillStyle = (modoAlicerce ? CORES_ALICERCE : CORES)[
+        i % (modoAlicerce ? CORES_ALICERCE.length : CORES.length)
+      ];
       c.fill();
       c.strokeStyle = "#f8f7f4";
       c.lineWidth = 2;
@@ -328,7 +330,12 @@ function RoletaPage() {
   /* ---------- ações ---------- */
   function aplicarTexto(v: string) {
     setTexto(v);
-    setEntradas(v.split("\n").map((s) => s.trim()).filter(Boolean));
+    setEntradas(
+      v
+        .split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean),
+    );
   }
   function aplicarEntradas(v: string[]) {
     setEntradas(v);
@@ -363,7 +370,9 @@ function RoletaPage() {
   function baixarCsv() {
     if (!resultados.length) return;
     const linhas = [["#", "Nome", "Horário"]].concat(
-      [...resultados].reverse().map((r, i) => [String(i + 1), r.nome, r.hora.toLocaleString("pt-BR")]),
+      [...resultados]
+        .reverse()
+        .map((r, i) => [String(i + 1), r.nome, r.hora.toLocaleString("pt-BR")]),
     );
     const csv = linhas
       .map((l) => l.map((c) => '"' + c.replace(/"/g, '""') + '"').join(","))
@@ -443,7 +452,9 @@ function RoletaPage() {
                 {girando ? "…" : "Girar"}
               </button>
             </div>
-            <p className={`text-sm ${modoAlicerce ? "text-[#e6ac1a]/80" : "text-muted-foreground"}`}>
+            <p
+              className={`text-sm ${modoAlicerce ? "text-[#e6ac1a]/80" : "text-muted-foreground"}`}
+            >
               Clique na roda ou pressione a barra de espaço para girar
             </p>
           </div>
@@ -512,7 +523,9 @@ function RoletaPage() {
                 Embaralhar
               </button>
               <button
-                onClick={() => aplicarEntradas([...entradas].sort((a, b) => a.localeCompare(b, "pt-BR")))}
+                onClick={() =>
+                  aplicarEntradas([...entradas].sort((a, b) => a.localeCompare(b, "pt-BR")))
+                }
                 className={btn}
               >
                 <ArrowDownAZ className="h-4 w-4" />
@@ -526,13 +539,7 @@ function RoletaPage() {
                 <Trash2 className="h-4 w-4" />
                 Limpar
               </button>
-              <input
-                ref={arquivoRef}
-                type="file"
-                accept=".txt,.csv"
-                hidden
-                onChange={importar}
-              />
+              <input ref={arquivoRef} type="file" accept=".txt,.csv" hidden onChange={importar} />
             </div>
           </div>
 

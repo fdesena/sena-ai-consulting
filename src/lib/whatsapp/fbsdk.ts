@@ -5,7 +5,12 @@
 declare global {
   interface Window {
     FB?: {
-      init: (opts: { appId: string; autoLogAppEvents?: boolean; xfbml?: boolean; version: string }) => void;
+      init: (opts: {
+        appId: string;
+        autoLogAppEvents?: boolean;
+        xfbml?: boolean;
+        version: string;
+      }) => void;
       login: (
         callback: (response: { authResponse?: { code?: string } }) => void,
         opts: {

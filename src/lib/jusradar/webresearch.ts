@@ -33,25 +33,40 @@ export function buildJurisprudenciaFallbackLinks(q: string, court?: string): Sea
   const links: SearchLink[] = [];
 
   // Escavador — busca de jurisprudência (qo=j filtra por decisões).
-  links.push({ source: "Escavador (jurisprudência)", url: `https://www.escavador.com/busca?q=${enc}&qo=j` });
+  links.push({
+    source: "Escavador (jurisprudência)",
+    url: `https://www.escavador.com/busca?q=${enc}&qo=j`,
+  });
 
   // Jusbrasil — busca específica de jurisprudência (ementas/decisões).
-  links.push({ source: "Jusbrasil (jurisprudência)", url: `https://www.jusbrasil.com.br/jurisprudencia/busca?q=${enc}` });
+  links.push({
+    source: "Jusbrasil (jurisprudência)",
+    url: `https://www.jusbrasil.com.br/jurisprudencia/busca?q=${enc}`,
+  });
 
   // Jurisprudências.ai — interface web do próprio serviço.
-  links.push({ source: "Jurisprudências.ai (web)", url: `https://jurisprudencias.ai/search?q=${enc}` });
+  links.push({
+    source: "Jurisprudências.ai (web)",
+    url: `https://jurisprudencias.ai/search?q=${enc}`,
+  });
 
   // Tribunal específico (se informado), busca no domínio oficial via Google site:.
   if (court) {
     const d = TRIBUNAL_DOMAINS[court.toLowerCase()];
     if (d) {
-      links.push({ source: `Busca no site do ${court.toUpperCase()}`, url: `https://www.google.com/search?q=site:${d}+${enc}` });
+      links.push({
+        source: `Busca no site do ${court.toUpperCase()}`,
+        url: `https://www.google.com/search?q=site:${d}+${enc}`,
+      });
     }
   }
 
   // Google Acadêmico (doutrina/jurisprudência) e Google geral com recorte jurídico.
   links.push({ source: "Google Acadêmico", url: `https://scholar.google.com.br/scholar?q=${enc}` });
-  links.push({ source: "Google", url: `https://www.google.com/search?q=${enc}+jurisprud%C3%AAncia` });
+  links.push({
+    source: "Google",
+    url: `https://www.google.com/search?q=${enc}+jurisprud%C3%AAncia`,
+  });
 
   return links;
 }

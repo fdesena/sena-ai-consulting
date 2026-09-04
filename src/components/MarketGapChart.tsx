@@ -36,7 +36,11 @@ export default function MarketGapChart() {
   return (
     <div className="h-[380px] w-full sm:h-[460px]">
       <ResponsiveContainer width="100%" height="100%">
-        <RadarChart data={GAP} outerRadius="72%" margin={{ top: 16, right: 40, bottom: 16, left: 40 }}>
+        <RadarChart
+          data={GAP}
+          outerRadius="72%"
+          margin={{ top: 16, right: 40, bottom: 16, left: 40 }}
+        >
           <PolarGrid stroke="var(--muted-line)" />
           <PolarAngleAxis
             dataKey="l"

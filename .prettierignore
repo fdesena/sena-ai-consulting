@@ -6,3 +6,8 @@ pnpm-lock.yaml
 package-lock.json
 bun.lock
 routeTree.gen.ts
+
+# Hand-authored standalone pages, not covered by lint/tests — keep their
+# original compact formatting rather than letting a repo-wide format pass touch them
+public/*.html
+public/**/*.html
