@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Compass,
+  PencilRuler,
   Hammer,
-  GraduationCap,
+  Rocket,
   LineChart,
   RotateCw,
   ArrowLeft,
@@ -21,30 +22,37 @@ type Step = {
 const steps: Step[] = [
   {
     n: "01",
-    title: "Diagnóstico",
-    tag: "Ponto de partida",
-    desc: "Mapeio processos, gaps e onde a IA gera mais impacto no seu negócio.",
+    title: "Entender",
+    tag: "Problema e contexto",
+    desc: "Investigamos a operação, as pessoas e os dados para definir o problema que realmente vale resolver.",
     Icon: Compass,
   },
   {
     n: "02",
-    title: "Construção",
-    tag: "Construir ferramentas",
-    desc: "Implemento ferramentas, agentes e automações sob medida, integrados ao stack que você já usa.",
-    Icon: Hammer,
+    title: "Desenhar",
+    tag: "Solução e prioridade",
+    desc: "Transformamos o diagnóstico em arquitetura, experiência e plano de entrega com prioridades claras.",
+    Icon: PencilRuler,
   },
   {
     n: "03",
-    title: "Adoção",
-    tag: "Aumentar produtividade",
-    desc: "Capacito o time para uso real no dia a dia — produtividade que se sustenta, não só entrega.",
-    Icon: GraduationCap,
+    title: "Construir",
+    tag: "Produto e integrações",
+    desc: "Desenvolvemos a solução sob medida, conectada às ferramentas e aos fluxos que o negócio já usa.",
+    Icon: Hammer,
   },
   {
     n: "04",
-    title: "Evolução",
-    tag: "Direcionar decisões",
-    desc: "Acompanho resultados, meço ROI e aponto o próximo ciclo de melhoria.",
+    title: "Implementar",
+    tag: "Adoção e operação",
+    desc: "Colocamos o produto no ar, integramos o time e acompanhamos o uso na rotina real.",
+    Icon: Rocket,
+  },
+  {
+    n: "05",
+    title: "Evoluir",
+    tag: "Dados e melhoria contínua",
+    desc: "Medimos resultados, aprendemos com o uso e priorizamos o próximo ciclo de evolução.",
     Icon: LineChart,
   },
 ];
@@ -103,14 +111,14 @@ export default function ProcessCycle() {
 
           {steps.map((_, i) => {
             const mid = -Math.PI / 2 + (i / steps.length) * Math.PI * 2;
-            const half = Math.PI / steps.length; // metade de uma fatia (45°)
+            const half = Math.PI / steps.length;
             const gap = 0.2; // folga entre fatias
             const a1 = mid - half + gap;
             const a2 = mid + half - gap;
-            const x1 = Math.cos(a1) * radius;
-            const y1 = Math.sin(a1) * radius;
-            const x2 = Math.cos(a2) * radius;
-            const y2 = Math.sin(a2) * radius;
+            const x1 = (Math.cos(a1) * radius).toFixed(3);
+            const y1 = (Math.sin(a1) * radius).toFixed(3);
+            const x2 = (Math.cos(a2) * radius).toFixed(3);
+            const y2 = (Math.sin(a2) * radius).toFixed(3);
             const isActive = i === active;
             return (
               <path
@@ -143,11 +151,9 @@ export default function ProcessCycle() {
           </div>
         </div>
 
-        {/* Ícones — um por fatia/quadrante */}
+        {/* Ícones — um por fase */}
         {steps.map((s, i) => {
           const angle = (i / steps.length) * Math.PI * 2 - Math.PI / 2;
-          const x = Math.cos(angle) * radius;
-          const y = Math.sin(angle) * radius;
           const isActive = i === active;
           return (
             <button
@@ -155,8 +161,8 @@ export default function ProcessCycle() {
               onClick={() => setActive(i)}
               aria-label={`Fase ${s.n}: ${s.title}`}
               style={{
-                left: `calc(50% + ${x}px)`,
-                top: `calc(50% + ${y}px)`,
+                left: `${50 + Math.cos(angle) * 38}%`,
+                top: `${50 + Math.sin(angle) * 38}%`,
               }}
               className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full border bg-card transition-all duration-500 ${
                 isActive

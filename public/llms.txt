@@ -1,8 +1,8 @@
-# Sena Consulting
+# Sena Labs
 
-> Consultoria de IA, automação e transformação digital — de São Paulo e Boston, atuando globalmente. Diagnóstico, construção e capacitação com resultados mensuráveis.
+> Estratégia, IA e software — de São Paulo e Boston, atuando globalmente. Do problema ao produto, com resultados mensuráveis.
 
-A Sena Consulting ajuda empresas e equipes a aplicar Inteligência Artificial e automação em processos reais — saindo das apresentações em PowerPoint e entregando sistemas em produção. O fundador, Felipe Sena, atua entre Brasil e Estados Unidos com experiência em projetos de inovação globais (MIT Solve, Hult Prize, Boston Innovation Gateway, SelectUSA).
+A Sena Labs transforma problemas de negócio em produtos digitais, automações, agentes de IA, dashboards e plataformas em produção. Combina estratégia, IA, dados e desenvolvimento de software. O fundador, Felipe Sena, atua entre Brasil e Estados Unidos com experiência em projetos de inovação globais (MIT Solve, Hult Prize, Boston Innovation Gateway, SelectUSA).
 
 ## Pages
 

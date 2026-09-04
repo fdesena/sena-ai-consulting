@@ -1,6 +1,4 @@
-import TypeWriter from "@/components/TypeWriter";
 import logoIcon from "@/assets/Logo/logo-icon.png";
-import logoFull from "@/assets/Logo/senaconsulting_logo_tight.png";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { trackEvent, trackPageview } from "@/lib/track";
@@ -16,11 +14,7 @@ import {
   Sparkles,
   Users,
   Target,
-  Mic2,
   TrendingUp,
-  Database,
-  GraduationCap as GradCap,
-  LineChart,
   MessageSquare,
   Mail,
   Linkedin,
@@ -35,7 +29,6 @@ import { motion } from "framer-motion";
 import { WHATSAPP_URL } from "./WhatsAppFAB";
 import ProcessCycle from "./ProcessCycle";
 import MarketGapChart from "./MarketGapChart";
-import DiagnosticChart from "./DiagnosticChart";
 import TrackRecord from "./TrackRecord";
 import GlobalExperience from "./GlobalExperience";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
@@ -118,15 +111,6 @@ const orientarItems = [
   { t: "Indicadores para gestão do negócio", Icon: Target },
   { t: "Análise de oportunidades e gargalos", Icon: MessageSquare },
   { t: "Estratégia baseada em dados e ROI", Icon: TrendingUp },
-];
-
-const cases = [
-  { t: "Automação de propostas", d: "−80% no tempo de elaboração.", Icon: Workflow },
-  { t: "Agentes em conteúdo proprietário", d: "Suporte e decisão em escala.", Icon: Bot },
-  { t: "Visualização de dados com IA", d: "Dashboards executivos automáticos.", Icon: LineChart },
-  { t: "LMS gamificado", d: "Vídeos, quizzes e rankings próprios.", Icon: GradCap },
-  { t: "CRM + Funil próprio", d: "Leads, pipeline e analytics integrados.", Icon: Database },
-  { t: "Ferramentas para eventos", d: "Apps ao vivo em palestras imersivas.", Icon: Presentation },
 ];
 
 function ToolIconBadge({ tool }: { tool: ToolIcon }) {
@@ -268,14 +252,14 @@ export default function LandingPage() {
       <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <a href="#top" className="inline-flex items-center gap-2 md:min-w-[280px]">
-            <img src={logoIcon} alt="Sena Consulting" className="h-8 w-8" />
+            <img src={logoIcon} alt="Sena Labs" className="h-8 w-8" />
             <span className="font-display text-lg font-semibold tracking-tight">
-              <TypeWriter />
+              Sena Labs
             </span>
           </a>
           <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 text-sm md:flex">
-            <a href="#pilares" className="hover:text-primary">O que faço</a>
-            <a href="#como-ajudar" className="hover:text-primary">Soluções</a>
+            <a href="#pilares" className="hover:text-primary">O que fazemos</a>
+            <a href="#processo" className="hover:text-primary">Como trabalhamos</a>
             <a href="#cases" className="hover:text-primary">Cases</a>
             <a href="#sobre" className="hover:text-primary">Sobre</a>
             <div className="relative" ref={submenuRef}>
@@ -345,19 +329,19 @@ export default function LandingPage() {
               <SheetContent side="right" className="flex w-[85%] flex-col sm:max-w-sm">
                 <SheetHeader>
                   <SheetTitle className="flex items-center gap-2 text-left">
-                    <img src={logoIcon} alt="Sena Consulting" className="h-6 w-6" />
-                    Sena Consulting
+                    <img src={logoIcon} alt="Sena Labs" className="h-6 w-6" />
+                    Sena Labs
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="mt-4 flex flex-col gap-1 text-base">
                   <SheetClose asChild>
                     <a href="#pilares" className="rounded-xl px-3 py-3 transition hover:bg-muted">
-                      O que faço
+                      O que fazemos
                     </a>
                   </SheetClose>
                   <SheetClose asChild>
-                    <a href="#como-ajudar" className="rounded-xl px-3 py-3 transition hover:bg-muted">
-                      Soluções
+                    <a href="#processo" className="rounded-xl px-3 py-3 transition hover:bg-muted">
+                      Como trabalhamos
                     </a>
                   </SheetClose>
                   <SheetClose asChild>
@@ -421,13 +405,13 @@ export default function LandingPage() {
           <div>
             <div className="flex items-center gap-2">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
-              <Eyebrow>Sena Consulting · IA &amp; Automação</Eyebrow>
+              <Eyebrow>Sena Labs · Estratégia, IA &amp; Software</Eyebrow>
             </div>
             <h1 className="mt-6 text-5xl font-semibold tracking-tight sm:text-7xl">
-              IA sem complicação.
+              Do problema ao produto.
             </h1>
             <p className="mt-6 max-w-lg text-lg text-muted-foreground sm:text-xl">
-              Ajudo empresas a aplicar IA de forma prática para melhorar processos, criar ferramentas sob medida e tomar decisões mais estratégicas com times mais enxutos.
+              Entendemos o problema, desenhamos a solução e construímos tecnologia que funciona — de automações e agentes de IA a apps, dashboards e plataformas.
             </p>
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
               <Link
@@ -442,7 +426,7 @@ export default function LandingPage() {
                 href="#pilares"
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-foreground/15 px-6 py-3.5 text-sm font-medium hover:border-foreground/40"
               >
-                Ver serviços
+                Ver o que construímos
               </a>
             </div>
           </div>
@@ -589,12 +573,12 @@ export default function LandingPage() {
 
       {/* PILARES */}
       <Section id="pilares" className="border-t border-border !pb-0">
-        <Eyebrow>O que eu faço</Eyebrow>
+        <Eyebrow>O que fazemos</Eyebrow>
         <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
-          Três formas de gerar valor com IA.
+          Tecnologia aplicada a problemas reais.
         </h2>
         <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-          Cada uma resolve uma dor diferente. Veja como funciona na prática.
+          Melhoramos operações, construímos produtos e transformamos dados em decisões.
         </p>
       </Section>
 
@@ -603,7 +587,7 @@ export default function LandingPage() {
         id="capacitar"
         n="01"
         title="Aumentar produtividade"
-        sub="Ajudo empresas a ganhar produtividade melhorando processos, reduzindo trabalho manual e implementando ferramentas de IA mais eficientes para o negócio."
+        sub="Melhoramos processos, reduzimos trabalho manual e implementamos ferramentas mais eficientes para o negócio."
         items={capacitarItems}
         divider={false}
       />
@@ -623,181 +607,94 @@ export default function LandingPage() {
         items={orientarItems}
       />
 
-      {/* COMO POSSO AJUDAR */}
-      <Section id="como-ajudar" className="border-t border-border">
-        <Eyebrow>Como posso ajudar</Eyebrow>
-        <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
-          Por onde você quer começar?
-        </h2>
-        <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-          Você pode começar com uma palestra, aprofundar com uma consultoria ou avançar direto para a implementação de agentes, automações e apps sob medida.
-        </p>
-
-        <div className="mt-16 grid gap-6 md:grid-cols-3 md:items-stretch">
-          {/* 01 */}
-          <div className="relative flex flex-col rounded-2xl border border-border/60 bg-card p-8 transition hover:border-primary/50 hover:shadow-md md:p-10">
-            <div className="flex items-center justify-between">
-              <span className="eyebrow text-primary">Etapa 01 · Entender</span>
-              <Presentation className="h-5 w-5 text-primary/70" strokeWidth={1.5} />
-            </div>
-            <h3 className="mt-6 text-xl font-semibold">Treinamentos e palestras corporativas</h3>
-            <p className="mt-3 text-muted-foreground">
-              Para empresas, eventos e times que precisam entender como usar IA de forma prática, segura e aplicada ao dia a dia.
-            </p>
-            <p className="mt-4 text-sm text-muted-foreground">
-              <span className="font-medium text-foreground">Ideal para:</span> sensibilizar o time, nivelar conhecimento e mostrar casos reais de uso.
-            </p>
-            <a
-              href="https://calendar.app.google/oh4NeMRMtw8v5UP5A"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-8 inline-flex items-center justify-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-sm font-medium hover:border-primary hover:text-primary md:mt-auto"
-            >
-              Levar IA para meu time <ArrowRight className="h-4 w-4" />
-            </a>
-          </div>
-
-          {/* 02 — destaque */}
-          <div className="relative flex flex-col rounded-2xl border-2 border-primary bg-card p-8 shadow-lg ring-1 ring-primary/10 md:scale-[1.03] md:p-10">
-            <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-primary px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-primary-foreground shadow-sm">
-              Mais procurado
-            </span>
-            <div className="flex items-center justify-between">
-              <span className="eyebrow text-primary">Etapa 02 · Planejar</span>
-              <Compass className="h-5 w-5 text-primary/70" strokeWidth={1.5} />
-            </div>
-            <h3 className="mt-6 text-xl font-semibold">Consultoria customizada</h3>
-            <p className="mt-3 text-muted-foreground">
-              Para empresas, gestores e profissionais que precisam mapear oportunidades, melhorar processos e definir prioridades claras de aplicação de IA.
-            </p>
-            <p className="mt-4 text-sm text-muted-foreground">
-              <span className="font-medium text-foreground">Ideal para:</span> sair da dúvida, escolher onde começar e estruturar um plano de ação com foco em resultado.
-            </p>
-            <a
-              href="https://calendar.app.google/oh4NeMRMtw8v5UP5A"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90 md:mt-auto"
-            >
-              Mapear oportunidades <ArrowRight className="h-4 w-4" />
-            </a>
-          </div>
-
-          {/* 03 */}
-          <div className="relative flex flex-col rounded-2xl border border-border/60 bg-card p-8 transition hover:border-primary/50 hover:shadow-md md:p-10">
-            <div className="flex items-center justify-between">
-              <span className="eyebrow text-primary">Etapa 03 · Construir</span>
-              <Bot className="h-5 w-5 text-primary/70" strokeWidth={1.5} />
-            </div>
-            <h3 className="mt-6 text-xl font-semibold">Agentes de IA, automações e apps</h3>
-            <p className="mt-3 text-muted-foreground">
-              Para quem já sabe o problema que quer resolver e precisa construir soluções sob medida com agilidade e menor custo.
-            </p>
-            <p className="mt-4 text-sm text-muted-foreground">
-              <span className="font-medium text-foreground">Ideal para:</span> automatizar fluxos, criar assistentes de IA, dashboards, plataformas internas e ferramentas específicas para a operação.
-            </p>
-            <a
-              href="https://calendar.app.google/oh4NeMRMtw8v5UP5A"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-8 inline-flex items-center justify-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-sm font-medium hover:border-primary hover:text-primary md:mt-auto"
-            >
-              Construir uma solução <ArrowRight className="h-4 w-4" />
-            </a>
-          </div>
-        </div>
-      </Section>
-
-      {/* COMECE AQUI */}
-      <Section id="comece" className="border-t border-border">
-        <Eyebrow>Comece aqui</Eyebrow>
-        <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
-          Não sabe por onde começar?
-        </h2>
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {/* Diagnóstico — protagonista, com preview do radar */}
-          <div className="group rounded-2xl border border-border bg-card p-8 transition hover:border-primary md:col-span-2 md:p-10">
-            <div className="grid gap-8 md:grid-cols-2 md:items-start">
-              <div>
-                <div className="flex items-center gap-3">
-                  <Target className="h-7 w-7 text-primary" strokeWidth={1.5} />
-                  <span className="eyebrow text-primary">Análise personalizada</span>
-                </div>
-                <h3 className="mt-5 text-2xl font-semibold sm:text-3xl">Diagnóstico de maturidade em IA</h3>
-                <p className="mt-3 text-muted-foreground">
-                  Uma análise estruturada do seu negócio: descubra, área por área,
-                  onde a IA gera mais impacto e receba um retrato claro da distância
-                  entre onde você está hoje e o seu potencial.
-                </p>
-                <Link
-                  to="/diagnostico"
-                  onClick={() => trackEvent("click_diagnostico_cta", { source: "comece" })}
-                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground hover:opacity-90"
-                >
-                  Fazer diagnóstico <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-              <div>
-                <span className="flex h-7 items-center font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                  Exemplo de resultado
-                </span>
-                <DiagnosticChart />
-                <div className="-mt-2 flex items-center justify-center gap-5 text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
-                  <span className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-sm bg-muted-foreground/50" /> Hoje
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-sm bg-primary" /> Potencial com IA
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Fale comigo — secundário */}
-          <div className="flex flex-col justify-center rounded-2xl border border-border bg-[var(--ink)] p-8 text-[var(--paper)]">
-            <Mic2 className="h-7 w-7 text-primary" strokeWidth={1.5} />
-            <h3 className="mt-6 text-2xl font-semibold">Fale comigo</h3>
-            <p className="mt-3 opacity-80">
-              Tem uma demanda específica ou quer entender como posso ajudar? Entre em contato e vamos avaliar o melhor caminho.
-            </p>
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-8 inline-flex items-center gap-2 self-start rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground hover:opacity-90"
-            >
-              Entrar em contato <ArrowRight className="h-4 w-4" />
-            </a>
-          </div>
-        </div>
-      </Section>
-
-      {/* PROCESSO — interactive cycle */}
+      {/* COMO TRABALHAMOS */}
       <Section id="processo" className="border-t border-border">
-        <Eyebrow>Como trabalho</Eyebrow>
+        <Eyebrow>05 · Como trabalhamos</Eyebrow>
         <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
-          Do diagnóstico ao resultado — e além.
+          Entender → Desenhar → Construir → Implementar → Evoluir.
         </h2>
         <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-          A cada volta, mapeamos novas oportunidades, construímos a solução,
-          garantimos a adoção e medimos o resultado — elevando a maturidade em IA
-          do seu negócio de forma contínua.
+          Da investigação do problema à evolução do produto, estratégia e execução
+          caminham juntas. Cada entrega gera dados para o próximo ciclo.
         </p>
         <div className="mt-16">
           <ProcessCycle />
         </div>
       </Section>
 
+      {/* FORMAS DE TRABALHAR */}
+      <Section id="como-ajudar" className="border-t border-border">
+        <Eyebrow>06 · Ways to work with us</Eyebrow>
+        <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
+          Entre pela etapa que faz sentido agora.
+        </h2>
+        <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
+          De capacitação pontual à construção completa de um produto digital.
+        </p>
+
+        <div className="mt-12 grid gap-4 md:grid-cols-3">
+          {[
+            {
+              name: "Learn",
+              title: "Aprender e mobilizar",
+              text: "Palestras e treinamentos para tornar IA prática, segura e útil no dia a dia do time.",
+              action: "Capacitar meu time",
+              Icon: Presentation,
+            },
+            {
+              name: "Advisory",
+              title: "Decidir o caminho",
+              text: "Diagnóstico, desenho de solução e priorização para transformar uma oportunidade em plano executável.",
+              action: "Mapear oportunidades",
+              Icon: Compass,
+            },
+            {
+              name: "Build",
+              title: "Construir e implementar",
+              text: "Agentes, automações, apps, dashboards e plataformas sob medida, integrados à operação.",
+              action: "Construir uma solução",
+              Icon: Bot,
+            },
+          ].map(({ name, title, text, action, Icon }, index) => (
+            <article
+              key={name}
+              className={cn(
+                "group flex min-h-[330px] flex-col rounded-2xl border p-7 transition sm:p-9",
+                index === 2
+                  ? "border-primary bg-[var(--ink)] text-[var(--paper)] shadow-lg"
+                  : "border-border/60 bg-card hover:border-primary/50",
+              )}
+            >
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-xs uppercase tracking-[0.2em] text-primary">
+                  0{index + 1} · {name}
+                </span>
+                <Icon className="h-5 w-5 text-primary" strokeWidth={1.5} />
+              </div>
+              <h3 className="mt-8 text-2xl font-semibold">{title}</h3>
+              <p className={cn("mt-4", index === 2 ? "text-white/70" : "text-muted-foreground")}>{text}</p>
+              <a
+                href="https://calendar.app.google/oh4NeMRMtw8v5UP5A"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-auto inline-flex items-center gap-2 pt-8 text-sm font-medium text-primary"
+              >
+                {action} <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+              </a>
+            </article>
+          ))}
+        </div>
+      </Section>
+
       {/* CASES */}
       <Section id="cases" className="border-t border-border">
         <div>
-          <Eyebrow>Projetos entregues</Eyebrow>
+          <Eyebrow>07 · Cases / Results</Eyebrow>
           <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
-            Soluções reais, prontas para uso.
+            Resultados concretos. Sistemas em produção.
           </h2>
-          <p className="mt-4 max-w-2xl text-sm text-muted-foreground">
-            Soluções desenvolvidas para problemas reais.
+          <p className="mt-5 max-w-2xl text-lg text-muted-foreground">
+            Não paramos no diagnóstico. Desenhamos, construímos e colocamos soluções reais para funcionar.
           </p>
         </div>
         <div className="mt-12">
@@ -805,8 +702,37 @@ export default function LandingPage() {
         </div>
       </Section>
 
-      {/* SOBRE */}
-      <Section id="sobre" className="border-t border-border">
+      {/* SOBRE A SENA LABS */}
+      <section id="sobre" className="border-t border-border bg-[var(--ink)] text-[var(--paper)]">
+        <div className="mx-auto grid w-full max-w-6xl gap-10 px-6 py-20 sm:py-28 md:grid-cols-[0.8fr_1.2fr] md:items-start">
+          <Eyebrow>08 · About Sena Labs</Eyebrow>
+          <div>
+            <h2 className="max-w-3xl text-3xl font-semibold sm:text-5xl">
+              Uma empresa de estratégia e tecnologia feita para construir.
+            </h2>
+            <p className="mt-6 max-w-2xl text-lg text-white/70">
+              A Sena Labs transforma problemas de negócio em soluções digitais úteis.
+              Combinamos visão estratégica, IA, dados e desenvolvimento de software para
+              entregar produtos que entram na operação — e evoluem com ela.
+            </p>
+            <div className="mt-10 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-3">
+              {[
+                ["Estratégia", "Clareza sobre o problema e o resultado esperado."],
+                ["Tecnologia", "A solução certa, integrada ao que já existe."],
+                ["Execução", "Produto implementado, adotado e mensurável."],
+              ].map(([title, text]) => (
+                <div key={title} className="bg-[var(--ink)] p-6">
+                  <h3 className="text-lg font-semibold text-primary">{title}</h3>
+                  <p className="mt-2 text-sm text-white/60">{text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FUNDADOR */}
+      <Section id="fundador" className="border-t border-border">
         <div className="grid gap-12 md:grid-cols-[auto_1fr] md:items-center">
           <div className="flex flex-col items-center gap-6 md:items-start">
             <div className="relative">
@@ -817,7 +743,7 @@ export default function LandingPage() {
               <div className="relative h-56 w-56 overflow-hidden rounded-full ring-4 ring-primary/20 ring-offset-4 ring-offset-background sm:h-64 sm:w-64">
                 <img
                   src={felipeImg}
-                  alt="Felipe Sena, fundador da Sena Consulting"
+                  alt="Felipe Sena, fundador da Sena Labs"
                   className="h-full w-full object-cover object-[center_15%]"
                   loading="lazy"
                 />
@@ -848,9 +774,9 @@ export default function LandingPage() {
           </div>
 
           <div>
-            <Eyebrow>Sobre o Felipe</Eyebrow>
+            <Eyebrow>09 · Founder</Eyebrow>
             <h2 className="mt-4 text-3xl font-semibold sm:text-5xl">
-              Estratégia, dados e execução — em escala global.
+              Felipe Sena. Estratégia, produto e execução em escala global.
             </h2>
             <p className="mt-5 text-lg text-muted-foreground">
               <span className="font-medium text-foreground">Consultor de Estratégia e Tecnologia</span> pela{" "}
@@ -921,10 +847,13 @@ export default function LandingPage() {
           />
           <div className="flex flex-col gap-10">
             <div className="flex flex-col items-start">
-              <Eyebrow>Vamos conversar</Eyebrow>
+              <Eyebrow>10 · Vamos conversar</Eyebrow>
               <h2 className="mt-4 max-w-3xl text-4xl font-semibold sm:text-5xl lg:text-6xl">
-                Vamos construir algo <span className="text-primary">que funciona.</span>
+                Tem um problema que tecnologia poderia resolver?
               </h2>
+              <p className="mt-5 max-w-xl text-lg text-white/70">
+                Conte o contexto. Nós ajudamos a transformar a pergunta em uma solução que funciona.
+              </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <a
                   href={WHATSAPP_URL}
@@ -968,8 +897,11 @@ export default function LandingPage() {
         <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-10 text-sm text-muted-foreground">
           <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
             <div className="flex flex-col items-start gap-1">
-              <img src={logoFull} alt="Sena Consulting" className="h-auto w-[248px] opacity-90" />
-              <span>© {new Date().getFullYear()} Sena Consulting · Felipe Sena</span>
+              <div className="flex items-center gap-2 text-lg font-semibold text-foreground">
+                <img src={logoIcon} alt="Sena Labs" className="h-8 w-8" />
+                Sena Labs
+              </div>
+              <span>© {new Date().getFullYear()} Sena Labs · Felipe Sena</span>
             </div>
             <div className="flex flex-wrap items-center gap-4">
               <a href="/politica-de-privacidade" className="hover:underline">
