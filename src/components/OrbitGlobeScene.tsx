@@ -1,436 +1,391 @@
-import { createRef, useMemo, useRef } from "react";
-import * as THREE from "three";
-import { Canvas, useFrame } from "@react-three/fiber";
-import {
-  Environment,
-  ContactShadows,
-  RoundedBox,
-  Text,
-  PerspectiveCamera,
-} from "@react-three/drei";
-import {
-  ITEMS,
-  AREAS,
-  SPHERE_POINTS,
-  N,
-  NA,
-  LEAD,
-  TAIL,
-  SLOT_MS,
-  AUTO_EPS,
-  SMOOTHING,
-  LINE,
-  lerp,
-  clamp01,
-  angleFor,
-  textOpacityAt,
-  easeOutCubic,
-  type OrbitItem,
-} from "./orbit-hero-data";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from "react";
+import { ITEMS, type IconKey } from "./orbit-hero-data";
 
-const RADIUS = 1.7;
-const CARD_W = 0.62;
-const CARD_H = 0.3;
-const ORANGE = "#FC7C34";
-const FEATURED_SCALE = 1.75;
-const FEATURED_Y = 0.25;
-const FEATURED_Z = 0.9;
-// Same approach window angleFor() uses to swing the background globe into place — the
-// featured-card crossfade runs inside this exact window so both move together and land
-// at the same instant, instead of the card animating after the globe has already stopped.
-const ANGLE_WINDOW = 0.45;
+const TAU = Math.PI * 2;
+const COUNT = ITEMS.length;
+const SATELLITE_COUNT = 14;
 
-// Quadratic-bezier swoosh: the incoming card rises from below-left, curving into the
-// center, while the outgoing card continues that same curling motion up and to the right —
-// one continuous, fluid arc that echoes the globe's own rotation instead of a flat slide.
-const ENTRY_START = { x: -1.7, y: -1.95 };
-const ENTRY_CTRL = { x: -1.7, y: 0.35 };
-const EXIT_CTRL = { x: 1.7, y: 0.35 };
-const EXIT_END = { x: 1.7, y: 1.95 };
+const wrap = (n: number, length = COUNT) => ((n % length) + length) % length;
 
-function bezier2(t: number, a: number, b: number, c: number) {
-  const mt = 1 - t;
-  return mt * mt * a + 2 * mt * t * b + t * t * c;
+function phaseAt(raw: number) {
+  const step = Math.floor(raw);
+  const fraction = raw - step;
+  return step + fraction - 0.1 * Math.sin(fraction * TAU);
 }
 
-type Props = {
-  pRef: React.MutableRefObject<number>;
-  onSlideChange: (idx: number) => void;
-  onLocalChange: (idx: number) => void;
-  onActiveItemChange: (idx: number) => void;
-  onOpenModal: () => void;
+function project(theta: number, latitude = 0, radius = 1) {
+  const r = Math.sqrt(1 - latitude * latitude) * radius;
+  const z = Math.cos(theta) * r;
+  const x = Math.sin(theta) * r;
+  const y = latitude * 1.12 + (1 - z) * 0.26;
+  const roll = 0.3;
+  const perspective = 3.8 / (3.8 - z);
+  return {
+    x: (x * Math.cos(roll) + y * Math.sin(roll)) * perspective,
+    y: (-x * Math.sin(roll) + y * Math.cos(roll)) * perspective,
+    z,
+    perspective,
+  };
+}
+
+function cardPose(index: number, phase: number) {
+  const theta = ((phase - index) * TAU) / COUNT;
+  const position = project(theta);
+  const distance = Math.abs(Math.atan2(Math.sin(theta), Math.cos(theta)));
+  const focus = Math.exp(-((distance / 0.35) ** 2));
+  return {
+    ...position,
+    focus,
+    scale: 0.21 + 0.1 * ((position.z + 1) / 2) + 0.69 * focus,
+    opacity: 0.2 + 0.55 * ((position.z + 1) / 2) + 0.25 * focus,
+    rotation: -Math.sin(theta) * 13,
+  };
+}
+
+const SATELLITES = Array.from({ length: SATELLITE_COUNT }, (_, index) => ({
+  latitude: index < 7 ? 0.7 : -0.7,
+  longitude: (index % 7) * (TAU / 7) + (index < 7 ? 0.18 : 0.48),
+}));
+
+type UiIconKey = "prev" | "next" | "pause" | "play";
+
+const ICON_PATHS: Record<IconKey | UiIconKey, string> = {
+  web: '<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/>',
+  video: '<rect x="3" y="4" width="18" height="16" rx="3"/><path d="m10 8 6 4-6 4Z"/>',
+  file: '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9Zm0 0v6h6M8 13h8M8 17h5"/>',
+  retention: '<path d="M20 11a8 8 0 1 0-2.3 6M20 4v7h-7"/>',
+  agent: '<path d="m12 2 2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5Z"/>',
+  crm: '<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16M15 4v16M5.5 8h1M11.5 11h1M17.5 8h1"/>',
+  chart: '<path d="M4 3v18h17M8 16v-5M13 16V6M18 16v-8"/>',
+  learn: '<path d="m2 9 10-6 10 6-10 6ZM6 12v6l6 3 6-3v-6M22 9v8"/>',
+  prev: '<path d="M19 12H5m6-6-6 6 6 6"/>',
+  next: '<path d="M5 12h14m-6-6 6 6-6 6"/>',
+  pause: '<path d="M9 5v14M15 5v14"/>',
+  play: '<path d="m8 4 12 8-12 8Z"/>',
 };
 
-function CardsRig({ pRef, onSlideChange, onLocalChange, onActiveItemChange, onOpenModal }: Props) {
-  const groupRef = useRef<THREE.Group>(null!);
-  const featuredRef = useRef<THREE.Mesh>(null!);
-  const featuredMaterialRef = useRef<THREE.MeshPhysicalMaterial>(null!);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- drei's troika Text ref type is not exported cleanly
-  const featuredTextRef = useRef<any>(null!);
-  const prevFeaturedRef = useRef<THREE.Mesh>(null!);
-  const prevFeaturedMaterialRef = useRef<THREE.MeshPhysicalMaterial>(null!);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- drei's troika Text ref type is not exported cleanly
-  const prevFeaturedTextRef = useRef<any>(null!);
-  const featuredHoverRef = useRef(false);
+function svgMarkup(name: IconKey | UiIconKey) {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON_PATHS[name]}</svg>`;
+}
 
-  const cardRefs = useMemo(
-    () =>
-      SPHERE_POINTS.map(() => ({
-        mesh: createRef<THREE.Mesh>(),
-        material: createRef<THREE.MeshPhysicalMaterial>(),
-      })),
-    [],
-  );
+function IconSpan({ name, className }: { name: IconKey | UiIconKey; className?: string }) {
+  return <span className={className} dangerouslySetInnerHTML={{ __html: svgMarkup(name) }} />;
+}
 
-  const areaColors = useMemo(() => AREAS.map((a) => new THREE.Color(a.color)), []);
-  const whiteColor = useMemo(() => new THREE.Color("#ffffff"), []);
-  const orangeColor = useMemo(() => new THREE.Color(ORANGE), []);
-  const lineColor = useMemo(() => new THREE.Color(LINE), []);
-  const blackColor = useMemo(() => new THREE.Color("#000000"), []);
+export type OrbitGlobeHandle = {
+  moveToArea: (areaIndex: number) => void;
+};
 
-  const pointTransforms = useMemo(() => {
-    const dummy = new THREE.Object3D();
-    return SPHERE_POINTS.map((pt) => {
-      dummy.position.set(pt.x * RADIUS, pt.y * RADIUS, pt.z * RADIUS);
-      dummy.lookAt(0, 0, 0);
-      return { position: dummy.position.clone(), quaternion: dummy.quaternion.clone() };
-    });
+type Props = {
+  onActiveItemChange: (index: number) => void;
+};
+
+const OrbitGlobeScene = forwardRef<OrbitGlobeHandle, Props>(function OrbitGlobeScene(
+  { onActiveItemChange },
+  ref,
+) {
+  const stageRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const satelliteRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const pauseButtonRef = useRef<HTMLButtonElement>(null);
+  const pauseIconRef = useRef<HTMLSpanElement>(null);
+  const motionLabelRef = useRef<HTMLSpanElement>(null);
+  const counterRef = useRef<HTMLSpanElement>(null);
+
+  const reducedRef = useRef(false);
+  const pausedRef = useRef(false);
+  const rawPhaseRef = useRef(0);
+  const phaseRef = useRef(0);
+  const lastTimeRef = useRef<number | null>(null);
+  const activeRef = useRef(-1);
+  const manualRef = useRef<{ from: number; to: number; started: number | null } | null>(null);
+  const sizeRef = useRef({ width: 600, height: 590, radius: 215, dpr: 1 });
+
+  const onActiveItemChangeRef = useRef(onActiveItemChange);
+  useEffect(() => {
+    onActiveItemChangeRef.current = onActiveItemChange;
+  }, [onActiveItemChange]);
+
+  const moveTo = useCallback((target: number) => {
+    if (reducedRef.current) {
+      rawPhaseRef.current = target;
+      phaseRef.current = target;
+      manualRef.current = null;
+      return;
+    }
+    manualRef.current = { from: phaseRef.current, to: target, started: null };
   }, []);
 
-  const smoothPRef = useRef(0);
-  const lastSlideIdxRef = useRef(-99);
-  const lastLocalIdxRef = useRef(-99);
-  const lastActiveIndexRef = useRef(-99);
-  const lastAreaIndexForClockRef = useRef(-99);
-  const areaEnterTimeRef = useRef(0);
-  const lastFeaturedIndexRef = useRef(-99);
-  const prevItemRef = useRef<OrbitItem | null>(null);
-  const lastCardTextRef = useRef("");
-  const lastPrevCardTextRef = useRef("");
-  const reduce = useMemo(
-    () =>
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-    [],
+  useImperativeHandle(
+    ref,
+    () => ({
+      moveToArea(areaIndex: number) {
+        const current = manualRef.current?.to ?? phaseRef.current;
+        const base = Math.floor(current / COUNT) * COUNT + areaIndex * 2;
+        moveTo(base < current - 0.1 ? base + COUNT : base);
+      },
+    }),
+    [moveTo],
   );
 
-  useFrame((state) => {
-    const t = reduce ? 0 : state.clock.elapsedTime * 1000;
-    const p = pRef.current;
-    smoothPRef.current += (p - smoothPRef.current) * (reduce ? 1 : SMOOTHING);
-    const smoothP = smoothPRef.current;
+  function updatePauseUI() {
+    if (pauseIconRef.current) {
+      pauseIconRef.current.innerHTML = svgMarkup(pausedRef.current ? "play" : "pause");
+    }
+    pauseButtonRef.current?.setAttribute(
+      "aria-label",
+      pausedRef.current ? "Retomar animação" : "Pausar animação",
+    );
+    if (motionLabelRef.current) {
+      motionLabelRef.current.textContent = pausedRef.current ? "Pausado" : "Em movimento";
+    }
+  }
 
-    const tiltX = 0.1 + Math.sin(t * 0.00018) * 0.03;
+  function setActive(index: number) {
+    if (index === activeRef.current) return;
+    activeRef.current = index;
+    onActiveItemChangeRef.current(index);
+    if (counterRef.current) {
+      counterRef.current.innerHTML = `<strong>${String(index + 1).padStart(2, "0")}</strong> / ${String(COUNT).padStart(2, "0")}`;
+    }
+  }
 
-    const autoMode = smoothP <= AUTO_EPS;
-    let c: number;
-    let areaIndex: number;
-    if (autoMode) {
-      lastAreaIndexForClockRef.current = -99;
-      const elapsed = t % (N * SLOT_MS);
-      c = elapsed / SLOT_MS;
-      areaIndex = -1;
-    } else {
-      const areaProgress = clamp01((smoothP - LEAD) / (1 - LEAD - TAIL)) * (NA - 0.0001);
-      areaIndex = Math.min(NA - 1, Math.floor(areaProgress));
-      if (areaIndex !== lastAreaIndexForClockRef.current) {
-        lastAreaIndexForClockRef.current = areaIndex;
-        areaEnterTimeRef.current = t;
+  useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    reducedRef.current = reduced.matches;
+    pausedRef.current = reduced.matches;
+    updatePauseUI();
+    const onChange = () => {
+      reducedRef.current = reduced.matches;
+      pausedRef.current = reduced.matches;
+      updatePauseUI();
+    };
+    reduced.addEventListener("change", onChange);
+    return () => reduced.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    const stage = stageRef.current;
+    const canvas = canvasRef.current;
+    if (!stage || !canvas) return;
+    const ctx = canvas.getContext("2d");
+
+    function resize() {
+      if (!stage || !canvas) return;
+      const width = stage.clientWidth;
+      const height = stage.clientHeight;
+      const radius = Math.min(width * 0.39, height * 0.39);
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      sizeRef.current = { width, height, radius, dpr };
+    }
+    const observer = new ResizeObserver(resize);
+    observer.observe(stage);
+    resize();
+
+    function screen(point: { x: number; y: number }) {
+      const { width, height, radius } = sizeRef.current;
+      return { x: width * 0.5 + point.x * radius, y: height * 0.49 + point.y * radius };
+    }
+
+    function curve(points: { x: number; y: number; z: number }[], accent = false) {
+      if (!ctx) return;
+      for (let i = 1; i < points.length; i++) {
+        const a = screen(points[i - 1]);
+        const b = screen(points[i]);
+        const light = (points[i].z + 1) / 2;
+        ctx.strokeStyle = accent
+          ? `rgba(238,163,106,${0.08 + light * 0.18})`
+          : `rgba(193,204,206,${0.025 + light * 0.075})`;
+        ctx.lineWidth = accent ? 0.85 : 0.6;
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
       }
-      const elapsedInArea = reduce ? 0 : t - areaEnterTimeRef.current;
-      const subT = (elapsedInArea % (SLOT_MS * 2)) / SLOT_MS;
-      c = areaIndex * 2 + subT;
     }
-    const activeIndex = Math.min(N - 1, Math.floor(c));
-    const loc = c - activeIndex;
-    const angle = angleFor(c);
-    const boostT = textOpacityAt(loc);
 
-    groupRef.current.rotation.set(tiltX, angle, 0);
-    groupRef.current.updateMatrixWorld();
-
-    const cosA = Math.cos(angle);
-    const sinA = Math.sin(angle);
-    const cosT = Math.cos(tiltX);
-    const sinT = Math.sin(tiltX);
-
-    let focusIdx = -1;
-
-    for (let i = 0; i < SPHERE_POINTS.length; i++) {
-      const pt = SPHERE_POINTS[i];
-      const mesh = cardRefs[i].mesh.current;
-      const material = cardRefs[i].material.current;
-      if (!mesh || !material) continue;
-
-      const isFocus = pt.label === activeIndex;
-      const boost = isFocus ? boostT : 0;
-      const item = pt.label !== null ? ITEMS[pt.label] : null;
-
-      const x1 = pt.x * cosA - pt.z * sinA;
-      const z1 = pt.x * sinA + pt.z * cosA;
-      const y2 = pt.y * cosT - z1 * sinT;
-      const z2 = pt.y * sinT + z1 * cosT;
-      const depthT = clamp01((z2 + 1) / 2);
-
-      if (item) {
-        // fades out as the card hands off to the fixed, larger featured card at screen center
-        material.opacity = lerp(lerp(0.5, 0.78, depthT), 0, boost);
-        material.color.lerpColors(whiteColor, areaColors[item.area], lerp(0.3, 0.6, depthT));
-        material.emissive.copy(areaColors[item.area]);
-        material.emissiveIntensity = lerp(0.12, 0.28, depthT);
-      } else {
-        material.opacity = lerp(0.14, 0.32, depthT);
-        material.color.copy(lineColor);
-        material.emissive.copy(blackColor);
-        material.emissiveIntensity = 0;
+    function drawGrid(angle: number) {
+      if (!ctx) return;
+      const { width, height, dpr } = sizeRef.current;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, width, height);
+      [-0.85, -0.7, 0, 0.7, 0.85].forEach((latitude) =>
+        curve(
+          Array.from({ length: 97 }, (_, i) => project((i / 96) * TAU + angle, latitude)),
+          latitude === 0,
+        ),
+      );
+      for (let ring = 0; ring < 6; ring++) {
+        const longitude = (ring * Math.PI) / 6 + angle;
+        const points = Array.from({ length: 97 }, (_, i) => {
+          const t = (i / 96) * TAU;
+          const lat = Math.sin(t) * 0.997;
+          return project(longitude + (Math.cos(t) < 0 ? Math.PI : 0), lat);
+        });
+        curve(points);
       }
-
-      if (isFocus) focusIdx = i;
     }
 
-    // Track the previous active item so its card can curve away while the new one curves
-    // in, both inside the exact window the background globe is rotating.
-    if (activeIndex !== lastFeaturedIndexRef.current) {
-      prevItemRef.current =
-        lastFeaturedIndexRef.current >= 0 ? ITEMS[lastFeaturedIndexRef.current] : null;
-      lastFeaturedIndexRef.current = activeIndex;
-    }
-    const prevItem = prevItemRef.current;
-
-    // Featured card — same glass material/geometry family as the small orbiting cards, just
-    // bigger and brighter orange. It curves in from below-left while the outgoing word (on a
-    // second identical card) curves away up-right, synchronized to the globe's own swing.
-    const featured = featuredRef.current;
-    const featuredMat = featuredMaterialRef.current;
-    const featuredText = featuredTextRef.current;
-    const item = focusIdx !== -1 ? ITEMS[activeIndex] : null;
-    const hoverBoost = featuredHoverRef.current ? 0.08 : 0;
-    const swing = loc < ANGLE_WINDOW ? easeOutCubic(loc / ANGLE_WINDOW) : 1;
-
-    if (featured && featuredMat && item) {
-      const curveX = bezier2(swing, ENTRY_START.x, ENTRY_CTRL.x, 0);
-      const curveY = bezier2(swing, ENTRY_START.y, ENTRY_CTRL.y, 0);
-      const curveScale = lerp(0.72, 1, swing);
-
-      featured.visible = true;
-      featured.position.x = curveX;
-      featured.position.y = FEATURED_Y + curveY;
-      featured.scale.setScalar(curveScale + hoverBoost);
-      featuredMat.opacity = 1;
-      featuredMat.emissive.copy(orangeColor);
-      featuredMat.emissiveIntensity = 0.12 + hoverBoost * 0.2;
-      if (featuredText) {
-        featuredText.position.x = curveX;
-        featuredText.position.y = FEATURED_Y + curveY;
-        if (lastCardTextRef.current !== item.tag) {
-          lastCardTextRef.current = item.tag;
-          featuredText.text = item.tag;
-          featuredText.sync();
+    const rafRef = { current: 0 };
+    function frame(now: number) {
+      const delta = lastTimeRef.current === null ? 0 : Math.min(now - lastTimeRef.current, 64);
+      lastTimeRef.current = now;
+      if (!document.hidden) {
+        const manual = manualRef.current;
+        if (manual) {
+          if (manual.started === null) manual.started = now;
+          const t = Math.min(1, (now - manual.started) / 1100);
+          const ease = t * t * (3 - 2 * t);
+          phaseRef.current = manual.from + (manual.to - manual.from) * ease;
+          if (t === 1) {
+            rawPhaseRef.current = manual.to;
+            manualRef.current = null;
+          }
+        } else if (!pausedRef.current) {
+          rawPhaseRef.current += delta / 4400;
+          phaseRef.current = phaseAt(rawPhaseRef.current);
         }
-        featuredText.fillOpacity = 1;
+        setActive(wrap(Math.round(phaseRef.current)));
+        const angle = (phaseRef.current * TAU) / COUNT;
+        drawGrid(angle);
+        const fit = Math.min(1, sizeRef.current.width / 500);
+        const { radius } = sizeRef.current;
+        cardRefs.current.forEach((card, i) => {
+          if (!card) return;
+          const pose = cardPose(i, phaseRef.current);
+          card.style.transform = `translate(${pose.x * radius}px,${pose.y * radius}px) rotate(${pose.rotation}deg) scale(${pose.scale * fit})`;
+          card.style.opacity = pose.opacity.toFixed(3);
+          card.style.zIndex = String(Math.round((pose.z + 1) * 40) + 10);
+          card.style.filter = `blur(${Math.max(0, -pose.z) * 0.7}px)`;
+        });
+        satelliteRefs.current.forEach((card, i) => {
+          if (!card) return;
+          const { latitude, longitude } = SATELLITES[i];
+          const p = project(longitude + angle, latitude);
+          card.style.transform = `translate(${p.x * radius}px,${p.y * radius}px) rotate(${-Math.sin(longitude + angle) * 12}deg) scale(${(0.5 + 0.35 * (p.z + 1)) * fit})`;
+          card.style.opacity = String(0.13 + (0.37 * (p.z + 1)) / 2);
+          card.style.zIndex = String(Math.round((p.z + 1) * 40) + 9);
+        });
       }
-    } else if (featured) {
-      featured.visible = false;
+      rafRef.current = requestAnimationFrame(frame);
     }
+    setActive(0);
+    rafRef.current = requestAnimationFrame(frame);
 
-    // Outgoing card — only present during the swing, curving away in the same direction.
-    const prevFeatured = prevFeaturedRef.current;
-    const prevFeaturedMat = prevFeaturedMaterialRef.current;
-    const prevFeaturedText = prevFeaturedTextRef.current;
-    if (prevFeatured && prevFeaturedMat && prevItem && loc < ANGLE_WINDOW) {
-      const curveX = bezier2(swing, 0, EXIT_CTRL.x, EXIT_END.x);
-      const curveY = bezier2(swing, 0, EXIT_CTRL.y, EXIT_END.y);
-      const curveScale = lerp(1, 0.72, swing);
+    function onVisibility() {
+      lastTimeRef.current = null;
+    }
+    document.addEventListener("visibilitychange", onVisibility);
 
-      prevFeatured.visible = true;
-      prevFeatured.position.x = curveX;
-      prevFeatured.position.y = FEATURED_Y + curveY;
-      prevFeatured.scale.setScalar(curveScale);
-      prevFeaturedMat.opacity = 1;
-      prevFeaturedMat.emissive.copy(orangeColor);
-      prevFeaturedMat.emissiveIntensity = 0.12;
-      if (prevFeaturedText) {
-        prevFeaturedText.position.x = curveX;
-        prevFeaturedText.position.y = FEATURED_Y + curveY;
-        if (lastPrevCardTextRef.current !== prevItem.tag) {
-          lastPrevCardTextRef.current = prevItem.tag;
-          prevFeaturedText.text = prevItem.tag;
-          prevFeaturedText.sync();
-        }
-        prevFeaturedText.fillOpacity = 1;
-      }
-    } else if (prevFeatured) {
-      prevFeatured.visible = false;
+    function onPointerMove(event: PointerEvent) {
+      const bounds = stage!.getBoundingClientRect();
+      stage!.style.setProperty("--mx", `${((event.clientX - bounds.left) / bounds.width) * 100}%`);
+      stage!.style.setProperty("--my", `${((event.clientY - bounds.top) / bounds.height) * 100}%`);
     }
+    function onPointerLeave() {
+      stage!.style.setProperty("--mx", "66%");
+      stage!.style.setProperty("--my", "26%");
+    }
+    stage.addEventListener("pointermove", onPointerMove);
+    stage.addEventListener("pointerleave", onPointerLeave);
 
-    const newSlideIdx = autoMode ? -1 : areaIndex;
-    const newLocalIdx = autoMode ? 0 : activeIndex % 2;
-    if (newSlideIdx !== lastSlideIdxRef.current) {
-      lastSlideIdxRef.current = newSlideIdx;
-      onSlideChange(newSlideIdx);
-    }
-    if (newLocalIdx !== lastLocalIdxRef.current) {
-      lastLocalIdxRef.current = newLocalIdx;
-      onLocalChange(newLocalIdx);
-    }
-    if (activeIndex !== lastActiveIndexRef.current) {
-      lastActiveIndexRef.current = activeIndex;
-      onActiveItemChange(activeIndex);
-    }
-  });
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(rafRef.current);
+      document.removeEventListener("visibilitychange", onVisibility);
+      stage.removeEventListener("pointermove", onPointerMove);
+      stage.removeEventListener("pointerleave", onPointerLeave);
+    };
+  }, []);
+
+  function togglePause() {
+    pausedRef.current = !pausedRef.current;
+    updatePauseUI();
+  }
 
   return (
     <>
-      <group ref={groupRef}>
-        {SPHERE_POINTS.map((pt, i) => {
-          const item = pt.label !== null ? ITEMS[pt.label] : null;
-          const w = item ? CARD_W : CARD_W * 0.64;
-          const h = item ? CARD_H : CARD_H * 0.64;
-          return (
-            <group
-              key={i}
-              position={pointTransforms[i].position}
-              quaternion={pointTransforms[i].quaternion}
+      <div
+        ref={stageRef}
+        className="orbit-stage-canvas"
+        role="img"
+        aria-label="Órbita animada das oito soluções da Sena Labs; o card mais próximo está descrito à esquerda."
+      >
+        <div className="orbit-scene-label">Possibilidades em órbita</div>
+        <div className="orbit-world" aria-hidden="true">
+          <canvas ref={canvasRef} />
+          {ITEMS.map((item, i) => (
+            <div
+              key={item.tag}
+              ref={(node) => {
+                cardRefs.current[i] = node;
+              }}
+              className="orbit-card"
             >
-              <RoundedBox ref={cardRefs[i].mesh} args={[w, h, 0.05]} radius={0.03} smoothness={3}>
-                <meshPhysicalMaterial
-                  ref={cardRefs[i].material}
-                  transparent
-                  roughness={0.35}
-                  metalness={0}
-                  clearcoat={0.3}
-                  clearcoatRoughness={0.3}
-                  envMapIntensity={0.5}
-                />
-              </RoundedBox>
-            </group>
-          );
-        })}
-      </group>
-
-      {/* Featured card — fixed at screen center, same glass material family, larger + brighter
-          orange. depthTest is off (with a high renderOrder) so it always reads on top of the
-          background globe instead of being occluded when a small card swings near the camera. */}
-      <RoundedBox
-        ref={featuredRef}
-        position={[0, FEATURED_Y, FEATURED_Z]}
-        args={[CARD_W * FEATURED_SCALE, CARD_H * FEATURED_SCALE, 0.075]}
-        radius={0.04}
-        smoothness={4}
-        visible={false}
-        renderOrder={10}
-        onClick={onOpenModal}
-        onPointerOver={() => {
-          featuredHoverRef.current = true;
-          document.body.style.cursor = "pointer";
-        }}
-        onPointerOut={() => {
-          featuredHoverRef.current = false;
-          document.body.style.cursor = "auto";
-        }}
-      >
-        <meshPhysicalMaterial
-          ref={featuredMaterialRef}
-          depthTest={false}
-          transmission={0.92}
-          thickness={0.45}
-          ior={1.4}
-          roughness={0.22}
-          metalness={0}
-          clearcoat={0.5}
-          clearcoatRoughness={0.15}
-          iridescence={0.2}
-          iridescenceIOR={1.3}
-          attenuationColor={ORANGE}
-          attenuationDistance={0.65}
-          color="#FFDDBB"
-          envMapIntensity={0.4}
-        />
-      </RoundedBox>
-      <Text
-        ref={featuredTextRef}
-        position={[0, FEATURED_Y, FEATURED_Z + 0.04]}
-        renderOrder={11}
-        material-depthTest={false}
-        fontSize={0.09}
-        fontWeight={700}
-        color="#1A1916"
-        anchorX="center"
-        anchorY="middle"
-        maxWidth={CARD_W * FEATURED_SCALE * 0.85}
-      >
-        {" "}
-      </Text>
-
-      {/* Outgoing twin — same card, curving away as the featured one curves in */}
-      <RoundedBox
-        ref={prevFeaturedRef}
-        position={[0, FEATURED_Y, FEATURED_Z]}
-        args={[CARD_W * FEATURED_SCALE, CARD_H * FEATURED_SCALE, 0.075]}
-        radius={0.04}
-        smoothness={4}
-        visible={false}
-        renderOrder={10}
-      >
-        <meshPhysicalMaterial
-          ref={prevFeaturedMaterialRef}
-          depthTest={false}
-          transmission={0.92}
-          thickness={0.45}
-          ior={1.4}
-          roughness={0.22}
-          metalness={0}
-          clearcoat={0.5}
-          clearcoatRoughness={0.15}
-          iridescence={0.2}
-          iridescenceIOR={1.3}
-          attenuationColor={ORANGE}
-          attenuationDistance={0.65}
-          color="#FFDDBB"
-          envMapIntensity={0.4}
-        />
-      </RoundedBox>
-      <Text
-        ref={prevFeaturedTextRef}
-        position={[0, FEATURED_Y, FEATURED_Z + 0.04]}
-        renderOrder={11}
-        material-depthTest={false}
-        fontSize={0.09}
-        fontWeight={700}
-        color="#1A1916"
-        anchorX="center"
-        anchorY="middle"
-        maxWidth={CARD_W * FEATURED_SCALE * 0.85}
-      >
-        {" "}
-      </Text>
+              <div className="orbit-glass" />
+              <div className="orbit-card-content">
+                <div className="orbit-card-top">
+                  <IconSpan name={item.icon} />
+                  <span className="orbit-card-code">SL / {String(i + 1).padStart(2, "0")}</span>
+                </div>
+                <div className="orbit-card-title">{item.tag}</div>
+                <div className="orbit-card-footer">
+                  <span>{item.category}</span>
+                  <IconSpan name="next" />
+                </div>
+              </div>
+            </div>
+          ))}
+          {SATELLITES.map((_, i) => (
+            <div
+              key={i}
+              ref={(node) => {
+                satelliteRefs.current[i] = node;
+              }}
+              className="orbit-satellite"
+            />
+          ))}
+        </div>
+        <div className="orbit-axis-label">SENA / LABS</div>
+      </div>
+      <div className="orbit-scene-controls" aria-label="Controles da órbita">
+        <button
+          type="button"
+          className="orbit-control"
+          aria-label="Solução anterior"
+          onClick={() => moveTo(Math.round(manualRef.current?.to ?? phaseRef.current) - 1)}
+        >
+          <IconSpan name="prev" />
+        </button>
+        <span className="orbit-counter" ref={counterRef}>
+          <strong>01</strong> / {String(COUNT).padStart(2, "0")}
+        </span>
+        <button
+          type="button"
+          className="orbit-control"
+          aria-label="Próxima solução"
+          onClick={() => moveTo(Math.round(manualRef.current?.to ?? phaseRef.current) + 1)}
+        >
+          <IconSpan name="next" />
+        </button>
+        <button
+          type="button"
+          ref={pauseButtonRef}
+          className="orbit-control"
+          aria-label="Pausar animação"
+          onClick={togglePause}
+        >
+          <span ref={pauseIconRef} dangerouslySetInnerHTML={{ __html: svgMarkup("pause") }} />
+        </button>
+        <span className="orbit-motion-label" ref={motionLabelRef}>
+          Em movimento
+        </span>
+      </div>
     </>
   );
-}
+});
 
-export default function OrbitGlobeScene(props: Props) {
-  return (
-    <Canvas
-      dpr={[1, 2]}
-      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-      style={{ position: "absolute", inset: 0 }}
-    >
-      <PerspectiveCamera makeDefault position={[0, 0.25, 6.4]} fov={34} />
-      <ambientLight intensity={0.85} />
-      <directionalLight position={[3, 4, 5]} intensity={1.3} />
-      <directionalLight position={[-4, -2, -3]} intensity={0.4} />
-      <pointLight position={[0, 0.5, -5]} intensity={0.6} color="#FC7C34" />
-      <Environment preset="studio" />
-      <CardsRig {...props} />
-      <ContactShadows
-        position={[0, -RADIUS - 0.55, 0]}
-        opacity={0.35}
-        scale={9}
-        blur={2.6}
-        far={4}
-        resolution={512}
-        color="#1A1916"
-      />
-    </Canvas>
-  );
-}
+export default OrbitGlobeScene;

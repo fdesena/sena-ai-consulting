@@ -242,18 +242,6 @@ export default function LandingPage() {
   const [submenuOpen, setSubmenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const submenuRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLElement>(null);
-  const [headerHeight, setHeaderHeight] = useState(72);
-
-  useEffect(() => {
-    const header = headerRef.current;
-    if (!header) return;
-    const update = () => setHeaderHeight(header.offsetHeight);
-    update();
-    const observer = new ResizeObserver(update);
-    observer.observe(header);
-    return () => observer.disconnect();
-  }, []);
 
   useEffect(() => {
     if (!submenuOpen) return;
@@ -276,10 +264,7 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       {/* NAV */}
-      <header
-        ref={headerRef}
-        className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur"
-      >
+      <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <a href="#top" className="inline-flex items-center gap-2 md:min-w-[280px]">
             <img src={logoIcon} alt="Sena Labs" className="h-8 w-8" />
@@ -443,7 +428,7 @@ export default function LandingPage() {
       </header>
 
       {/* HERO — Órbita Sena Labs (sticky scroll, canvas 3D) */}
-      <OrbitHero headerOffset={headerHeight} />
+      <OrbitHero />
 
       {/* HERO antigo — desativado, mantido para rollback (não remover) */}
       {/* eslint-disable-next-line no-constant-binary-expression */}
