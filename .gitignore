@@ -32,6 +32,9 @@ supabase/.temp/
 # Vercel
 .vercel
 
+# Raw video source files (large, not for git — compressed copies live in public/videos)
+src/assets/Videos/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
