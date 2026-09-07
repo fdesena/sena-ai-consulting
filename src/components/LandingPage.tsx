@@ -27,6 +27,7 @@ import {
 import { motion } from "framer-motion";
 import { WHATSAPP_URL } from "./WhatsAppFAB";
 import ProcessCycle from "./ProcessCycle";
+import OrbitHero from "./OrbitHero";
 import TrackRecord from "./TrackRecord";
 import GlobalExperience from "./GlobalExperience";
 import { RING_1_TOOLS, RING_2_TOOLS, RING_3_TOOLS, type ToolIcon } from "@/data/tool-icons";
@@ -241,6 +242,18 @@ export default function LandingPage() {
   const [submenuOpen, setSubmenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const submenuRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
+  const [headerHeight, setHeaderHeight] = useState(72);
+
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+    const update = () => setHeaderHeight(header.offsetHeight);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(header);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     if (!submenuOpen) return;
@@ -263,7 +276,10 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       {/* NAV */}
-      <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur">
+      <header
+        ref={headerRef}
+        className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur"
+      >
         <div className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <a href="#top" className="inline-flex items-center gap-2 md:min-w-[280px]">
             <img src={logoIcon} alt="Sena Labs" className="h-8 w-8" />
@@ -426,72 +442,78 @@ export default function LandingPage() {
         </div>
       </header>
 
-      {/* HERO */}
-      <Section
-        id="top"
-        className="!pt-16 sm:!pt-24 min-h-[calc(100svh-64px)] flex flex-col justify-between"
-      >
-        <div className="grid items-center gap-12 md:grid-cols-[1fr_1fr]">
-          {/* Left: copy + CTAs */}
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
-              <Eyebrow>Sena Labs · Estratégia, IA &amp; Software</Eyebrow>
-            </div>
-            <h1 className="mt-6 text-5xl font-semibold tracking-tight sm:text-7xl">
-              Do problema ao produto.
-            </h1>
-            <p className="mt-6 max-w-lg text-lg text-muted-foreground sm:text-xl">
-              Entendemos o problema, desenhamos a solução e construímos tecnologia que funciona — de
-              automações e agentes de IA a apps, dashboards e plataformas.
-            </p>
-            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-              <Link
-                to="/diagnostico"
-                onClick={() => trackEvent("click_diagnostico_cta", { source: "hero" })}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
-              >
-                Realizar diagnóstico
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <a
-                href="#pilares"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-foreground/15 px-6 py-3.5 text-sm font-medium hover:border-foreground/40"
-              >
-                Ver o que construímos
-              </a>
-            </div>
-          </div>
+      {/* HERO — Órbita Sena Labs (sticky scroll, canvas 3D) */}
+      <OrbitHero headerOffset={headerHeight} />
 
-          {/* Right: animated orbital motif */}
-          <div className="relative hidden items-center justify-center md:flex">
-            <HeroOrbital />
-          </div>
-        </div>
-
-        {/* Scroll cue — bottom of first fold */}
-        <a
-          href="#cases"
-          className="group mt-16 flex items-center gap-2 self-start text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground transition hover:text-foreground sm:mt-0 sm:self-end"
+      {/* HERO antigo — desativado, mantido para rollback (não remover) */}
+      {/* eslint-disable-next-line no-constant-binary-expression */}
+      {false && (
+        <Section
+          id="top-old"
+          className="!pt-16 sm:!pt-24 min-h-[calc(100svh-64px)] flex flex-col justify-between"
         >
-          Ver resultados reais
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            className="transition-transform group-hover:translate-y-0.5"
+          <div className="grid items-center gap-12 md:grid-cols-[1fr_1fr]">
+            {/* Left: copy + CTAs */}
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
+                <Eyebrow>Sena Labs · Estratégia, IA &amp; Software</Eyebrow>
+              </div>
+              <h1 className="mt-6 text-5xl font-semibold tracking-tight sm:text-7xl">
+                Do problema ao produto.
+              </h1>
+              <p className="mt-6 max-w-lg text-lg text-muted-foreground sm:text-xl">
+                Entendemos o problema, desenhamos a solução e construímos tecnologia que funciona —
+                de automações e agentes de IA a apps, dashboards e plataformas.
+              </p>
+              <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+                <Link
+                  to="/diagnostico"
+                  onClick={() => trackEvent("click_diagnostico_cta", { source: "hero" })}
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+                >
+                  Realizar diagnóstico
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <a
+                  href="#pilares"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-foreground/15 px-6 py-3.5 text-sm font-medium hover:border-foreground/40"
+                >
+                  Ver o que construímos
+                </a>
+              </div>
+            </div>
+
+            {/* Right: animated orbital motif */}
+            <div className="relative hidden items-center justify-center md:flex">
+              <HeroOrbital />
+            </div>
+          </div>
+
+          {/* Scroll cue — bottom of first fold */}
+          <a
+            href="#cases"
+            className="group mt-16 flex items-center gap-2 self-start text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground transition hover:text-foreground sm:mt-0 sm:self-end"
           >
-            <path
-              d="M8 3v10M4 9l4 4 4-4"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </a>
-      </Section>
+            Ver resultados reais
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              className="transition-transform group-hover:translate-y-0.5"
+            >
+              <path
+                d="M8 3v10M4 9l4 4 4-4"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </a>
+        </Section>
+      )}
 
       {/* CASES */}
       <Section id="cases" className="border-t border-border">
