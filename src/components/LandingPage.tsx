@@ -11,7 +11,6 @@ import {
   Workflow,
   LayoutDashboard,
   Presentation,
-  Sparkles,
   Users,
   Target,
   TrendingUp,
@@ -28,10 +27,8 @@ import {
 import { motion } from "framer-motion";
 import { WHATSAPP_URL } from "./WhatsAppFAB";
 import ProcessCycle from "./ProcessCycle";
-import MarketGapChart from "./MarketGapChart";
 import TrackRecord from "./TrackRecord";
 import GlobalExperience from "./GlobalExperience";
-import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 import { RING_1_TOOLS, RING_2_TOOLS, RING_3_TOOLS, type ToolIcon } from "@/data/tool-icons";
 import felipeImg from "@/assets/felipe-sena-profile.png";
 import { cn } from "@/lib/utils";
@@ -285,6 +282,9 @@ export default function LandingPage() {
             <a href="#sobre" className="hover:text-primary">
               Sobre
             </a>
+            <Link to="/blog" className="hover:text-primary">
+              Blog
+            </Link>
             <div className="relative" ref={submenuRef}>
               <button
                 type="button"
@@ -377,6 +377,11 @@ export default function LandingPage() {
                       Sobre
                     </a>
                   </SheetClose>
+                  <SheetClose asChild>
+                    <Link to="/blog" className="rounded-xl px-3 py-3 transition hover:bg-muted">
+                      Blog
+                    </Link>
+                  </SheetClose>
 
                   <div className="my-3 border-t border-border" />
                   <span className="px-3 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
@@ -466,10 +471,10 @@ export default function LandingPage() {
 
         {/* Scroll cue — bottom of first fold */}
         <a
-          href="#oportunidade"
+          href="#cases"
           className="group mt-16 flex items-center gap-2 self-start text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground transition hover:text-foreground sm:mt-0 sm:self-end"
         >
-          Descobrir a oportunidade
+          Ver resultados reais
           <svg
             width="16"
             height="16"
@@ -488,95 +493,22 @@ export default function LandingPage() {
         </a>
       </Section>
 
-      {/* A OPORTUNIDADE — revealed on scroll with 3D tilt */}
-      <section id="oportunidade" className="border-t border-border">
-        <div className="mx-auto w-full max-w-6xl px-6 py-20 sm:py-28">
-          <ContainerScroll
-            titleComponent={
-              <>
-                <Eyebrow>A OPORTUNIDADE</Eyebrow>
-                <h2 className="mx-auto mt-4 max-w-3xl text-balance text-3xl font-semibold tracking-tight sm:text-5xl">
-                  A IA já consegue muito mais do que o mercado usa.
-                </h2>
-              </>
-            }
-          >
-            <div className="grid h-full gap-0 md:grid-cols-[1fr_1.1fr]">
-              {/* Explanation + CTAs */}
-              <div className="order-2 flex flex-col gap-6 px-6 py-8 text-left sm:px-10 sm:py-10 md:order-1">
-                <div>
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                      O gap de adoção · dados Anthropic
-                    </span>
-                    <TrendingUp className="h-4 w-4 text-primary" />
-                  </div>
-                  <h3 className="mt-3 text-xl font-semibold tracking-tight sm:text-2xl">
-                    O que os dados revelam para o seu negócio
-                  </h3>
-                </div>
-                <div>
-                  <p className="text-muted-foreground">
-                    Dados da pesquisa da Anthropic mostram o{" "}
-                    <b className="text-foreground">tamanho da oportunidade</b> no mercado. Cada
-                    ponta é uma categoria profissional: o <b style={{ color: "#4F86C6" }}>azul</b> é
-                    o que a IA já consegue fazer hoje; o{" "}
-                    <b style={{ color: "#D14B3D" }}>vermelho</b> é o que de fato se usa, em média. A
-                    distância entre eles representa o gap — e quem agir primeiro leva vantagem.
-                  </p>
-                  <div className="mt-5 rounded-2xl border border-border/70 bg-card p-5">
-                    <p className="text-sm text-muted-foreground">
-                      Agora é a sua vez: descubra o quanto você entende, usa e aplica IA — e onde
-                      estão os gaps para transformar essa oportunidade em resultado na sua empresa.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-col gap-3 sm:flex-row">
-                  <Link
-                    to="/diagnostico"
-                    onClick={() => trackEvent("click_diagnostico_cta", { source: "oportunidade" })}
-                    className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
-                  >
-                    Realizar diagnóstico
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                  <a
-                    href="#pilares"
-                    className="inline-flex items-center justify-center gap-2 rounded-full border border-foreground/15 px-6 py-3.5 text-sm font-medium hover:border-foreground/40"
-                  >
-                    Ver serviços
-                  </a>
-                </div>
-              </div>
-
-              {/* Chart */}
-              <div className="order-1 border-t border-border px-6 py-8 text-left sm:px-8 md:order-2 md:border-l md:border-t-0">
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                    Panorama do mercado · pesquisa
-                  </span>
-                  <Sparkles className="h-4 w-4 text-primary" />
-                </div>
-                <MarketGapChart />
-                <div className="mt-2 flex items-center justify-center gap-6 text-[11px] font-mono uppercase tracking-wider">
-                  <span className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-sm" style={{ background: "#4F86C6" }} />{" "}
-                    Poderia fazer
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-sm" style={{ background: "#D14B3D" }} /> Já se
-                    usa
-                  </span>
-                </div>
-                <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
-                  Fonte: Massenkoff &amp; McCrory (2026), "Labor market impacts of AI", Anthropic —
-                  Fig. 2. Valores aproximados, lidos da figura. Adaptado pela Sena.
-                </p>
-              </div>
-            </div>
-          </ContainerScroll>
+      {/* CASES */}
+      <Section id="cases" className="border-t border-border">
+        <div>
+          <Eyebrow>Cases / Results</Eyebrow>
+          <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
+            Resultados concretos. Sistemas em produção.
+          </h2>
+          <p className="mt-5 max-w-2xl text-lg text-muted-foreground">
+            Não paramos no diagnóstico. Desenhamos, construímos e colocamos soluções reais para
+            funcionar.
+          </p>
         </div>
-      </section>
+        <div className="mt-12">
+          <TrackRecord />
+        </div>
+      </Section>
 
       {/* DESAFIO */}
       <Section id="desafio" className="border-t border-border">
@@ -658,7 +590,7 @@ export default function LandingPage() {
 
       {/* COMO TRABALHAMOS */}
       <Section id="processo" className="border-t border-border">
-        <Eyebrow>05 · Como trabalhamos</Eyebrow>
+        <Eyebrow>04 · Como trabalhamos</Eyebrow>
         <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
           Entender → Desenhar → Construir → Implementar → Evoluir.
         </h2>
@@ -673,7 +605,7 @@ export default function LandingPage() {
 
       {/* FORMAS DE TRABALHAR */}
       <Section id="como-ajudar" className="border-t border-border">
-        <Eyebrow>06 · Ways to work with us</Eyebrow>
+        <Eyebrow>05 · Ways to work with us</Eyebrow>
         <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
           Entre pela etapa que faz sentido agora.
         </h2>
@@ -737,27 +669,10 @@ export default function LandingPage() {
         </div>
       </Section>
 
-      {/* CASES */}
-      <Section id="cases" className="border-t border-border">
-        <div>
-          <Eyebrow>07 · Cases / Results</Eyebrow>
-          <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
-            Resultados concretos. Sistemas em produção.
-          </h2>
-          <p className="mt-5 max-w-2xl text-lg text-muted-foreground">
-            Não paramos no diagnóstico. Desenhamos, construímos e colocamos soluções reais para
-            funcionar.
-          </p>
-        </div>
-        <div className="mt-12">
-          <TrackRecord />
-        </div>
-      </Section>
-
       {/* SOBRE A SENA LABS */}
       <section id="sobre" className="border-t border-border bg-[var(--ink)] text-[var(--paper)]">
         <div className="mx-auto grid w-full max-w-6xl gap-10 px-6 py-20 sm:py-28 md:grid-cols-[0.8fr_1.2fr] md:items-start">
-          <Eyebrow>08 · About Sena Labs</Eyebrow>
+          <Eyebrow>06 · About Sena Labs</Eyebrow>
           <div>
             <h2 className="max-w-3xl text-3xl font-semibold sm:text-5xl">
               Uma empresa de estratégia e tecnologia feita para construir.
@@ -826,7 +741,7 @@ export default function LandingPage() {
           </div>
 
           <div>
-            <Eyebrow>09 · Founder</Eyebrow>
+            <Eyebrow>07 · Founder</Eyebrow>
             <h2 className="mt-4 text-3xl font-semibold sm:text-5xl">
               Felipe Sena. Estratégia, produto e execução em escala global.
             </h2>
@@ -913,7 +828,7 @@ export default function LandingPage() {
           />
           <div className="flex flex-col gap-10">
             <div className="flex flex-col items-start">
-              <Eyebrow>10 · Vamos conversar</Eyebrow>
+              <Eyebrow>08 · Vamos conversar</Eyebrow>
               <h2 className="mt-4 max-w-3xl text-4xl font-semibold sm:text-5xl lg:text-6xl">
                 Tem um problema que tecnologia poderia resolver?
               </h2>

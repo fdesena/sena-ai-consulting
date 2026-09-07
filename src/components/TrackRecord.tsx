@@ -1,13 +1,21 @@
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import {
   Workflow,
   Bot,
   LineChart as LineChartIcon,
   GraduationCap,
   Globe,
-  Presentation,
+  Wrench,
+  Video,
+  MessageCircle,
   Play,
   ExternalLink,
+  ChevronRight,
+  Disc3,
+  Timer,
+  FileText,
+  Gamepad2,
   type LucideIcon,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -113,28 +121,72 @@ function MockWebsite() {
   );
 }
 
-function MockEvent() {
+function MockVideoReel() {
   return (
     <div className="relative h-full overflow-hidden rounded-md bg-foreground/90">
-      <div className="absolute inset-0 grid grid-cols-8 grid-rows-3 gap-px p-1">
-        {Array.from({ length: 24 }).map((_, i) => (
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/90">
+          <div className="ml-0.5 h-0 w-0 border-y-[5px] border-l-[8px] border-y-transparent border-l-primary-foreground" />
+        </div>
+      </div>
+      <div className="absolute left-1.5 top-1.5 inline-flex items-center gap-1 rounded-sm bg-background/90 px-1.5 py-0.5">
+        <span className="font-mono text-[7px] uppercase tracking-wider text-primary">
+          gerado com ia
+        </span>
+      </div>
+      <div className="absolute bottom-1.5 left-1.5 right-1.5 flex items-center gap-0.5">
+        {Array.from({ length: 14 }).map((_, i) => (
           <div
             key={i}
-            className="rounded-[1px]"
+            className="h-2.5 flex-1 rounded-[1px]"
             style={{
               background:
-                i % 5 > 1
-                  ? "color-mix(in oklab, var(--bronze) 80%, transparent)"
-                  : "color-mix(in oklab, white 15%, transparent)",
+                i % 4 === 0
+                  ? "color-mix(in oklab, var(--bronze) 85%, transparent)"
+                  : "color-mix(in oklab, white 20%, transparent)",
             }}
           />
         ))}
       </div>
-      <div className="absolute bottom-1 left-1 right-1 flex items-center gap-1 rounded-sm bg-background/95 px-1.5 py-0.5">
-        <span className="h-1 w-1 animate-pulse rounded-full bg-red-500" />
-        <span className="font-mono text-[7px] uppercase tracking-wider">ao vivo</span>
-        <span className="ml-auto font-mono text-[7px] text-muted-foreground">142</span>
-      </div>
+    </div>
+  );
+}
+
+function MockCustomTools() {
+  const rows = [Disc3, Timer, FileText, Gamepad2];
+  return (
+    <div className="space-y-1.5">
+      {rows.map((RowIcon, i) => (
+        <div
+          key={i}
+          className="flex items-center gap-2 rounded-md border border-border bg-[var(--paper)] px-2 py-1"
+        >
+          <RowIcon className="h-2.5 w-2.5 text-primary" strokeWidth={1.5} />
+          <div className="h-1 flex-1 rounded-full bg-foreground/15" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function MockWhatsAppFlow() {
+  const rows = [
+    { status: "bg-primary" },
+    { status: "bg-primary" },
+    { status: "bg-foreground/25" },
+    { status: "bg-red-500/70" },
+  ];
+  return (
+    <div className="space-y-1.5">
+      {rows.map((row, i) => (
+        <div
+          key={i}
+          className="flex items-center gap-2 rounded-md border border-border bg-[var(--paper)] px-2 py-1"
+        >
+          <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${row.status}`} />
+          <div className="h-1 flex-1 rounded-full bg-foreground/15" />
+        </div>
+      ))}
     </div>
   );
 }
@@ -152,11 +204,89 @@ type Item = {
   tags: string[];
   /** Quando houver vídeo de demonstração, basta preencher a URL aqui. */
   video?: string;
+  /** Múltiplos vídeos de exemplo, navegáveis no modal (o primeiro é o destaque). */
+  videos?: { src: string; label: string }[];
   /** URLs de sites já entregues, mostrados como preview embedado no modal. */
   sites?: string[];
+  /** Ferramentas já em produção, listadas com link direto pra testar. */
+  tools?: { name: string; description: string; Icon: LucideIcon; to?: string; href?: string }[];
 };
 
 const items: Item[] = [
+  {
+    t: "Website",
+    d: "Sites sob medida, do zero ao ar.",
+    Icon: Globe,
+    Mock: MockWebsite,
+    desafio:
+      "Site genérico, lento ou dependente de templates prontos — sem controle sobre design, performance ou dados.",
+    solucao:
+      "Website sob medida, com design, performance e integrações pensadas para o negócio do cliente.",
+    resultado: "Presença digital própria, rápida e alinhada à marca.",
+    tags: ["Website", "Design", "Performance"],
+    sites: [
+      "https://think-big.app/",
+      "https://www.tapetez.com.br/",
+      "http://clinica-lassie.com.br/",
+    ],
+  },
+  {
+    t: "Vídeos institucionais e fotos com IA",
+    d: "Alta qualidade, em uma fração do tempo e custo.",
+    Icon: Video,
+    Mock: MockVideoReel,
+    desafio:
+      "Produção tradicional de vídeo institucional e fotos profissionais exige equipe, estúdio e semanas de trabalho — caro e lento pra manter conteúdo atualizado.",
+    solucao:
+      "Vídeos institucionais e fotos gerados com IA (ElevenLabs, Higgsfield, Nanobanana, entre outras), com direção criativa e curadoria humana — sem abrir mão de qualidade profissional.",
+    resultado:
+      "Conteúdo pronto em dias, não semanas, a uma fração do custo de produção tradicional.",
+    tags: ["Vídeo com IA", "Geração de imagem", "ElevenLabs", "Higgsfield", "Nanobanana"],
+    videos: [
+      { src: "/videos/sena-labs-ads.mp4", label: "Sena Labs" },
+      { src: "/videos/hercon-institucional.mp4", label: "Hercon — Institucional" },
+    ],
+  },
+  {
+    t: "Ferramentas customizadas",
+    d: "Ferramentas prontas pra usar, sob medida quando precisar.",
+    Icon: Wrench,
+    Mock: MockCustomTools,
+    desafio:
+      "Times perdem tempo com tarefas repetitivas — sorteio, cronometragem, geração de documentos, quiz — sem uma ferramenta própria pra isso.",
+    solucao:
+      "Ferramentas web sob medida, leves e sem instalação, rodando direto no navegador — o mesmo padrão das que já uso com clientes.",
+    resultado: "Ferramentas em produção agora, com acesso livre e exemplos reais pra testar.",
+    tags: ["Ferramentas web", "Sob medida", "Sem instalação"],
+    tools: [
+      {
+        name: "Roleta de Sorteio",
+        description: "Sorteio interativo com roda giratória — nomes, prêmios e brindes em eventos.",
+        Icon: Disc3,
+        to: "/ferramentas/roleta",
+      },
+      {
+        name: "Temporizador",
+        description: "Cronômetro regressivo em tela cheia, com música de fundo e presets de tempo.",
+        Icon: Timer,
+        to: "/ferramentas/temporizador",
+      },
+      {
+        name: "Gerador de Documentos",
+        description:
+          "Gere crachás, certificados e cartas em lote a partir de um modelo e de uma planilha.",
+        Icon: FileText,
+        href: "/ferramentas/gerador-de-documentos.html",
+      },
+      {
+        name: "Quiz ao Vivo",
+        description:
+          "Quiz multiplayer em tempo real, estilo Kahoot — entre com o PIN e jogue com sua equipe.",
+        Icon: Gamepad2,
+        to: "/quiz",
+      },
+    ],
+  },
   {
     t: "Automação de propostas",
     d: "−80% no tempo de elaboração.",
@@ -204,32 +334,22 @@ const items: Item[] = [
     tags: ["Plataforma", "LMS", "Gamificação"],
   },
   {
-    t: "Website",
-    d: "Sites sob medida, do zero ao ar.",
-    Icon: Globe,
-    Mock: MockWebsite,
+    t: "Retenção de pacientes via WhatsApp",
+    d: "Zero mensagem esquecida entre o agendamento e o disparo.",
+    Icon: MessageCircle,
+    Mock: MockWhatsAppFlow,
     desafio:
-      "Site genérico, lento ou dependente de templates prontos — sem controle sobre design, performance ou dados.",
+      "Clínica de estética de médio porte, ~200 agendamentos por mês, com todo o acompanhamento da paciente feito na mão pela recepção: lembrete de pré-procedimento, checagem pós-atendimento, aviso de recompra, aniversário e retomada de orçamento em aberto. Sem sistema entre o agendamento e o disparo da mensagem, o risco de esquecimento é constante — e cresce junto com o volume de pacientes.",
     solucao:
-      "Website sob medida, com design, performance e integrações pensadas para o negócio do cliente.",
-    resultado: "Presença digital própria, rápida e alinhada à marca.",
-    tags: ["Website", "Design", "Performance"],
-    sites: [
-      "https://think-big.app/",
-      "https://www.tapetez.com.br/",
-      "http://clinica-lassie.com.br/",
+      "Automação conectada direto ao software de gestão da clínica, disparando mensagens de WhatsApp automaticamente a partir do próprio agendamento — sem a recepção precisar alimentar nenhuma ferramenta extra. Cinco fluxos cobrem o ciclo completo da paciente (pré-procedimento, pós-procedimento, recompra, aniversário, orçamento em aberto), com um painel que mostra quem respondeu, quem não respondeu e onde uma mensagem falhou.",
+    resultado:
+      "Em produção, cobrindo mais de 200 agendamentos por mês e 760 pacientes por ano, sem nenhuma ação manual da recepção entre o agendamento e o envio.",
+    tags: [
+      "WhatsApp Business API",
+      "Automação de CRM",
+      "Integração de sistemas",
+      "Painel de acompanhamento",
     ],
-  },
-  {
-    t: "Ferramentas para eventos",
-    d: "Apps ao vivo em palestras imersivas.",
-    Icon: Presentation,
-    Mock: MockEvent,
-    desafio: "Palestras e eventos com pouca interação e participação da plateia.",
-    solucao:
-      "Apps ao vivo (votações, dinâmicas e visualizações em tempo real) para tornar o evento imersivo.",
-    resultado: "Experiências ao vivo mais imersivas e participativas.",
-    tags: ["App", "Tempo real", "Eventos"],
   },
 ];
 
@@ -246,7 +366,13 @@ function CaseRow({ label, text }: { label: string; text: string }) {
 
 export default function TrackRecord() {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const [videoIdx, setVideoIdx] = useState(0);
   const active = openIdx !== null ? items[openIdx] : null;
+
+  const openItem = (i: number) => {
+    setVideoIdx(0);
+    setOpenIdx(i);
+  };
 
   return (
     <>
@@ -254,7 +380,7 @@ export default function TrackRecord() {
         {items.map((c, i) => (
           <button
             key={c.t}
-            onClick={() => setOpenIdx(i)}
+            onClick={() => openItem(i)}
             aria-label={`Ver exemplo: ${c.t}`}
             className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card text-left transition hover:-translate-y-1 hover:border-primary hover:shadow-lg"
           >
@@ -296,12 +422,68 @@ export default function TrackRecord() {
                   <span className="h-2 w-2 rounded-full bg-foreground/20" />
                   <span className="h-2 w-2 rounded-full bg-foreground/20" />
                 </div>
-                {active.video ? (
+                {active.videos && active.videos.length > 0 ? (
+                  <div>
+                    <video
+                      key={active.videos[videoIdx].src}
+                      src={active.videos[videoIdx].src}
+                      controls
+                      autoPlay
+                      className="aspect-video w-full rounded-lg border border-border"
+                    />
+                    <div className="mt-2 flex items-center justify-between">
+                      <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                        {active.videos[videoIdx].label}
+                      </span>
+                      {active.videos.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => setVideoIdx((prev) => (prev + 1) % active.videos!.length)}
+                          className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-[11px] font-medium text-foreground transition hover:border-primary hover:text-primary"
+                        >
+                          Próximo <ChevronRight className="h-3 w-3" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ) : active.video ? (
                   <video
                     src={active.video}
                     controls
                     className="aspect-video w-full rounded-lg border border-border"
                   />
+                ) : active.tools && active.tools.length > 0 ? (
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {active.tools.map((tool) => {
+                      const cardCls =
+                        "group/tool flex items-start gap-3 rounded-lg border border-border bg-white p-3 text-left transition hover:border-primary/50 hover:shadow-sm";
+                      const inner = (
+                        <>
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                            <tool.Icon className="h-4 w-4" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <h4 className="text-sm font-semibold">{tool.name}</h4>
+                            <p className="mt-0.5 text-xs text-muted-foreground">
+                              {tool.description}
+                            </p>
+                            <span className="mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-primary">
+                              Testar <ChevronRight className="h-3 w-3" />
+                            </span>
+                          </div>
+                        </>
+                      );
+                      return tool.to ? (
+                        <Link key={tool.name} to={tool.to} className={cardCls}>
+                          {inner}
+                        </Link>
+                      ) : (
+                        <a key={tool.name} href={tool.href} className={cardCls}>
+                          {inner}
+                        </a>
+                      );
+                    })}
+                  </div>
                 ) : active.sites && active.sites.length > 0 ? (
                   <div className="grid gap-3 sm:grid-cols-3">
                     {active.sites.map((url) => {
