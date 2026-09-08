@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import { trackEvent } from "@/lib/track";
 import { cn } from "@/lib/utils";
 import { AREAS, ITEMS, ORBIT_SANS } from "./orbit-hero-data";
@@ -10,11 +11,43 @@ const OrbitGlobeScene = lazy(() => import("./OrbitGlobeScene"));
 
 const monoStyle = { fontFamily: "var(--orbit-mono)" } as const;
 
+const STAGE_COUNT = AREAS.length;
+const STAGE_VH = 70;
+const TEXT_TRANSITION = { duration: 0.45, ease: [0.22, 1, 0.36, 1] } as const;
+
+type HeadlineSegment = { text: string; accent?: boolean };
+
+function AnimatedHeadline({ segments }: { segments: HeadlineSegment[] }) {
+  const words = segments.flatMap((segment) =>
+    segment.text.split(" ").map((word) => ({ word, accent: segment.accent })),
+  );
+  return (
+    <>
+      {words.map(({ word, accent }, i) => (
+        <span className="orbit-word-mask" key={i}>
+          <motion.span
+            className={cn("orbit-word", accent && "orbit-word--accent")}
+            initial={{ y: "110%", opacity: 0 }}
+            animate={{ y: "0%", opacity: 1 }}
+            exit={{ y: "-110%", opacity: 0 }}
+            transition={{ ...TEXT_TRANSITION, delay: i * 0.03 }}
+          >
+            {word}
+            {i < words.length - 1 ? " " : ""}
+          </motion.span>
+        </span>
+      ))}
+    </>
+  );
+}
+
 export default function OrbitHero() {
+  const wrapRef = useRef<HTMLElement>(null);
   const sceneRef = useRef<OrbitGlobeHandle>(null);
-  const currentPanelRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const [stage, setStage] = useState(0);
+  const stageRef = useRef(0);
 
   useEffect(() => {
     setMounted(true);
@@ -23,35 +56,73 @@ export default function OrbitHero() {
   const activeItem = ITEMS[activeIndex];
 
   useEffect(() => {
-    const el = currentPanelRef.current;
-    if (!el) return;
-    el.classList.remove("orbit-copy-in");
-    void el.offsetWidth;
-    el.classList.add("orbit-copy-in");
-  }, [activeIndex]);
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+    const mq = window.matchMedia("(min-width: 761px)");
+    let raf = 0;
+
+    function applyStage(next: number) {
+      if (next === stageRef.current) return;
+      stageRef.current = next;
+      setStage(next);
+      if (next === 0) {
+        sceneRef.current?.setAutoplayLocked(false);
+      } else {
+        sceneRef.current?.setAutoplayLocked(true);
+        sceneRef.current?.moveToArea(next - 1);
+      }
+    }
+
+    function computeStage() {
+      raf = 0;
+      if (!wrap) return;
+      if (!mq.matches) {
+        applyStage(0);
+        return;
+      }
+      const total = wrap.offsetHeight - window.innerHeight;
+      const rect = wrap.getBoundingClientRect();
+      const progress = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
+      applyStage(Math.min(STAGE_COUNT, Math.round(progress * STAGE_COUNT)));
+    }
+
+    function onScroll() {
+      if (raf) return;
+      raf = requestAnimationFrame(computeStage);
+    }
+
+    computeStage();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    mq.addEventListener("change", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      mq.removeEventListener("change", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
 
   return (
-    <section id="top" className="orbit-hero">
+    <section id="top" className="orbit-hero" ref={wrapRef}>
       <style>{`
-        .orbit-hero{ --orbit-ground:#101112; --orbit-ink:#f1f0eb; --orbit-soft:#b2b3b0; --orbit-faint:#8a8c88; --orbit-line:#ffffff19; --orbit-amber:#c9853b; --orbit-orange:#f6a56f; --orbit-sans:${ORBIT_SANS}; --orbit-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace; background:var(--orbit-ground); color:var(--orbit-ink); font-family:var(--orbit-sans); -webkit-font-smoothing:antialiased; }
-        .orbit-hero .orbit-shell{ max-width:1480px; margin:0 auto; padding:0 clamp(22px,5.3vw,88px); }
+        .orbit-hero{ --orbit-ground:#101112; --orbit-ink:#f1f0eb; --orbit-soft:#b2b3b0; --orbit-faint:#8a8c88; --orbit-line:#ffffff19; --orbit-amber:#c9853b; --orbit-orange:#f6a56f; --orbit-sans:${ORBIT_SANS}; --orbit-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace; background:var(--orbit-ground); color:var(--orbit-ink); font-family:var(--orbit-sans); -webkit-font-smoothing:antialiased; position:relative; height:calc(100vh + ${STAGE_COUNT * STAGE_VH}vh); }
+        .orbit-hero .orbit-hero-pin{ position:sticky; top:0; height:100vh; display:flex; flex-direction:column; justify-content:center; overflow:hidden; }
+        .orbit-hero .orbit-shell{ max-width:1480px; margin:0 auto; padding:0 clamp(22px,5.3vw,88px); width:100%; }
         .orbit-hero .orbit-grid{ min-height:630px; display:grid; grid-template-columns:.91fr 1.09fr; align-items:center; gap:0; padding:56px 0 24px; }
         .orbit-hero .orbit-intro{ position:relative; z-index:4; max-width:520px; }
         .orbit-hero .orbit-eyebrow{ display:inline-flex; align-items:center; gap:10px; font-family:var(--orbit-mono); font-size:12px; letter-spacing:.13em; text-transform:uppercase; color:var(--orbit-orange); }
         .orbit-hero .orbit-eyebrow:before{ content:''; width:21px; height:1px; background:currentColor; }
+        .orbit-hero .orbit-stage-tag{ display:inline-flex; align-items:center; gap:8px; font-family:var(--orbit-mono); font-size:12px; letter-spacing:.13em; text-transform:uppercase; color:var(--orbit-faint); }
+        .orbit-hero .orbit-stage-tag b{ font-weight:500; color:var(--orbit-orange); }
         .orbit-hero .orbit-heading{ margin:26px 0 22px; font-size:clamp(42px,4.9vw,68px); font-weight:500; line-height:1.08; letter-spacing:-.045em; text-wrap:balance; }
-        .orbit-hero .orbit-heading span{ color:var(--orbit-orange); }
+        .orbit-hero .orbit-word-mask{ display:inline-block; overflow:hidden; vertical-align:top; padding-bottom:.06em; margin-bottom:-.06em; }
+        .orbit-hero .orbit-word{ display:inline-block; will-change:transform,opacity; }
+        .orbit-hero .orbit-word--accent{ color:var(--orbit-orange); }
         .orbit-hero .orbit-lede{ font-size:17px; line-height:1.65; color:var(--orbit-soft); max-width:35ch; margin:0; }
         .orbit-hero .orbit-ctas{ margin-top:26px; display:flex; flex-wrap:wrap; gap:12px; }
         .orbit-hero .orbit-btn-solid{ display:inline-flex; align-items:center; justify-content:center; gap:8px; border-radius:999px; background:var(--orbit-orange); color:#1a1512; padding:14px 26px; font-size:14px; font-weight:600; transition:opacity .2s ease; }
         .orbit-hero .orbit-btn-solid:hover{ opacity:.88; }
-        .orbit-hero .orbit-current{ margin-top:38px; max-width:390px; padding-top:23px; border-top:1px solid var(--orbit-line); }
-        .orbit-hero .orbit-current-label{ display:flex; align-items:center; gap:10px; font-family:var(--orbit-mono); font-size:12px; color:var(--orbit-faint); }
-        .orbit-hero .orbit-current-label b{ color:var(--orbit-orange); font-weight:400; }
-        .orbit-hero .orbit-current h2{ font-size:22px; line-height:1.2; letter-spacing:-.025em; font-weight:500; margin:14px 0 10px; }
-        .orbit-hero .orbit-current p{ margin:0; font-size:16px; line-height:1.55; color:var(--orbit-soft); min-height:75px; }
-        .orbit-hero .orbit-copy-in{ animation:orbit-reveal .4s ease both; }
-        @keyframes orbit-reveal{ from{ opacity:.3; transform:translateY(7px); } to{ opacity:1; transform:translateY(0); } }
         .orbit-hero .orbit-scene{ min-width:0; position:relative; }
         .orbit-hero .orbit-stage-canvas{ height:590px; position:relative; isolation:isolate; overflow:hidden; --mx:66%; --my:26%; background:radial-gradient(ellipse at 50% 49%, #cf875815, transparent 62%); }
         .orbit-hero .orbit-stage-canvas:after{ content:''; position:absolute; inset:0; pointer-events:none; z-index:101; background:linear-gradient(0deg, var(--orbit-ground) 0%, transparent 13% 91%, var(--orbit-ground) 100%); }
@@ -80,14 +151,6 @@ export default function OrbitHero() {
         .orbit-hero .orbit-counter{ font-family:var(--orbit-mono); font-size:12px; color:#969894; margin:0 14px; min-width:65px; display:inline-block; }
         .orbit-hero .orbit-counter strong{ font-weight:400; color:var(--orbit-ink); }
         .orbit-hero .orbit-motion-label{ font-family:var(--orbit-mono); font-size:12px; color:#a2a3a0; margin-left:3px; }
-        .orbit-hero .orbit-selector{ display:grid; grid-template-columns:repeat(4,1fr); gap:0; margin:35px 0 0; border-top:1px solid var(--orbit-line); }
-        .orbit-hero .orbit-area{ position:relative; display:flex; align-items:center; gap:14px; background:none; border:none; border-bottom:1px solid var(--orbit-line); text-align:left; padding:23px 16px 24px 0; font-size:14px; color:#9d9e9b; transition:color .2s; }
-        .orbit-hero .orbit-area:after{ content:''; position:absolute; top:-1px; left:0; width:100%; height:1px; background:var(--orbit-orange); transform:scaleX(0); transform-origin:left; transition:transform .5s ease; }
-        .orbit-hero .orbit-area[aria-pressed=true]{ color:var(--orbit-ink); }
-        .orbit-hero .orbit-area[aria-pressed=true]:after{ transform:scaleX(1); }
-        .orbit-hero .orbit-area small{ font-family:var(--orbit-mono); font-size:12px; color:#b0a191; }
-        .orbit-hero .orbit-area svg{ margin-left:auto; margin-right:28px; width:16px; height:16px; opacity:0; transition:opacity .2s; }
-        .orbit-hero .orbit-area[aria-pressed=true] svg{ opacity:1; color:var(--orbit-orange); }
         .orbit-hero .orbit-page-footer{ display:flex; justify-content:space-between; gap:20px; margin:22px 0 28px; color:#8e908c; font-family:var(--orbit-mono); font-size:12px; }
         @media (min-width:1550px){
           .orbit-hero .orbit-grid{ min-height:710px; }
@@ -99,22 +162,18 @@ export default function OrbitHero() {
           .orbit-hero .orbit-stage-canvas{ height:540px; }
           .orbit-hero .orbit-heading{ font-size:clamp(42px,5.3vw,59px); }
           .orbit-hero .orbit-lede{ max-width:30ch; }
-          .orbit-hero .orbit-area{ gap:8px; }
-          .orbit-hero .orbit-area svg{ margin-right:10px; }
         }
         @media (max-width:760px){
+          .orbit-hero{ height:auto; }
+          .orbit-hero .orbit-hero-pin{ position:static; height:auto; overflow:visible; }
           .orbit-hero .orbit-shell{ padding:0 22px; }
           .orbit-hero .orbit-grid{ grid-template-columns:1fr; padding-top:36px; }
           .orbit-hero .orbit-intro{ max-width:100%; }
           .orbit-hero .orbit-heading{ font-size:clamp(43px,9.6vw,64px); margin-top:21px; max-width:19ch; }
           .orbit-hero .orbit-lede{ max-width:36ch; }
-          .orbit-hero .orbit-current{ margin-top:25px; max-width:none; }
-          .orbit-hero .orbit-current p{ min-height:50px; }
           .orbit-hero .orbit-stage-canvas{ height:420px; margin-top:23px; }
           .orbit-hero .orbit-scene-label{ top:4px; left:0; }
           .orbit-hero .orbit-axis-label{ right:0; }
-          .orbit-hero .orbit-selector{ grid-template-columns:repeat(2,1fr); margin-top:33px; gap:0 18px; }
-          .orbit-hero .orbit-area{ padding:19px 0; }
           .orbit-hero .orbit-page-footer{ font-size:12px; line-height:1.6; }
           .orbit-hero .orbit-scene-controls{ margin-top:-8px; }
         }
@@ -126,68 +185,78 @@ export default function OrbitHero() {
         }
       `}</style>
 
-      <div className="orbit-shell">
-        <div className="orbit-grid">
-          <div className="orbit-intro">
-            <span className="orbit-eyebrow">
-              Sena Labs · Estratégia, IA &amp; Software sob medida
-            </span>
-            <h1 className="orbit-heading">
-              Descubra como a Sena Labs <span>te devolve tempo</span> para o que realmente importa.
-            </h1>
-            <p className="orbit-lede">
-              Ferramentas sob medida, agentes inteligentes e dados para decidir melhor.
-            </p>
-            <div className="orbit-ctas">
-              <Link
-                to="/diagnostico"
-                onClick={() => trackEvent("click_diagnostico_cta", { source: "orbit_hero" })}
-                className="orbit-btn-solid"
-              >
-                Realizar diagnóstico
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-            <div className="orbit-current" ref={currentPanelRef}>
-              <div className="orbit-current-label">
-                <b style={monoStyle}>{String(activeIndex + 1).padStart(2, "0")}</b>
-                <span>/</span>
-                <span style={monoStyle}>{AREAS[activeItem.area].label}</span>
+      <div className="orbit-hero-pin">
+        <div className="orbit-shell">
+          <div className="orbit-grid">
+            <div className="orbit-intro">
+              <AnimatePresence mode="wait">
+                {stage === 0 ? (
+                  <motion.div
+                    key="stage-0"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={TEXT_TRANSITION}
+                  >
+                    <span className="orbit-eyebrow">
+                      Sena Labs · Estratégia, IA &amp; Software sob medida
+                    </span>
+                    <h1 className="orbit-heading">
+                      <AnimatedHeadline
+                        segments={[
+                          { text: "Descubra como a Sena Labs" },
+                          { text: "te devolve tempo", accent: true },
+                          { text: "para o que realmente importa." },
+                        ]}
+                      />
+                    </h1>
+                    <p className="orbit-lede">
+                      Ferramentas sob medida, agentes inteligentes e dados para decidir melhor.
+                    </p>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key={`stage-${stage}`}
+                    initial={{ opacity: 0, y: 26 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -26 }}
+                    transition={TEXT_TRANSITION}
+                  >
+                    <span className="orbit-stage-tag" style={monoStyle}>
+                      <b>{String(stage).padStart(2, "0")}</b>
+                      <span>/ {AREAS[stage - 1].label}</span>
+                    </span>
+                    <h2 className="orbit-heading">
+                      <AnimatedHeadline segments={[{ text: `${activeItem.short}?` }]} />
+                    </h2>
+                    <p className="orbit-lede">{activeItem.result}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <div className="orbit-ctas">
+                <Link
+                  to="/diagnostico"
+                  onClick={() => trackEvent("click_diagnostico_cta", { source: "orbit_hero" })}
+                  className="orbit-btn-solid"
+                >
+                  Realizar diagnóstico
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
               </div>
-              <h2>{activeItem.short}?</h2>
-              <p>{activeItem.result}</p>
+            </div>
+
+            <div className="orbit-scene">
+              {mounted && (
+                <Suspense fallback={null}>
+                  <OrbitGlobeScene ref={sceneRef} onActiveItemChange={setActiveIndex} />
+                </Suspense>
+              )}
             </div>
           </div>
 
-          <div className="orbit-scene">
-            {mounted && (
-              <Suspense fallback={null}>
-                <OrbitGlobeScene ref={sceneRef} onActiveItemChange={setActiveIndex} />
-              </Suspense>
-            )}
+          <div className="orbit-page-footer">
+            <span>Estratégia humana. Tecnologia sob medida.</span>
           </div>
-        </div>
-
-        <div className="orbit-selector" role="group" aria-label="Explorar soluções por área">
-          {AREAS.map((area, a) => (
-            <button
-              key={area.label}
-              type="button"
-              className="orbit-area"
-              aria-pressed={activeItem.area === a}
-              onClick={() => sceneRef.current?.moveToArea(a)}
-            >
-              <small style={monoStyle}>{String(a + 1).padStart(2, "0")}</small>
-              {area.label}
-              <ArrowUpRight
-                className={cn("h-4 w-4", activeItem.area === a ? "opacity-100" : "opacity-0")}
-              />
-            </button>
-          ))}
-        </div>
-
-        <div className="orbit-page-footer">
-          <span>Estratégia humana. Tecnologia sob medida.</span>
         </div>
       </div>
     </section>

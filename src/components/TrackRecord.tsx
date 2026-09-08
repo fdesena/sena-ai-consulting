@@ -16,9 +16,10 @@ import {
   Timer,
   FileText,
   Gamepad2,
+  X,
   type LucideIcon,
 } from "lucide-react";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 /* ---------- Mini visual mockups (pure SVG/CSS) ---------- */
 
@@ -204,10 +205,10 @@ type Item = {
   tags: string[];
   /** Quando houver vídeo de demonstração, basta preencher a URL aqui. */
   video?: string;
-  /** Múltiplos vídeos de exemplo, navegáveis no modal (o primeiro é o destaque). */
+  /** Múltiplos vídeos de exemplo, empilhados um abaixo do outro no painel. */
   videos?: { src: string; label: string }[];
-  /** URLs de sites já entregues, mostrados como preview embedado no modal. */
-  sites?: string[];
+  /** Sites já entregues, mostrados como preview embedado no painel. Use `screenshot` quando o site bloquear iframe (X-Frame-Options). */
+  sites?: { url: string; screenshot?: string }[];
   /** Ferramentas já em produção, listadas com link direto pra testar. */
   tools?: { name: string; description: string; Icon: LucideIcon; to?: string; href?: string }[];
 };
@@ -225,9 +226,9 @@ const items: Item[] = [
     resultado: "Presença digital própria, rápida e alinhada à marca.",
     tags: ["Website", "Design", "Performance"],
     sites: [
-      "https://think-big.app/",
-      "https://www.tapetez.com.br/",
-      "http://clinica-lassie.com.br/",
+      { url: "https://think-big.app/" },
+      { url: "https://www.tapetez.com.br/" },
+      { url: "https://clinica-lassie.com.br/", screenshot: "/images/cases/clinica-lassie.png" },
     ],
   },
   {
@@ -244,6 +245,7 @@ const items: Item[] = [
     tags: ["Vídeo com IA", "Geração de imagem", "ElevenLabs", "Higgsfield", "Nanobanana"],
     videos: [
       { src: "/videos/sena-labs-ads.mp4", label: "Sena Labs" },
+      { src: "/videos/sena-labs-video.mp4", label: "Sena Labs — Vídeo" },
       { src: "/videos/hercon-institucional.mp4", label: "Hercon — Institucional" },
     ],
   },
@@ -364,210 +366,245 @@ function CaseRow({ label, text }: { label: string; text: string }) {
   );
 }
 
-export default function TrackRecord() {
-  const [openIdx, setOpenIdx] = useState<number | null>(null);
-  const [videoIdx, setVideoIdx] = useState(0);
-  const active = openIdx !== null ? items[openIdx] : null;
-
-  const openItem = (i: number) => {
-    setVideoIdx(0);
-    setOpenIdx(i);
-  };
-
-  return (
-    <>
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((c, i) => (
-          <button
-            key={c.t}
-            onClick={() => openItem(i)}
-            aria-label={`Ver exemplo: ${c.t}`}
-            className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card text-left transition hover:-translate-y-1 hover:border-primary hover:shadow-lg"
-          >
-            {/* Preview canvas */}
-            <div className="relative h-36 overflow-hidden border-b border-border bg-[var(--paper)] p-4">
-              <div className="absolute left-3 top-3 flex gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
-                <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
-                <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
-              </div>
-              <div className="mt-4 h-[88px]">
-                <c.Mock />
-              </div>
-              {/* Hover affordance */}
-              <div className="absolute inset-0 flex items-center justify-center bg-background/55 opacity-0 backdrop-blur-[1px] transition duration-300 group-hover:opacity-100">
-                <span className="inline-flex items-center gap-2 rounded-full bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground shadow-sm">
-                  <Play className="h-3.5 w-3.5" /> Ver exemplo
-                </span>
-              </div>
-            </div>
-            {/* Meta */}
-            <div className="flex flex-1 flex-col p-5">
-              <c.Icon className="h-5 w-5 text-primary" strokeWidth={1.5} />
-              <h3 className="mt-4 text-base font-semibold">{c.t}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">{c.d}</p>
-            </div>
-          </button>
+/** Slot de mídia à direita do card expandido — vídeos, ferramentas, sites ou mockup, na ordem de prioridade. */
+function CaseMedia({ item }: { item: Item }) {
+  if (item.videos && item.videos.length > 0) {
+    return (
+      <div className="flex flex-col gap-4">
+        {item.videos.map((v) => (
+          <div key={v.src} className="max-w-[380px]">
+            <video
+              src={v.src}
+              controls
+              className="aspect-video w-full rounded-lg border border-border"
+            />
+            <span className="mt-2 block font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+              {v.label}
+            </span>
+          </div>
         ))}
       </div>
+    );
+  }
 
-      <Dialog open={openIdx !== null} onOpenChange={(o) => !o && setOpenIdx(null)}>
-        <DialogContent className="max-w-2xl overflow-hidden p-0">
-          {active && (
-            <div className="max-h-[85vh] overflow-y-auto">
-              {/* Slot de mídia — vídeo quando houver; placeholder até lá */}
-              <div className="relative border-b border-border bg-[var(--paper)] p-6">
-                <div className="mb-3 flex gap-1">
-                  <span className="h-2 w-2 rounded-full bg-foreground/20" />
-                  <span className="h-2 w-2 rounded-full bg-foreground/20" />
-                  <span className="h-2 w-2 rounded-full bg-foreground/20" />
-                </div>
-                {active.videos && active.videos.length > 0 ? (
-                  <div>
-                    <video
-                      key={active.videos[videoIdx].src}
-                      src={active.videos[videoIdx].src}
-                      controls
-                      autoPlay
-                      className="aspect-video w-full rounded-lg border border-border"
-                    />
-                    <div className="mt-2 flex items-center justify-between">
-                      <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                        {active.videos[videoIdx].label}
-                      </span>
-                      {active.videos.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => setVideoIdx((prev) => (prev + 1) % active.videos!.length)}
-                          className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-[11px] font-medium text-foreground transition hover:border-primary hover:text-primary"
-                        >
-                          Próximo <ChevronRight className="h-3 w-3" />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ) : active.video ? (
-                  <video
-                    src={active.video}
-                    controls
-                    className="aspect-video w-full rounded-lg border border-border"
+  if (item.video) {
+    return (
+      <video
+        src={item.video}
+        controls
+        className="aspect-video w-full rounded-lg border border-border"
+      />
+    );
+  }
+
+  if (item.tools && item.tools.length > 0) {
+    return (
+      <div className="grid gap-3 sm:grid-cols-2">
+        {item.tools.map((tool) => {
+          const cardCls =
+            "group/tool flex items-start gap-3 rounded-lg border border-border bg-white p-3 text-left transition hover:border-primary/50 hover:shadow-sm";
+          const inner = (
+            <>
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <tool.Icon className="h-4 w-4" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h4 className="text-sm font-semibold">{tool.name}</h4>
+                <p className="mt-0.5 text-xs text-muted-foreground">{tool.description}</p>
+                <span className="mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-primary">
+                  Testar <ChevronRight className="h-3 w-3" />
+                </span>
+              </div>
+            </>
+          );
+          return tool.to ? (
+            <Link key={tool.name} to={tool.to} className={cardCls}>
+              {inner}
+            </Link>
+          ) : (
+            <a key={tool.name} href={tool.href} className={cardCls}>
+              {inner}
+            </a>
+          );
+        })}
+      </div>
+    );
+  }
+
+  if (item.sites && item.sites.length > 0) {
+    return (
+      <div className="flex flex-col gap-3">
+        {item.sites.map(({ url, screenshot }) => {
+          const hostname = new URL(url).hostname.replace(/^www\./, "");
+          return (
+            <a
+              key={url}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group/site relative block max-w-[380px] overflow-hidden rounded-lg border border-border bg-white"
+            >
+              <div className="flex items-center gap-1 border-b border-border bg-foreground/5 px-2 py-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
+                <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
+                <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
+                <span className="ml-1 truncate font-mono text-[10px] text-muted-foreground">
+                  {hostname}
+                </span>
+              </div>
+              <div className="relative h-[198px] w-full overflow-hidden">
+                {screenshot ? (
+                  <img
+                    src={screenshot}
+                    alt={`Captura de tela de ${hostname}`}
+                    className="h-full w-full object-cover object-top"
                   />
-                ) : active.tools && active.tools.length > 0 ? (
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {active.tools.map((tool) => {
-                      const cardCls =
-                        "group/tool flex items-start gap-3 rounded-lg border border-border bg-white p-3 text-left transition hover:border-primary/50 hover:shadow-sm";
-                      const inner = (
-                        <>
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                            <tool.Icon className="h-4 w-4" />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <h4 className="text-sm font-semibold">{tool.name}</h4>
-                            <p className="mt-0.5 text-xs text-muted-foreground">
-                              {tool.description}
-                            </p>
-                            <span className="mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-primary">
-                              Testar <ChevronRight className="h-3 w-3" />
-                            </span>
-                          </div>
-                        </>
-                      );
-                      return tool.to ? (
-                        <Link key={tool.name} to={tool.to} className={cardCls}>
-                          {inner}
-                        </Link>
-                      ) : (
-                        <a key={tool.name} href={tool.href} className={cardCls}>
-                          {inner}
-                        </a>
-                      );
-                    })}
-                  </div>
-                ) : active.sites && active.sites.length > 0 ? (
-                  <div className="grid gap-3 sm:grid-cols-3">
-                    {active.sites.map((url) => {
-                      const hostname = new URL(url).hostname.replace(/^www\./, "");
-                      return (
-                        <a
-                          key={url}
-                          href={url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group/site relative block overflow-hidden rounded-lg border border-border bg-white"
-                        >
-                          <div className="flex items-center gap-1 border-b border-border bg-foreground/5 px-2 py-1">
-                            <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
-                            <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
-                            <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
-                            <span className="ml-1 truncate font-mono text-[8px] text-muted-foreground">
-                              {hostname}
-                            </span>
-                          </div>
-                          <div className="relative h-36 w-full overflow-hidden">
-                            <iframe
-                              src={url}
-                              title={hostname}
-                              loading="lazy"
-                              referrerPolicy="no-referrer"
-                              className="pointer-events-none h-[900px] w-[1600px] origin-top-left border-0"
-                              style={{ transform: "scale(0.225)" }}
-                            />
-                          </div>
-                          <div className="absolute inset-0 flex items-center justify-center bg-background/0 opacity-0 backdrop-blur-[1px] transition duration-200 group-hover/site:bg-background/40 group-hover/site:opacity-100">
-                            <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-[10px] font-medium text-primary-foreground">
-                              <ExternalLink className="h-3 w-3" /> Abrir site
-                            </span>
-                          </div>
-                        </a>
-                      );
-                    })}
-                  </div>
                 ) : (
-                  <>
-                    <div className="mx-auto h-44 max-w-[320px]">
-                      <active.Mock />
-                    </div>
-                    <span className="absolute right-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-primary/90 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-primary-foreground">
-                      <Play className="h-3 w-3" /> Demo em vídeo em breve
-                    </span>
-                  </>
+                  <iframe
+                    src={url}
+                    title={hostname}
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                    className="pointer-events-none h-[900px] w-[1600px] origin-top-left border-0"
+                    style={{ transform: "scale(0.22)" }}
+                  />
                 )}
               </div>
+              <div className="absolute inset-0 flex items-center justify-center bg-background/0 opacity-0 backdrop-blur-[1px] transition duration-200 group-hover/site:bg-background/40 group-hover/site:opacity-100">
+                <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-[10px] font-medium text-primary-foreground">
+                  <ExternalLink className="h-3 w-3" /> Abrir site
+                </span>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    );
+  }
 
-              {/* Conteúdo do caso */}
-              <div className="p-6">
-                <div className="flex items-center gap-3">
-                  <active.Icon className="h-6 w-6 shrink-0 text-primary" strokeWidth={1.5} />
-                  <DialogTitle className="text-xl">{active.t}</DialogTitle>
-                </div>
-                <DialogDescription className="sr-only">
-                  Detalhes do projeto {active.t}: desafio, solução e resultado.
-                </DialogDescription>
+  return (
+    <div className="relative">
+      <div className="mx-auto h-44 max-w-[320px]">
+        <item.Mock />
+      </div>
+      <span className="absolute right-0 top-0 inline-flex items-center gap-1.5 rounded-full bg-primary/90 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-primary-foreground">
+        <Play className="h-3 w-3" /> Demo em vídeo em breve
+      </span>
+    </div>
+  );
+}
 
-                <div className="mt-5 space-y-4">
-                  <CaseRow label="Desafio" text={active.desafio} />
-                  <CaseRow label="Solução" text={active.solucao} />
-                  <div className="rounded-xl border border-primary/30 bg-primary/5 p-4">
-                    <CaseRow label="Resultado" text={active.resultado} />
-                  </div>
-                </div>
+function FullCard({ item, onOpen }: { item: Item; onOpen: () => void }) {
+  return (
+    <button
+      onClick={onOpen}
+      aria-label={`Ver exemplo: ${item.t}`}
+      className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card text-left transition hover:-translate-y-1 hover:border-primary hover:shadow-lg"
+    >
+      <div className="relative h-36 overflow-hidden border-b border-border bg-[var(--paper)] p-4">
+        <div className="absolute left-3 top-3 flex gap-1">
+          <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
+          <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
+          <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
+        </div>
+        <div className="mt-4 h-[88px]">
+          <item.Mock />
+        </div>
+        <div className="absolute inset-0 flex items-center justify-center bg-background/55 opacity-0 backdrop-blur-[1px] transition duration-300 group-hover:opacity-100">
+          <span className="inline-flex items-center gap-2 rounded-full bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground shadow-sm">
+            <Play className="h-3.5 w-3.5" /> Ver exemplo
+          </span>
+        </div>
+      </div>
+      <div className="flex flex-1 flex-col p-5">
+        <item.Icon className="h-5 w-5 text-primary" strokeWidth={1.5} />
+        <h3 className="mt-4 text-base font-semibold">{item.t}</h3>
+        <p className="mt-1 text-sm text-muted-foreground">{item.d}</p>
+      </div>
+    </button>
+  );
+}
 
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {active.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full border border-border px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+function CompactCard({ item, onOpen }: { item: Item; onOpen: () => void }) {
+  return (
+    <button
+      onClick={onOpen}
+      aria-label={`Ver exemplo: ${item.t}`}
+      className="group flex items-center gap-3 rounded-xl border border-border bg-card p-3 text-left transition hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
+    >
+      <item.Icon className="h-4 w-4 shrink-0 text-primary" strokeWidth={1.5} />
+      <div className="min-w-0 flex-1">
+        <h3 className="truncate text-sm font-medium">{item.t}</h3>
+        <p className="truncate text-xs text-muted-foreground">{item.d}</p>
+      </div>
+    </button>
+  );
+}
+
+export default function TrackRecord() {
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const active = openIdx !== null ? items[openIdx] : null;
+
+  return (
+    <div>
+      {active && (
+        <div className="animate-in fade-in slide-in-from-top-2 relative mb-5 grid items-start overflow-hidden rounded-2xl border border-primary/40 bg-card shadow-lg duration-300 md:grid-cols-[380px_1fr]">
+          <button
+            type="button"
+            onClick={() => setOpenIdx(null)}
+            aria-label="Fechar exemplo"
+            className="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background/80 text-foreground transition hover:border-primary hover:text-primary"
+          >
+            <X className="h-4 w-4" />
+          </button>
+
+          <div className="flex flex-col gap-5 border-b border-border p-6 md:border-b-0 md:border-r">
+            <div>
+              <active.Icon className="h-6 w-6 text-primary" strokeWidth={1.5} />
+              <h3 className="mt-4 text-xl font-semibold">{active.t}</h3>
+              <p className="mt-1 text-sm text-muted-foreground">{active.d}</p>
+            </div>
+            <div className="space-y-4">
+              <CaseRow label="Desafio" text={active.desafio} />
+              <CaseRow label="Solução" text={active.solucao} />
+              <div className="rounded-xl border border-primary/30 bg-primary/5 p-4">
+                <CaseRow label="Resultado" text={active.resultado} />
               </div>
             </div>
-          )}
-        </DialogContent>
-      </Dialog>
-    </>
+            <div className="flex flex-wrap gap-2">
+              {active.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-border px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-[var(--paper)] p-6">
+            <CaseMedia item={active} />
+          </div>
+        </div>
+      )}
+
+      <div
+        className={cn(
+          "grid gap-4",
+          active
+            ? "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
+            : "gap-5 sm:grid-cols-2 lg:grid-cols-3",
+        )}
+      >
+        {items.map((item, i) =>
+          openIdx === i ? null : active ? (
+            <CompactCard key={item.t} item={item} onOpen={() => setOpenIdx(i)} />
+          ) : (
+            <FullCard key={item.t} item={item} onOpen={() => setOpenIdx(i)} />
+          ),
+        )}
+      </div>
+    </div>
   );
 }
