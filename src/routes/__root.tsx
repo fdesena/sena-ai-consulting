@@ -90,6 +90,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
       { rel: "icon", href: "/favicon.ico", sizes: "48x48" },
       { rel: "icon", href: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
       { rel: "icon", href: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },

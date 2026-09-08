@@ -74,6 +74,7 @@ function IconSpan({ name, className }: { name: IconKey | UiIconKey; className?: 
 
 export type OrbitGlobeHandle = {
   moveToArea: (areaIndex: number) => void;
+  focusItem: (itemIndex: number) => void;
   setAutoplayLocked: (locked: boolean) => void;
 };
 
@@ -119,19 +120,29 @@ const OrbitGlobeScene = forwardRef<OrbitGlobeHandle, Props>(function OrbitGlobeS
     manualRef.current = { from: phaseRef.current, to: target, started: null };
   }, []);
 
+  const goToItem = useCallback(
+    (itemIndex: number) => {
+      const current = manualRef.current?.to ?? phaseRef.current;
+      const base = Math.floor(current / COUNT) * COUNT + itemIndex;
+      moveTo(base < current - 0.1 ? base + COUNT : base);
+    },
+    [moveTo],
+  );
+
   useImperativeHandle(
     ref,
     () => ({
       moveToArea(areaIndex: number) {
-        const current = manualRef.current?.to ?? phaseRef.current;
-        const base = Math.floor(current / COUNT) * COUNT + areaIndex * 2;
-        moveTo(base < current - 0.1 ? base + COUNT : base);
+        goToItem(areaIndex * 2);
+      },
+      focusItem(itemIndex: number) {
+        goToItem(itemIndex);
       },
       setAutoplayLocked(locked: boolean) {
         scrollLockRef.current = locked;
       },
     }),
-    [moveTo],
+    [goToItem],
   );
 
   function updatePauseUI() {

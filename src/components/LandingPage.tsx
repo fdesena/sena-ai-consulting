@@ -1,4 +1,5 @@
-import logoIcon from "@/assets/Logo/logo-icon.png";
+import senaLogoHorizontal from "@/assets/brand/sena-labs-horizontal-light.svg";
+import senaLogoStacked from "@/assets/brand/sena-labs-stacked-light.svg";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { trackEvent, trackPageview } from "@/lib/track";
@@ -266,9 +267,8 @@ export default function LandingPage() {
       {/* NAV */}
       <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <a href="#top" className="inline-flex items-center gap-2 md:min-w-[280px]">
-            <img src={logoIcon} alt="Sena Labs" className="h-8 w-8" />
-            <span className="font-display text-lg font-semibold tracking-tight">Sena Labs</span>
+          <a href="#top" className="inline-flex items-center md:min-w-[280px]">
+            <img src={senaLogoHorizontal} alt="Sena Labs" className="h-8 w-auto" />
           </a>
           <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 text-sm md:flex">
             <a href="#pilares" className="hover:text-primary">
@@ -352,9 +352,8 @@ export default function LandingPage() {
               </SheetTrigger>
               <SheetContent side="right" className="flex w-[85%] flex-col sm:max-w-sm">
                 <SheetHeader>
-                  <SheetTitle className="flex items-center gap-2 text-left">
-                    <img src={logoIcon} alt="Sena Labs" className="h-6 w-6" />
-                    Sena Labs
+                  <SheetTitle className="flex items-center text-left">
+                    <img src={senaLogoHorizontal} alt="Sena Labs" className="h-6 w-auto" />
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="mt-4 flex flex-col gap-1 text-base">
@@ -884,11 +883,8 @@ export default function LandingPage() {
       <footer className="border-t border-border">
         <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-10 text-sm text-muted-foreground">
           <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
-            <div className="flex flex-col items-start gap-1">
-              <div className="flex items-center gap-2 text-lg font-semibold text-foreground">
-                <img src={logoIcon} alt="Sena Labs" className="h-8 w-8" />
-                Sena Labs
-              </div>
+            <div className="flex flex-col items-start gap-2">
+              <img src={senaLogoStacked} alt="Sena Labs" className="h-16 w-auto" />
               <span>© {new Date().getFullYear()} Sena Labs · Felipe Sena</span>
             </div>
             <div className="flex flex-wrap items-center gap-4">

@@ -1,0 +1,34 @@
+{
+  "brand": {
+    "name": "Sena Labs",
+    "version": "1.0.0"
+  },
+  "color": {
+    "orange": {
+      "value": "#FC7C34",
+      "usage": "Símbolo e destaques"
+    },
+    "graphite": {
+      "value": "#101112",
+      "usage": "Base escura e texto sobre branco"
+    },
+    "offWhite": {
+      "value": "#F8F7F5",
+      "usage": "Base clara e texto sobre grafite"
+    }
+  },
+  "logo": {
+    "horizontalViewBox": "0 0 729 168",
+    "clearSpace": "Mínimo de uma espessura do traço do símbolo; já incluído nos SVGs horizontais.",
+    "minWidthHorizontal": 180,
+    "minWidthSymbol": 32,
+    "wordmarkSource": "Nimbus Sans Regular, convertido em curvas; ajuste de espaçamento de -10 unidades por glifo."
+  },
+  "motion": {
+    "symbolDurationMs": 900,
+    "wordmarkDurationMs": 720,
+    "wordmarkDelayMs": 380,
+    "repeat": false,
+    "reducedMotion": "Exibir marca estática completa"
+  }
+}

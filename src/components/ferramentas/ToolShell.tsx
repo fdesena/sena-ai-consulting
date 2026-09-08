@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
-import logoIcon from "@/assets/Logo/logo-icon.png";
+import senaLogoHorizontal from "@/assets/brand/sena-labs-horizontal-light.svg";
 
 type CoBrand = {
   /** Logo do parceiro (PNG/SVG importado). */
@@ -41,21 +41,17 @@ export function ToolShell({
       <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
           <a href="/" className="inline-flex items-center gap-2">
-            <img src={logoIcon} alt="Sena Consulting" className="h-8 w-8" />
+            <img src={senaLogoHorizontal} alt="Sena Labs" className="h-7 w-auto" />
             {coBrand ? (
               <span className="flex flex-col leading-tight">
-                <span className="inline-flex items-center gap-2 font-display text-lg font-semibold tracking-tight">
-                  Sena<span className="text-primary">.</span>
+                <span className="inline-flex items-center gap-2">
                   <span className="text-base font-normal text-muted-foreground">+</span>
                   <img src={coBrand.logoSrc} alt={coBrand.name} className="h-9 w-auto" />
                 </span>
                 <span className="font-mono text-xs text-muted-foreground">Ferramentas</span>
               </span>
             ) : (
-              <span className="font-display text-lg font-semibold tracking-tight">
-                Sena<span className="text-primary">.</span>
-                <span className="ml-2 font-mono text-xs text-muted-foreground">Ferramentas</span>
-              </span>
+              <span className="font-mono text-xs text-muted-foreground">Ferramentas</span>
             )}
           </a>
           <div className="flex items-center gap-3 text-sm">

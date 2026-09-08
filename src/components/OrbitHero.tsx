@@ -12,7 +12,6 @@ const OrbitGlobeScene = lazy(() => import("./OrbitGlobeScene"));
 const monoStyle = { fontFamily: "var(--orbit-mono)" } as const;
 
 const STAGE_COUNT = AREAS.length;
-const STAGE_VH = 70;
 const TEXT_TRANSITION = { duration: 0.45, ease: [0.22, 1, 0.36, 1] } as const;
 
 type HeadlineSegment = { text: string; accent?: boolean };
@@ -55,59 +54,120 @@ export default function OrbitHero() {
 
   const activeItem = ITEMS[activeIndex];
 
+  // Scroll-jack de estágio único: cada gesto de scroll avança/retrocede exatamente
+  // um estágio (não uma posição contínua), travando a página até soltar nos limites.
   useEffect(() => {
     const wrap = wrapRef.current;
     if (!wrap) return;
     const mq = window.matchMedia("(min-width: 761px)");
-    let raf = 0;
+    const STEP_COOLDOWN_MS = 650;
+    const ENGAGE_THRESHOLD_PX = 8;
+
+    let locked = mq.matches;
+    let cooldownUntil = 0;
+    let lastY = window.scrollY;
 
     function applyStage(next: number) {
-      if (next === stageRef.current) return;
-      stageRef.current = next;
-      setStage(next);
-      if (next === 0) {
+      const clamped = Math.max(0, Math.min(STAGE_COUNT, next));
+      if (clamped === stageRef.current) return;
+      stageRef.current = clamped;
+      setStage(clamped);
+      if (clamped === 0) {
         sceneRef.current?.setAutoplayLocked(false);
       } else {
         sceneRef.current?.setAutoplayLocked(true);
-        sceneRef.current?.moveToArea(next - 1);
+        sceneRef.current?.moveToArea(clamped - 1);
       }
     }
 
-    function computeStage() {
-      raf = 0;
-      if (!wrap) return;
-      if (!mq.matches) {
-        applyStage(0);
+    function align() {
+      const rect = wrap!.getBoundingClientRect();
+      window.scrollTo({ top: window.scrollY + rect.top, behavior: "auto" });
+    }
+
+    function onWheel(e: WheelEvent) {
+      if (!mq.matches || !locked) return;
+      const goingDown = e.deltaY > 0;
+      const goingUp = e.deltaY < 0;
+      if (!goingDown && !goingUp) return;
+
+      if (goingDown && stageRef.current >= STAGE_COUNT) {
+        locked = false;
         return;
       }
-      const total = wrap.offsetHeight - window.innerHeight;
-      const rect = wrap.getBoundingClientRect();
-      const progress = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
-      applyStage(Math.min(STAGE_COUNT, Math.round(progress * STAGE_COUNT)));
+      if (goingUp && stageRef.current <= 0) {
+        locked = false;
+        return;
+      }
+
+      e.preventDefault();
+      const now = performance.now();
+      if (now < cooldownUntil) return;
+      cooldownUntil = now + STEP_COOLDOWN_MS;
+      applyStage(stageRef.current + (goingDown ? 1 : -1));
     }
 
-    function onScroll() {
-      if (raf) return;
-      raf = requestAnimationFrame(computeStage);
+    function onScrollWindow() {
+      const y = window.scrollY;
+      const movingDown = y > lastY;
+      const movingUp = y < lastY;
+      lastY = y;
+      if (!mq.matches) {
+        locked = false;
+        return;
+      }
+      if (locked) return;
+      const rect = wrap!.getBoundingClientRect();
+      if (Math.abs(rect.top) > ENGAGE_THRESHOLD_PX) return;
+      locked = true;
+      align();
+      if (movingUp) applyStage(STAGE_COUNT);
+      else if (movingDown) applyStage(0);
     }
 
-    computeStage();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    mq.addEventListener("change", onScroll);
+    function onResize() {
+      if (locked && mq.matches) align();
+    }
+
+    function onMqChange() {
+      if (!mq.matches) {
+        locked = false;
+        applyStage(0);
+      } else {
+        locked = true;
+        lastY = window.scrollY;
+      }
+    }
+
+    window.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("scroll", onScrollWindow, { passive: true });
+    window.addEventListener("resize", onResize);
+    mq.addEventListener("change", onMqChange);
     return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      mq.removeEventListener("change", onScroll);
-      if (raf) cancelAnimationFrame(raf);
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("scroll", onScrollWindow);
+      window.removeEventListener("resize", onResize);
+      mq.removeEventListener("change", onMqChange);
     };
   }, []);
+
+  // Dentro de cada área (estágio 1-4), alterna entre os 2 itens da área a cada
+  // poucos segundos, até o usuário escrolar para a próxima área ou voltar.
+  useEffect(() => {
+    if (stage === 0) return;
+    const areaIndex = stage - 1;
+    let toggle = 0;
+    const id = window.setInterval(() => {
+      toggle = toggle ? 0 : 1;
+      sceneRef.current?.focusItem(areaIndex * 2 + toggle);
+    }, 3200);
+    return () => window.clearInterval(id);
+  }, [stage]);
 
   return (
     <section id="top" className="orbit-hero" ref={wrapRef}>
       <style>{`
-        .orbit-hero{ --orbit-ground:#101112; --orbit-ink:#f1f0eb; --orbit-soft:#b2b3b0; --orbit-faint:#8a8c88; --orbit-line:#ffffff19; --orbit-amber:#c9853b; --orbit-orange:#f6a56f; --orbit-sans:${ORBIT_SANS}; --orbit-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace; background:var(--orbit-ground); color:var(--orbit-ink); font-family:var(--orbit-sans); -webkit-font-smoothing:antialiased; position:relative; height:calc(100vh + ${STAGE_COUNT * STAGE_VH}vh); }
-        .orbit-hero .orbit-hero-pin{ position:sticky; top:0; height:100vh; display:flex; flex-direction:column; justify-content:center; overflow:hidden; }
+        .orbit-hero{ --orbit-ground:#101112; --orbit-ink:#f1f0eb; --orbit-soft:#b2b3b0; --orbit-faint:#8a8c88; --orbit-line:#ffffff19; --orbit-amber:#c9853b; --orbit-orange:#f6a56f; --orbit-sans:${ORBIT_SANS}; --orbit-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace; background:var(--orbit-ground); color:var(--orbit-ink); font-family:var(--orbit-sans); -webkit-font-smoothing:antialiased; position:relative; height:100vh; display:flex; flex-direction:column; justify-content:center; overflow:hidden; }
         .orbit-hero .orbit-shell{ max-width:1480px; margin:0 auto; padding:0 clamp(22px,5.3vw,88px); width:100%; }
         .orbit-hero .orbit-grid{ min-height:630px; display:grid; grid-template-columns:.91fr 1.09fr; align-items:center; gap:0; padding:56px 0 24px; }
         .orbit-hero .orbit-intro{ position:relative; z-index:4; max-width:520px; }
@@ -164,8 +224,7 @@ export default function OrbitHero() {
           .orbit-hero .orbit-lede{ max-width:30ch; }
         }
         @media (max-width:760px){
-          .orbit-hero{ height:auto; }
-          .orbit-hero .orbit-hero-pin{ position:static; height:auto; overflow:visible; }
+          .orbit-hero{ height:auto; overflow:visible; }
           .orbit-hero .orbit-shell{ padding:0 22px; }
           .orbit-hero .orbit-grid{ grid-template-columns:1fr; padding-top:36px; }
           .orbit-hero .orbit-intro{ max-width:100%; }
@@ -185,78 +244,76 @@ export default function OrbitHero() {
         }
       `}</style>
 
-      <div className="orbit-hero-pin">
-        <div className="orbit-shell">
-          <div className="orbit-grid">
-            <div className="orbit-intro">
-              <AnimatePresence mode="wait">
-                {stage === 0 ? (
-                  <motion.div
-                    key="stage-0"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={TEXT_TRANSITION}
-                  >
-                    <span className="orbit-eyebrow">
-                      Sena Labs · Estratégia, IA &amp; Software sob medida
-                    </span>
-                    <h1 className="orbit-heading">
-                      <AnimatedHeadline
-                        segments={[
-                          { text: "Descubra como a Sena Labs" },
-                          { text: "te devolve tempo", accent: true },
-                          { text: "para o que realmente importa." },
-                        ]}
-                      />
-                    </h1>
-                    <p className="orbit-lede">
-                      Ferramentas sob medida, agentes inteligentes e dados para decidir melhor.
-                    </p>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key={`stage-${stage}`}
-                    initial={{ opacity: 0, y: 26 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -26 }}
-                    transition={TEXT_TRANSITION}
-                  >
-                    <span className="orbit-stage-tag" style={monoStyle}>
-                      <b>{String(stage).padStart(2, "0")}</b>
-                      <span>/ {AREAS[stage - 1].label}</span>
-                    </span>
-                    <h2 className="orbit-heading">
-                      <AnimatedHeadline segments={[{ text: `${activeItem.short}?` }]} />
-                    </h2>
-                    <p className="orbit-lede">{activeItem.result}</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              <div className="orbit-ctas">
-                <Link
-                  to="/diagnostico"
-                  onClick={() => trackEvent("click_diagnostico_cta", { source: "orbit_hero" })}
-                  className="orbit-btn-solid"
+      <div className="orbit-shell">
+        <div className="orbit-grid">
+          <div className="orbit-intro">
+            <AnimatePresence mode="wait">
+              {stage === 0 ? (
+                <motion.div
+                  key="stage-0"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={TEXT_TRANSITION}
                 >
-                  Realizar diagnóstico
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-            </div>
-
-            <div className="orbit-scene">
-              {mounted && (
-                <Suspense fallback={null}>
-                  <OrbitGlobeScene ref={sceneRef} onActiveItemChange={setActiveIndex} />
-                </Suspense>
+                  <span className="orbit-eyebrow">
+                    Sena Labs · Estratégia, IA &amp; Software sob medida
+                  </span>
+                  <h1 className="orbit-heading">
+                    <AnimatedHeadline
+                      segments={[
+                        { text: "Descubra como a Sena Labs" },
+                        { text: "te devolve tempo", accent: true },
+                        { text: "para o que realmente importa." },
+                      ]}
+                    />
+                  </h1>
+                  <p className="orbit-lede">
+                    Ferramentas sob medida, agentes inteligentes e dados para decidir melhor.
+                  </p>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key={`stage-${stage}`}
+                  initial={{ opacity: 0, y: 26 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -26 }}
+                  transition={TEXT_TRANSITION}
+                >
+                  <span className="orbit-stage-tag" style={monoStyle}>
+                    <b>{String(stage).padStart(2, "0")}</b>
+                    <span>/ {AREAS[stage - 1].label}</span>
+                  </span>
+                  <h2 className="orbit-heading">
+                    <AnimatedHeadline segments={[{ text: `${activeItem.short}?` }]} />
+                  </h2>
+                  <p className="orbit-lede">{activeItem.result}</p>
+                </motion.div>
               )}
+            </AnimatePresence>
+            <div className="orbit-ctas">
+              <Link
+                to="/diagnostico"
+                onClick={() => trackEvent("click_diagnostico_cta", { source: "orbit_hero" })}
+                className="orbit-btn-solid"
+              >
+                Realizar diagnóstico
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
           </div>
 
-          <div className="orbit-page-footer">
-            <span>Estratégia humana. Tecnologia sob medida.</span>
+          <div className="orbit-scene">
+            {mounted && (
+              <Suspense fallback={null}>
+                <OrbitGlobeScene ref={sceneRef} onActiveItemChange={setActiveIndex} />
+              </Suspense>
+            )}
           </div>
+        </div>
+
+        <div className="orbit-page-footer">
+          <span>Estratégia humana. Tecnologia sob medida.</span>
         </div>
       </div>
     </section>
