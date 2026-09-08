@@ -11,23 +11,30 @@
   :root{
     --bg:#F8F7F4; --surface:#FFFFFF; --surface-2:#FBFAF8; --border:#E2DDD6;
     --ink:#1A1916; --dim:#7A756D; --muted:#B0AA9F;
-    --accent:#C8853A; --accent-soft:#F3E7D6; --green:#2D5A3D; --green-soft:#E4EDE6;
+    --accent:#FC7C34; --accent-soft:#FDE4D4; --green:#2D5A3D; --green-soft:#E4EDE6;
     --red:#A6492F;
     --serif:'Bricolage Grotesque',system-ui,sans-serif; --mono:'Fragment Mono','SF Mono',Consolas,monospace;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{background:var(--bg);color:var(--ink);font-family:var(--serif);-webkit-font-smoothing:antialiased}
-  .wrap{max-width:680px;margin:0 auto;padding:22px 18px 80px;min-height:100vh}
+  .wrap{max-width:760px;margin:0 auto;padding:32px 20px 80px;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
+  @media (min-width:860px){
+    .wrap{max-width:860px;padding:56px 24px 96px}
+    .card{padding:44px 52px}
+    h1{font-size:36px}
+    .qtext{font-size:25px}
+  }
   .mono{font-family:var(--mono)}
   .label{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent)}
 
   /* brand bar */
   .brandbar{display:flex;align-items:center;gap:11px;margin-bottom:20px}
-  .logo{width:36px;height:36px;border-radius:9px;background:var(--ink);color:var(--bg);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;font-family:var(--serif)}
+  .logo{width:36px;height:36px;border-radius:9px;background:var(--ink);display:flex;align-items:center;justify-content:center}
+  .logo svg{width:20px;height:20px}
   .brandtxt{font-weight:700;font-size:15px;letter-spacing:-.2px;line-height:1.1}
   .brandtxt small{display:block;font-family:var(--mono);font-weight:400;color:var(--dim);font-size:10px;letter-spacing:1px;margin-top:2px}
 
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:30px 26px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:34px 30px}
   h1{font-size:30px;line-height:1.12;letter-spacing:-.6px;font-weight:700;margin-bottom:14px}
   h1 .hl{color:var(--accent)}
   .lead{color:var(--dim);font-size:16px;line-height:1.55;margin-bottom:22px}
@@ -79,7 +86,7 @@
   .field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
   .field input{width:100%;border:1.5px solid var(--border);border-radius:12px;padding:14px 15px;font-size:15px;font-family:var(--serif);background:var(--surface)}
   .field input:focus{outline:none;border-color:var(--accent)}
-  .note{background:var(--accent-soft);border:1px solid #EAD8BE;border-radius:12px;padding:13px 15px;font-size:13px;color:#6b4a20;line-height:1.5;margin-bottom:18px}
+  .note{background:var(--accent-soft);border:1px solid #F6C9AE;border-radius:12px;padding:13px 15px;font-size:13px;color:#8a3a12;line-height:1.5;margin-bottom:18px}
   .consent{font-size:12px;color:var(--dim);line-height:1.55;margin:8px 2px 18px;display:flex;gap:9px}
   .consent input{margin-top:2px;flex:0 0 auto}
 
@@ -143,7 +150,7 @@
   .box h4{font-size:14px;margin-bottom:6px;display:flex;align-items:center;gap:7px}
   .box p{font-size:13.5px;color:var(--dim);line-height:1.55}
   .box.good{background:var(--green-soft);border-color:#CFE0D4}
-  .box.warn{background:var(--accent-soft);border-color:#EAD8BE}
+  .box.warn{background:var(--accent-soft);border-color:#F6C9AE}
   .box li{font-size:13px;color:var(--dim);line-height:1.5;margin:5px 0 5px 16px}
 
   .cmp{width:100%;border-collapse:collapse;font-size:13px}
@@ -179,7 +186,7 @@
   .tile.sel .ico{border-color:var(--accent)}
   .tile .tname{font-size:11.5px;color:var(--ink);text-align:center;line-height:1.2}
   /* relatório: índice + áreas + comparativo */
-  .gauge{position:relative;height:12px;border-radius:99px;background:linear-gradient(90deg,#EBDFBF,#E3BE8E,#C8853A,#2D5A3D);margin:12px 0 8px}
+  .gauge{position:relative;height:12px;border-radius:99px;background:linear-gradient(90deg,#FBEAE0,#FDB88A,#FC7C34,#2D5A3D);margin:12px 0 8px}
   .gauge .gm{position:absolute;top:-5px;width:4px;height:22px;border-radius:3px;background:var(--ink);transform:translateX(-2px)}
   .gscale{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;color:var(--muted)}
   .area{border:1px solid var(--border);border-radius:13px;padding:14px 15px;margin-bottom:10px;background:var(--surface)}
@@ -201,8 +208,16 @@
 <body>
 <div class="wrap">
   <div class="brandbar">
-    <div class="logo">S</div>
-    <div class="brandtxt">Sena Consulting<small>BÚSSOLA DIGITAL &amp; IA</small></div>
+    <div class="logo">
+      <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sena Labs">
+        <g transform="translate(28 72.12) scale(.5882353)">
+          <path fill="#FC7C34" d="M0 190V148H101Q112 148 112 138Q112 132 102 127L28 91Q0 78 0 49V42Q0 0 43 0H172Q214 0 214 42V137Q214 148 226 148H340V190H215Q172 190 172 148V52Q172 42 162 42H54Q42 42 42 52Q42 58 48 61L125 98Q155 112 155 142Q155 190 104 190Z"/>
+          <rect x="302" y="148" width="19" height="21" fill="#F8F7F5"/>
+          <rect x="321" y="169" width="19" height="21" fill="#F8F7F5"/>
+        </g>
+      </svg>
+    </div>
+    <div class="brandtxt">Sena Labs<small>BÚSSOLA DIGITAL &amp; IA</small></div>
   </div>
   <div id="app"></div>
 </div>

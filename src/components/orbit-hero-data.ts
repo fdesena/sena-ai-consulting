@@ -10,6 +10,8 @@ export type OrbitItem = {
   desafio: string;
   solucao: string;
   tags: string[];
+  /** Índice do case correspondente em TrackRecord.tsx (seção Cases/Resultados). */
+  caseIndex: number;
 };
 export type OrbitArea = { label: string; color: string };
 
@@ -26,6 +28,7 @@ export const ITEMS: OrbitItem[] = [
     solucao:
       "Website sob medida, com design, performance e integrações pensadas para o negócio do cliente.",
     tags: ["Website", "Design", "Performance"],
+    caseIndex: 0,
   },
   {
     tag: "Vídeos",
@@ -39,6 +42,7 @@ export const ITEMS: OrbitItem[] = [
     solucao:
       "Vídeos institucionais e fotos gerados com IA, com direção criativa e curadoria humana — sem abrir mão de qualidade profissional.",
     tags: ["Vídeo com IA", "Geração de imagem"],
+    caseIndex: 1,
   },
   {
     tag: "Propostas",
@@ -52,6 +56,7 @@ export const ITEMS: OrbitItem[] = [
     solucao:
       "Fluxo que monta a proposta a partir de poucos inputs, padronizando texto, escopo e precificação.",
     tags: ["Automação", "IA generativa", "Documentos"],
+    caseIndex: 3,
   },
   {
     tag: "Retenção",
@@ -65,6 +70,7 @@ export const ITEMS: OrbitItem[] = [
     solucao:
       "Automação conectada ao sistema de gestão, disparando mensagens automaticamente a partir do próprio agendamento.",
     tags: ["WhatsApp Business API", "Automação de CRM"],
+    caseIndex: 7,
   },
   {
     tag: "Agentes",
@@ -78,6 +84,7 @@ export const ITEMS: OrbitItem[] = [
     solucao:
       "Agente de IA treinado no conteúdo da empresa, respondendo com base nas fontes internas.",
     tags: ["Agentes de IA", "RAG", "Base de conhecimento"],
+    caseIndex: 4,
   },
   {
     tag: "CRM DE VENDAS",
@@ -90,6 +97,7 @@ export const ITEMS: OrbitItem[] = [
       "Times adaptando o próprio processo comercial a um SaaS genérico, cheio de campos que não fazem sentido.",
     solucao: "CRM construído sob medida, seguindo exatamente o processo do time — não o contrário.",
     tags: ["CRM", "Sob medida", "Processo comercial"],
+    caseIndex: 2,
   },
   {
     tag: "Dados",
@@ -102,6 +110,7 @@ export const ITEMS: OrbitItem[] = [
     solucao:
       "Pipeline que consolida os dados e gera dashboards executivos atualizados automaticamente.",
     tags: ["Dados", "Dashboards", "Automação"],
+    caseIndex: 5,
   },
   {
     tag: "Treino",
@@ -114,6 +123,7 @@ export const ITEMS: OrbitItem[] = [
     solucao:
       "Plataforma de ensino própria com trilhas, vídeos, quizzes e rankings — com identidade da marca.",
     tags: ["Plataforma", "LMS", "Gamificação"],
+    caseIndex: 6,
   },
 ];
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   Workflow,
@@ -12,13 +12,21 @@ import {
   Play,
   ExternalLink,
   ChevronRight,
+  ArrowRight,
   Disc3,
   Timer,
   FileText,
   Gamepad2,
+  X,
   type LucideIcon,
 } from "lucide-react";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
+import { WHATSAPP_NUMBER } from "@/components/ContactFAB";
+
+function quoteRequestUrl(caseTitle: string) {
+  const text = `Olá, vim pelo site da Sena Labs e gostaria de solicitar um orçamento: ${caseTitle}.`;
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+}
 
 /* ---------- Mini visual mockups (pure SVG/CSS) ---------- */
 
@@ -204,12 +212,14 @@ type Item = {
   tags: string[];
   /** Quando houver vídeo de demonstração, basta preencher a URL aqui. */
   video?: string;
-  /** Múltiplos vídeos de exemplo, navegáveis no modal (o primeiro é o destaque). */
+  /** Múltiplos vídeos de exemplo, empilhados um abaixo do outro no painel. */
   videos?: { src: string; label: string }[];
-  /** URLs de sites já entregues, mostrados como preview embedado no modal. */
-  sites?: string[];
+  /** Sites já entregues, mostrados como preview embedado no painel. Use `screenshot` quando o site bloquear iframe (X-Frame-Options). */
+  sites?: { url: string; screenshot?: string }[];
   /** Ferramentas já em produção, listadas com link direto pra testar. */
   tools?: { name: string; description: string; Icon: LucideIcon; to?: string; href?: string }[];
+  /** Comparativo animado de tempo (sem IA x com IA) quando não há vídeo/site/ferramenta pra mostrar. Estimativa ilustrativa, não métrica medida do cliente. */
+  timeSaved?: { cadence: string; traditionalMinutes: number; aiMinutes: number };
 };
 
 const items: Item[] = [
@@ -225,9 +235,9 @@ const items: Item[] = [
     resultado: "Presença digital própria, rápida e alinhada à marca.",
     tags: ["Website", "Design", "Performance"],
     sites: [
-      "https://think-big.app/",
-      "https://www.tapetez.com.br/",
-      "http://clinica-lassie.com.br/",
+      { url: "https://think-big.app/" },
+      { url: "https://www.tapetez.com.br/" },
+      { url: "https://clinica-lassie.com.br/", screenshot: "/images/cases/clinica-lassie.png" },
     ],
   },
   {
@@ -244,6 +254,7 @@ const items: Item[] = [
     tags: ["Vídeo com IA", "Geração de imagem", "ElevenLabs", "Higgsfield", "Nanobanana"],
     videos: [
       { src: "/videos/sena-labs-ads.mp4", label: "Sena Labs" },
+      { src: "/videos/sena-labs-video.mp4", label: "Sena Labs — Vídeo" },
       { src: "/videos/hercon-institucional.mp4", label: "Hercon — Institucional" },
     ],
   },
@@ -298,6 +309,7 @@ const items: Item[] = [
       "Fluxo que monta a proposta a partir de poucos inputs, padronizando texto, escopo e precificação.",
     resultado: "−80% no tempo de elaboração, com mais padronização e menos retrabalho.",
     tags: ["Automação", "IA generativa", "Documentos"],
+    timeSaved: { cadence: "por proposta", traditionalMinutes: 180, aiMinutes: 36 },
   },
   {
     t: "Agentes em conteúdo proprietário",
@@ -310,6 +322,7 @@ const items: Item[] = [
       "Agente de IA treinado no conteúdo da empresa, respondendo com base nas fontes internas.",
     resultado: "Suporte e tomada de decisão em escala, com respostas consistentes.",
     tags: ["Agentes de IA", "RAG", "Base de conhecimento"],
+    timeSaved: { cadence: "por pergunta respondida", traditionalMinutes: 10, aiMinutes: 0.5 },
   },
   {
     t: "Visualização de dados com IA",
@@ -321,6 +334,7 @@ const items: Item[] = [
       "Pipeline que consolida os dados e gera dashboards executivos atualizados automaticamente.",
     resultado: "Dashboards executivos prontos para decisão, sem trabalho manual.",
     tags: ["Dados", "Dashboards", "Automação"],
+    timeSaved: { cadence: "por relatório mensal", traditionalMinutes: 240, aiMinutes: 5 },
   },
   {
     t: "LMS gamificado",
@@ -332,6 +346,7 @@ const items: Item[] = [
       "Plataforma de ensino própria com trilhas, vídeos, quizzes e rankings — com identidade da marca.",
     resultado: "Mais engajamento e aprendizado mensurável, em ambiente próprio.",
     tags: ["Plataforma", "LMS", "Gamificação"],
+    timeSaved: { cadence: "por novo colaborador treinado", traditionalMinutes: 360, aiMinutes: 30 },
   },
   {
     t: "Retenção de pacientes via WhatsApp",
@@ -350,6 +365,7 @@ const items: Item[] = [
       "Integração de sistemas",
       "Painel de acompanhamento",
     ],
+    timeSaved: { cadence: "por dia de trabalho da recepção", traditionalMinutes: 45, aiMinutes: 2 },
   },
 ];
 
@@ -364,210 +380,410 @@ function CaseRow({ label, text }: { label: string; text: string }) {
   );
 }
 
-export default function TrackRecord() {
-  const [openIdx, setOpenIdx] = useState<number | null>(null);
-  const [videoIdx, setVideoIdx] = useState(0);
-  const active = openIdx !== null ? items[openIdx] : null;
+function formatMinutes(min: number) {
+  if (min < 1) return `${Math.round(min * 60)}s`;
+  if (min < 60) return `${Math.round(min)}min`;
+  const h = Math.floor(min / 60);
+  const rem = Math.round(min % 60);
+  return rem > 0 ? `${h}h${rem}min` : `${h}h`;
+}
 
-  const openItem = (i: number) => {
-    setVideoIdx(0);
-    setOpenIdx(i);
-  };
+function useCountUp(target: number, active: boolean, durationMs = 1400) {
+  const [value, setValue] = useState(0);
+  useEffect(() => {
+    if (!active) return;
+    let raf = 0;
+    const start = performance.now();
+    function tick(now: number) {
+      const t = Math.min(1, (now - start) / durationMs);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setValue(target * eased);
+      if (t < 1) raf = requestAnimationFrame(tick);
+    }
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [target, active, durationMs]);
+  return value;
+}
+
+function StopwatchDial({
+  label,
+  minutes,
+  maxMinutes,
+  accent,
+  active,
+}: {
+  label: string;
+  minutes: number;
+  maxMinutes: number;
+  accent: boolean;
+  active: boolean;
+}) {
+  const animated = useCountUp(minutes, active);
+  const radius = 42;
+  const circumference = 2 * Math.PI * radius;
+  const fraction = maxMinutes > 0 ? Math.min(1, animated / maxMinutes) : 0;
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <div className="relative h-28 w-28 shrink-0">
+        <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90">
+          <circle
+            cx="50"
+            cy="50"
+            r={radius}
+            fill="none"
+            strokeWidth="8"
+            className="stroke-border"
+          />
+          <circle
+            cx="50"
+            cy="50"
+            r={radius}
+            fill="none"
+            strokeWidth="8"
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            strokeDashoffset={circumference * (1 - fraction)}
+            className={accent ? "stroke-primary" : "stroke-muted-foreground/40"}
+          />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="font-mono text-base font-semibold text-foreground">
+            {formatMinutes(animated)}
+          </span>
+        </div>
+      </div>
+      <span className="text-xs font-medium text-muted-foreground">{label}</span>
+    </div>
+  );
+}
+
+/** Comparativo animado de tempo (sem IA x com IA). Valores são estimativas ilustrativas. */
+function TimeSavedComparison({
+  cadence,
+  traditionalMinutes,
+  aiMinutes,
+}: {
+  cadence: string;
+  traditionalMinutes: number;
+  aiMinutes: number;
+}) {
+  const [active, setActive] = useState(false);
+  useEffect(() => {
+    const id = setTimeout(() => setActive(true), 150);
+    return () => clearTimeout(id);
+  }, []);
+  const savedPct = Math.round((1 - aiMinutes / traditionalMinutes) * 100);
 
   return (
-    <>
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((c, i) => (
-          <button
-            key={c.t}
-            onClick={() => openItem(i)}
-            aria-label={`Ver exemplo: ${c.t}`}
-            className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card text-left transition hover:-translate-y-1 hover:border-primary hover:shadow-lg"
-          >
-            {/* Preview canvas */}
-            <div className="relative h-36 overflow-hidden border-b border-border bg-[var(--paper)] p-4">
-              <div className="absolute left-3 top-3 flex gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
-                <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
-                <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
-              </div>
-              <div className="mt-4 h-[88px]">
-                <c.Mock />
-              </div>
-              {/* Hover affordance */}
-              <div className="absolute inset-0 flex items-center justify-center bg-background/55 opacity-0 backdrop-blur-[1px] transition duration-300 group-hover:opacity-100">
-                <span className="inline-flex items-center gap-2 rounded-full bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground shadow-sm">
-                  <Play className="h-3.5 w-3.5" /> Ver exemplo
-                </span>
-              </div>
-            </div>
-            {/* Meta */}
-            <div className="flex flex-1 flex-col p-5">
-              <c.Icon className="h-5 w-5 text-primary" strokeWidth={1.5} />
-              <h3 className="mt-4 text-base font-semibold">{c.t}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">{c.d}</p>
-            </div>
-          </button>
+    <div className="flex flex-col items-center gap-4 py-4">
+      <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+        Tempo {cadence}
+      </span>
+      <div className="flex items-center gap-6 sm:gap-10">
+        <StopwatchDial
+          label="Sem IA"
+          minutes={traditionalMinutes}
+          maxMinutes={traditionalMinutes}
+          accent={false}
+          active={active}
+        />
+        <div className="flex flex-col items-center gap-1.5">
+          <ArrowRight className="h-5 w-5 text-primary" />
+          <span className="whitespace-nowrap rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
+            −{savedPct}%
+          </span>
+        </div>
+        <StopwatchDial
+          label="Com IA"
+          minutes={aiMinutes}
+          maxMinutes={traditionalMinutes}
+          accent
+          active={active}
+        />
+      </div>
+      <span className="max-w-[280px] text-center text-[11px] leading-relaxed text-muted-foreground">
+        *Estimativa ilustrativa comparando um processo manual típico com o mesmo processo com IA —
+        não é uma métrica medida deste cliente.
+      </span>
+    </div>
+  );
+}
+
+/** Slot de mídia à direita do card expandido — vídeos, ferramentas, sites ou mockup, na ordem de prioridade. */
+function CaseMedia({ item }: { item: Item }) {
+  if (item.videos && item.videos.length > 0) {
+    return (
+      <div className="flex flex-col gap-4">
+        {item.videos.map((v) => (
+          <div key={v.src} className="max-w-[380px]">
+            <video
+              src={v.src}
+              controls
+              className="aspect-video w-full rounded-lg border border-border"
+            />
+            <span className="mt-2 block font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+              {v.label}
+            </span>
+          </div>
         ))}
       </div>
+    );
+  }
 
-      <Dialog open={openIdx !== null} onOpenChange={(o) => !o && setOpenIdx(null)}>
-        <DialogContent className="max-w-2xl overflow-hidden p-0">
-          {active && (
-            <div className="max-h-[85vh] overflow-y-auto">
-              {/* Slot de mídia — vídeo quando houver; placeholder até lá */}
-              <div className="relative border-b border-border bg-[var(--paper)] p-6">
-                <div className="mb-3 flex gap-1">
-                  <span className="h-2 w-2 rounded-full bg-foreground/20" />
-                  <span className="h-2 w-2 rounded-full bg-foreground/20" />
-                  <span className="h-2 w-2 rounded-full bg-foreground/20" />
-                </div>
-                {active.videos && active.videos.length > 0 ? (
-                  <div>
-                    <video
-                      key={active.videos[videoIdx].src}
-                      src={active.videos[videoIdx].src}
-                      controls
-                      autoPlay
-                      className="aspect-video w-full rounded-lg border border-border"
-                    />
-                    <div className="mt-2 flex items-center justify-between">
-                      <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                        {active.videos[videoIdx].label}
-                      </span>
-                      {active.videos.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => setVideoIdx((prev) => (prev + 1) % active.videos!.length)}
-                          className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-[11px] font-medium text-foreground transition hover:border-primary hover:text-primary"
-                        >
-                          Próximo <ChevronRight className="h-3 w-3" />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ) : active.video ? (
-                  <video
-                    src={active.video}
-                    controls
-                    className="aspect-video w-full rounded-lg border border-border"
+  if (item.video) {
+    return (
+      <video
+        src={item.video}
+        controls
+        className="aspect-video w-full rounded-lg border border-border"
+      />
+    );
+  }
+
+  if (item.tools && item.tools.length > 0) {
+    return (
+      <div className="grid gap-3 sm:grid-cols-2">
+        {item.tools.map((tool) => {
+          const cardCls =
+            "group/tool flex items-start gap-3 rounded-lg border border-border bg-white p-3 text-left transition hover:border-primary/50 hover:shadow-sm";
+          const inner = (
+            <>
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <tool.Icon className="h-4 w-4" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h4 className="text-sm font-semibold">{tool.name}</h4>
+                <p className="mt-0.5 text-xs text-muted-foreground">{tool.description}</p>
+                <span className="mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-primary">
+                  Testar <ChevronRight className="h-3 w-3" />
+                </span>
+              </div>
+            </>
+          );
+          return tool.to ? (
+            <Link key={tool.name} to={tool.to} className={cardCls}>
+              {inner}
+            </Link>
+          ) : (
+            <a key={tool.name} href={tool.href} className={cardCls}>
+              {inner}
+            </a>
+          );
+        })}
+      </div>
+    );
+  }
+
+  if (item.sites && item.sites.length > 0) {
+    return (
+      <div className="flex flex-col gap-3">
+        {item.sites.map(({ url, screenshot }) => {
+          const hostname = new URL(url).hostname.replace(/^www\./, "");
+          return (
+            <a
+              key={url}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group/site relative block max-w-[380px] overflow-hidden rounded-lg border border-border bg-white"
+            >
+              <div className="flex items-center gap-1 border-b border-border bg-foreground/5 px-2 py-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
+                <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
+                <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
+                <span className="ml-1 truncate font-mono text-[10px] text-muted-foreground">
+                  {hostname}
+                </span>
+              </div>
+              <div className="relative h-[198px] w-full overflow-hidden">
+                {screenshot ? (
+                  <img
+                    src={screenshot}
+                    alt={`Captura de tela de ${hostname}`}
+                    className="h-full w-full object-cover object-top"
                   />
-                ) : active.tools && active.tools.length > 0 ? (
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {active.tools.map((tool) => {
-                      const cardCls =
-                        "group/tool flex items-start gap-3 rounded-lg border border-border bg-white p-3 text-left transition hover:border-primary/50 hover:shadow-sm";
-                      const inner = (
-                        <>
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                            <tool.Icon className="h-4 w-4" />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <h4 className="text-sm font-semibold">{tool.name}</h4>
-                            <p className="mt-0.5 text-xs text-muted-foreground">
-                              {tool.description}
-                            </p>
-                            <span className="mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-primary">
-                              Testar <ChevronRight className="h-3 w-3" />
-                            </span>
-                          </div>
-                        </>
-                      );
-                      return tool.to ? (
-                        <Link key={tool.name} to={tool.to} className={cardCls}>
-                          {inner}
-                        </Link>
-                      ) : (
-                        <a key={tool.name} href={tool.href} className={cardCls}>
-                          {inner}
-                        </a>
-                      );
-                    })}
-                  </div>
-                ) : active.sites && active.sites.length > 0 ? (
-                  <div className="grid gap-3 sm:grid-cols-3">
-                    {active.sites.map((url) => {
-                      const hostname = new URL(url).hostname.replace(/^www\./, "");
-                      return (
-                        <a
-                          key={url}
-                          href={url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group/site relative block overflow-hidden rounded-lg border border-border bg-white"
-                        >
-                          <div className="flex items-center gap-1 border-b border-border bg-foreground/5 px-2 py-1">
-                            <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
-                            <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
-                            <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
-                            <span className="ml-1 truncate font-mono text-[8px] text-muted-foreground">
-                              {hostname}
-                            </span>
-                          </div>
-                          <div className="relative h-36 w-full overflow-hidden">
-                            <iframe
-                              src={url}
-                              title={hostname}
-                              loading="lazy"
-                              referrerPolicy="no-referrer"
-                              className="pointer-events-none h-[900px] w-[1600px] origin-top-left border-0"
-                              style={{ transform: "scale(0.225)" }}
-                            />
-                          </div>
-                          <div className="absolute inset-0 flex items-center justify-center bg-background/0 opacity-0 backdrop-blur-[1px] transition duration-200 group-hover/site:bg-background/40 group-hover/site:opacity-100">
-                            <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-[10px] font-medium text-primary-foreground">
-                              <ExternalLink className="h-3 w-3" /> Abrir site
-                            </span>
-                          </div>
-                        </a>
-                      );
-                    })}
-                  </div>
                 ) : (
-                  <>
-                    <div className="mx-auto h-44 max-w-[320px]">
-                      <active.Mock />
-                    </div>
-                    <span className="absolute right-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-primary/90 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-primary-foreground">
-                      <Play className="h-3 w-3" /> Demo em vídeo em breve
-                    </span>
-                  </>
+                  <iframe
+                    src={url}
+                    title={hostname}
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                    className="pointer-events-none h-[900px] w-[1600px] origin-top-left border-0"
+                    style={{ transform: "scale(0.22)" }}
+                  />
                 )}
               </div>
+              <div className="absolute inset-0 flex items-center justify-center bg-background/0 opacity-0 backdrop-blur-[1px] transition duration-200 group-hover/site:bg-background/40 group-hover/site:opacity-100">
+                <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-[10px] font-medium text-primary-foreground">
+                  <ExternalLink className="h-3 w-3" /> Abrir site
+                </span>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    );
+  }
 
-              {/* Conteúdo do caso */}
-              <div className="p-6">
-                <div className="flex items-center gap-3">
-                  <active.Icon className="h-6 w-6 shrink-0 text-primary" strokeWidth={1.5} />
-                  <DialogTitle className="text-xl">{active.t}</DialogTitle>
-                </div>
-                <DialogDescription className="sr-only">
-                  Detalhes do projeto {active.t}: desafio, solução e resultado.
-                </DialogDescription>
+  if (item.timeSaved) {
+    return (
+      <div>
+        <div className="mx-auto h-32 max-w-[280px]">
+          <item.Mock />
+        </div>
+        <TimeSavedComparison
+          cadence={item.timeSaved.cadence}
+          traditionalMinutes={item.timeSaved.traditionalMinutes}
+          aiMinutes={item.timeSaved.aiMinutes}
+        />
+      </div>
+    );
+  }
 
-                <div className="mt-5 space-y-4">
-                  <CaseRow label="Desafio" text={active.desafio} />
-                  <CaseRow label="Solução" text={active.solucao} />
-                  <div className="rounded-xl border border-primary/30 bg-primary/5 p-4">
-                    <CaseRow label="Resultado" text={active.resultado} />
-                  </div>
-                </div>
+  return (
+    <div className="relative">
+      <div className="mx-auto h-44 max-w-[320px]">
+        <item.Mock />
+      </div>
+      <span className="absolute right-0 top-0 inline-flex items-center gap-1.5 rounded-full bg-primary/90 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-primary-foreground">
+        <Play className="h-3 w-3" /> Demo em vídeo em breve
+      </span>
+    </div>
+  );
+}
 
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {active.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full border border-border px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+function FullCard({ item, onOpen }: { item: Item; onOpen: () => void }) {
+  return (
+    <button
+      onClick={onOpen}
+      aria-label={`Ver exemplo: ${item.t}`}
+      className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card text-left transition hover:-translate-y-1 hover:border-primary hover:shadow-lg"
+    >
+      <div className="relative h-36 overflow-hidden border-b border-border bg-[var(--paper)] p-4">
+        <div className="absolute left-3 top-3 flex gap-1">
+          <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
+          <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
+          <span className="h-1.5 w-1.5 rounded-full bg-foreground/20" />
+        </div>
+        <div className="mt-4 h-[88px]">
+          <item.Mock />
+        </div>
+        <div className="absolute inset-0 flex items-center justify-center bg-background/55 opacity-0 backdrop-blur-[1px] transition duration-300 group-hover:opacity-100">
+          <span className="inline-flex items-center gap-2 rounded-full bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground shadow-sm">
+            <Play className="h-3.5 w-3.5" /> Ver exemplo
+          </span>
+        </div>
+      </div>
+      <div className="flex flex-1 flex-col p-5">
+        <item.Icon className="h-5 w-5 text-primary" strokeWidth={1.5} />
+        <h3 className="mt-4 text-base font-semibold">{item.t}</h3>
+        <p className="mt-1 text-sm text-muted-foreground">{item.d}</p>
+      </div>
+    </button>
+  );
+}
+
+function CompactCard({ item, onOpen }: { item: Item; onOpen: () => void }) {
+  return (
+    <button
+      onClick={onOpen}
+      aria-label={`Ver exemplo: ${item.t}`}
+      className="group flex items-center gap-3 rounded-xl border border-border bg-card p-3 text-left transition hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
+    >
+      <item.Icon className="h-4 w-4 shrink-0 text-primary" strokeWidth={1.5} />
+      <div className="min-w-0 flex-1">
+        <h3 className="truncate text-sm font-medium">{item.t}</h3>
+        <p className="truncate text-xs text-muted-foreground">{item.d}</p>
+      </div>
+    </button>
+  );
+}
+
+// Compartilhado com OrbitHero.tsx: clicar num card do hero abre o case correspondente aqui.
+const OPEN_CASE_EVENT = "sena:open-case";
+
+export default function TrackRecord() {
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const active = openIdx !== null ? items[openIdx] : null;
+
+  useEffect(() => {
+    function onOpenCase(e: Event) {
+      const index = (e as CustomEvent<{ index: number }>).detail?.index;
+      if (typeof index === "number") setOpenIdx(index);
+    }
+    window.addEventListener(OPEN_CASE_EVENT, onOpenCase);
+    return () => window.removeEventListener(OPEN_CASE_EVENT, onOpenCase);
+  }, []);
+
+  return (
+    <div>
+      {active && (
+        <div className="animate-in fade-in slide-in-from-top-2 relative mb-5 grid items-start overflow-hidden rounded-2xl border border-primary/40 bg-card shadow-lg duration-300 md:grid-cols-[380px_1fr]">
+          <button
+            type="button"
+            onClick={() => setOpenIdx(null)}
+            aria-label="Fechar exemplo"
+            className="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background/80 text-foreground transition hover:border-primary hover:text-primary"
+          >
+            <X className="h-4 w-4" />
+          </button>
+
+          <div className="flex flex-col gap-5 border-b border-border p-6 md:border-b-0 md:border-r">
+            <div>
+              <active.Icon className="h-6 w-6 text-primary" strokeWidth={1.5} />
+              <h3 className="mt-4 text-xl font-semibold">{active.t}</h3>
+              <p className="mt-1 text-sm text-muted-foreground">{active.d}</p>
+            </div>
+            <div className="space-y-4">
+              <CaseRow label="Desafio" text={active.desafio} />
+              <CaseRow label="Solução" text={active.solucao} />
+              <div className="rounded-xl border border-primary/30 bg-primary/5 p-4">
+                <CaseRow label="Resultado" text={active.resultado} />
               </div>
             </div>
-          )}
-        </DialogContent>
-      </Dialog>
-    </>
+            <div className="flex flex-wrap gap-2">
+              {active.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-border px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <a
+              href={quoteRequestUrl(active.t)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 self-center rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+            >
+              Solicite um orçamento
+            </a>
+          </div>
+
+          <div className="bg-[var(--paper)] p-6">
+            <CaseMedia item={active} />
+          </div>
+        </div>
+      )}
+
+      <div
+        className={cn(
+          "grid gap-4",
+          active
+            ? "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
+            : "gap-5 sm:grid-cols-2 lg:grid-cols-3",
+        )}
+      >
+        {items.map((item, i) =>
+          openIdx === i ? null : active ? (
+            <CompactCard key={item.t} item={item} onOpen={() => setOpenIdx(i)} />
+          ) : (
+            <FullCard key={item.t} item={item} onOpen={() => setOpenIdx(i)} />
+          ),
+        )}
+      </div>
+    </div>
   );
 }

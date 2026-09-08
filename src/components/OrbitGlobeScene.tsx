@@ -74,19 +74,22 @@ function IconSpan({ name, className }: { name: IconKey | UiIconKey; className?: 
 
 export type OrbitGlobeHandle = {
   moveToArea: (areaIndex: number) => void;
+  focusItem: (itemIndex: number) => void;
+  setAutoplayLocked: (locked: boolean) => void;
 };
 
 type Props = {
   onActiveItemChange: (index: number) => void;
+  onSelectCase: (caseIndex: number) => void;
 };
 
 const OrbitGlobeScene = forwardRef<OrbitGlobeHandle, Props>(function OrbitGlobeScene(
-  { onActiveItemChange },
+  { onActiveItemChange, onSelectCase },
   ref,
 ) {
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const cardRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const satelliteRefs = useRef<(HTMLDivElement | null)[]>([]);
   const pauseButtonRef = useRef<HTMLButtonElement>(null);
   const pauseIconRef = useRef<HTMLSpanElement>(null);
@@ -95,6 +98,7 @@ const OrbitGlobeScene = forwardRef<OrbitGlobeHandle, Props>(function OrbitGlobeS
 
   const reducedRef = useRef(false);
   const pausedRef = useRef(false);
+  const scrollLockRef = useRef(false);
   const rawPhaseRef = useRef(0);
   const phaseRef = useRef(0);
   const lastTimeRef = useRef<number | null>(null);
@@ -117,16 +121,29 @@ const OrbitGlobeScene = forwardRef<OrbitGlobeHandle, Props>(function OrbitGlobeS
     manualRef.current = { from: phaseRef.current, to: target, started: null };
   }, []);
 
+  const goToItem = useCallback(
+    (itemIndex: number) => {
+      const current = manualRef.current?.to ?? phaseRef.current;
+      const base = Math.floor(current / COUNT) * COUNT + itemIndex;
+      moveTo(base < current - 0.1 ? base + COUNT : base);
+    },
+    [moveTo],
+  );
+
   useImperativeHandle(
     ref,
     () => ({
       moveToArea(areaIndex: number) {
-        const current = manualRef.current?.to ?? phaseRef.current;
-        const base = Math.floor(current / COUNT) * COUNT + areaIndex * 2;
-        moveTo(base < current - 0.1 ? base + COUNT : base);
+        goToItem(areaIndex * 2);
+      },
+      focusItem(itemIndex: number) {
+        goToItem(itemIndex);
+      },
+      setAutoplayLocked(locked: boolean) {
+        scrollLockRef.current = locked;
       },
     }),
-    [moveTo],
+    [goToItem],
   );
 
   function updatePauseUI() {
@@ -244,8 +261,8 @@ const OrbitGlobeScene = forwardRef<OrbitGlobeHandle, Props>(function OrbitGlobeS
             rawPhaseRef.current = manual.to;
             manualRef.current = null;
           }
-        } else if (!pausedRef.current) {
-          rawPhaseRef.current += delta / 4400;
+        } else if (!pausedRef.current && !scrollLockRef.current) {
+          rawPhaseRef.current += delta / 3000;
           phaseRef.current = phaseAt(rawPhaseRef.current);
         }
         setActive(wrap(Math.round(phaseRef.current)));
@@ -318,11 +335,15 @@ const OrbitGlobeScene = forwardRef<OrbitGlobeHandle, Props>(function OrbitGlobeS
         <div className="orbit-world" aria-hidden="true">
           <canvas ref={canvasRef} />
           {ITEMS.map((item, i) => (
-            <div
+            <button
               key={item.tag}
+              type="button"
+              tabIndex={-1}
               ref={(node) => {
                 cardRefs.current[i] = node;
               }}
+              onClick={() => onSelectCase(item.caseIndex)}
+              aria-label={`Ver exemplo: ${item.tag}`}
               className="orbit-card"
             >
               <div className="orbit-glass" />
@@ -337,7 +358,7 @@ const OrbitGlobeScene = forwardRef<OrbitGlobeHandle, Props>(function OrbitGlobeS
                   <IconSpan name="next" />
                 </div>
               </div>
-            </div>
+            </button>
           ))}
           {SATELLITES.map((_, i) => (
             <div
