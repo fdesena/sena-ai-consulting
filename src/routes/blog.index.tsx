@@ -87,7 +87,7 @@ function BlogIndex() {
         </div>
         <Link
           to="/blog/automatizar"
-          className="group relative flex min-h-[260px] flex-col justify-between overflow-hidden rounded-2xl bg-[var(--ink)] p-9 text-[var(--paper)] transition hover:opacity-95"
+          className="group relative flex min-h-[260px] flex-col justify-between overflow-hidden bg-[var(--ink)] p-9 text-[var(--paper)] transition hover:opacity-95"
         >
           <div
             aria-hidden
