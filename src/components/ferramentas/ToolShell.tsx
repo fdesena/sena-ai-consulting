@@ -41,7 +41,7 @@ export function ToolShell({
       <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
           <a href="/" className="inline-flex items-center gap-2">
-            <img src={senaLogoHorizontal} alt="Sena Labs" className="h-7 w-auto" />
+            <img src={senaLogoHorizontal} alt="Sena Labs" className="h-9 w-auto" />
             {coBrand ? (
               <span className="flex flex-col leading-tight">
                 <span className="inline-flex items-center gap-2">
@@ -64,6 +64,12 @@ export function ToolShell({
                 <span className="hidden sm:inline">Voltar às ferramentas</span>
               </Link>
             )}
+            <a
+              href="/"
+              className="rounded-full border border-foreground/15 px-4 py-2 transition hover:border-foreground/40"
+            >
+              Site
+            </a>
             <a
               href="/auth"
               className="rounded-full border border-foreground/15 px-4 py-2 transition hover:border-foreground/40"

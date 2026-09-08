@@ -22,7 +22,7 @@ export function BlogShell({ eyebrow, title, description, back = true, children }
       <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
           <a href="/" className="inline-flex items-center gap-2">
-            <img src={senaLogoHorizontal} alt="Sena Labs" className="h-7 w-auto" />
+            <img src={senaLogoHorizontal} alt="Sena Labs" className="h-9 w-auto" />
             <span className="font-mono text-xs text-muted-foreground">Blog</span>
           </a>
           <div className="flex items-center gap-3 text-sm">

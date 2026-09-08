@@ -9,6 +9,9 @@ import type { OrbitGlobeHandle } from "./OrbitGlobeScene";
 
 const OrbitGlobeScene = lazy(() => import("./OrbitGlobeScene"));
 
+/** Evento compartilhado com TrackRecord.tsx: clicar num card do hero abre o case correspondente. */
+export const OPEN_CASE_EVENT = "sena:open-case";
+
 const monoStyle = { fontFamily: "var(--orbit-mono)" } as const;
 
 const STAGE_COUNT = AREAS.length;
@@ -54,6 +57,11 @@ export default function OrbitHero() {
 
   const activeItem = ITEMS[activeIndex];
 
+  function handleSelectCase(caseIndex: number) {
+    window.dispatchEvent(new CustomEvent(OPEN_CASE_EVENT, { detail: { index: caseIndex } }));
+    document.getElementById("cases")?.scrollIntoView({ behavior: "smooth" });
+  }
+
   // Scroll-jack de estágio único: cada gesto de scroll avança/retrocede exatamente
   // um estágio (não uma posição contínua), travando a página até soltar nos limites.
   useEffect(() => {
@@ -86,7 +94,16 @@ export default function OrbitHero() {
     }
 
     function onWheel(e: WheelEvent) {
-      if (!mq.matches || !locked) return;
+      if (!mq.matches) return;
+      // Self-correct: a programmatic scroll elsewhere (e.g. clicking a card to
+      // jump to Cases) can leave `locked` stale — only hijack the wheel while
+      // the hero is actually the section filling the viewport.
+      const alignedRect = wrap!.getBoundingClientRect();
+      if (Math.abs(alignedRect.top) > ENGAGE_THRESHOLD_PX) {
+        locked = false;
+        return;
+      }
+      if (!locked) return;
       const goingDown = e.deltaY > 0;
       const goingUp = e.deltaY < 0;
       if (!goingDown && !goingUp) return;
@@ -167,7 +184,7 @@ export default function OrbitHero() {
   return (
     <section id="top" className="orbit-hero" ref={wrapRef}>
       <style>{`
-        .orbit-hero{ --orbit-ground:#101112; --orbit-ink:#f1f0eb; --orbit-soft:#b2b3b0; --orbit-faint:#8a8c88; --orbit-line:#ffffff19; --orbit-amber:#c9853b; --orbit-orange:#f6a56f; --orbit-sans:${ORBIT_SANS}; --orbit-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace; background:var(--orbit-ground); color:var(--orbit-ink); font-family:var(--orbit-sans); -webkit-font-smoothing:antialiased; position:relative; height:100vh; display:flex; flex-direction:column; justify-content:center; overflow:hidden; }
+        .orbit-hero{ --orbit-ground:#101112; --orbit-ink:#f1f0eb; --orbit-soft:#b2b3b0; --orbit-faint:#8a8c88; --orbit-line:#ffffff19; --orbit-amber:#c9853b; --orbit-orange:#f6a56f; --orbit-cta:#fc7c34; --orbit-sans:${ORBIT_SANS}; --orbit-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace; background:var(--orbit-ground); color:var(--orbit-ink); font-family:var(--orbit-sans); -webkit-font-smoothing:antialiased; position:relative; height:100vh; display:flex; flex-direction:column; justify-content:center; overflow:hidden; }
         .orbit-hero .orbit-shell{ max-width:1480px; margin:0 auto; padding:0 clamp(22px,5.3vw,88px); width:100%; }
         .orbit-hero .orbit-grid{ min-height:630px; display:grid; grid-template-columns:.91fr 1.09fr; align-items:center; gap:0; padding:56px 0 24px; }
         .orbit-hero .orbit-intro{ position:relative; z-index:4; max-width:520px; }
@@ -181,7 +198,7 @@ export default function OrbitHero() {
         .orbit-hero .orbit-word--accent{ color:var(--orbit-orange); }
         .orbit-hero .orbit-lede{ font-size:17px; line-height:1.65; color:var(--orbit-soft); max-width:35ch; margin:0; }
         .orbit-hero .orbit-ctas{ margin-top:26px; display:flex; flex-wrap:wrap; gap:12px; }
-        .orbit-hero .orbit-btn-solid{ display:inline-flex; align-items:center; justify-content:center; gap:8px; border-radius:999px; background:var(--orbit-orange); color:#1a1512; padding:14px 26px; font-size:14px; font-weight:600; transition:opacity .2s ease; }
+        .orbit-hero .orbit-btn-solid{ display:inline-flex; align-items:center; justify-content:center; gap:8px; border-radius:999px; background:var(--orbit-cta); color:#101112; padding:14px 26px; font-size:14px; font-weight:600; transition:opacity .2s ease; }
         .orbit-hero .orbit-btn-solid:hover{ opacity:.88; }
         .orbit-hero .orbit-scene{ min-width:0; position:relative; }
         .orbit-hero .orbit-stage-canvas{ height:590px; position:relative; isolation:isolate; overflow:hidden; --mx:66%; --my:26%; background:radial-gradient(ellipse at 50% 49%, #cf875815, transparent 62%); }
@@ -191,7 +208,7 @@ export default function OrbitHero() {
         .orbit-hero .orbit-scene-label{ position:absolute; left:12px; top:12px; z-index:102; display:flex; align-items:center; gap:9px; font-family:var(--orbit-mono); font-size:12px; color:#b3b4b0; }
         .orbit-hero .orbit-scene-label:before{ content:'+'; color:var(--orbit-orange); font-size:18px; }
         .orbit-hero .orbit-axis-label{ position:absolute; right:14px; bottom:29px; z-index:102; font-family:var(--orbit-mono); font-size:12px; color:#8a8c88; letter-spacing:.08em; }
-        .orbit-hero .orbit-card{ width:292px; height:178px; position:absolute; left:50%; top:49%; margin:-89px 0 0 -146px; transform-origin:center; will-change:transform,opacity; pointer-events:none; }
+        .orbit-hero .orbit-card{ width:292px; height:178px; position:absolute; left:50%; top:49%; margin:-89px 0 0 -146px; transform-origin:center; will-change:transform,opacity; pointer-events:auto; cursor:pointer; background:none; border:none; padding:0; font:inherit; text-align:left; color:inherit; }
         .orbit-hero .orbit-glass{ position:absolute; inset:0; border:1px solid #ffffff45; border-radius:19px; overflow:hidden; background:linear-gradient(120deg, #ffffff14, #ffffff04 45%, #ef985019); box-shadow:inset 0 1px 0 #ffffff6b, inset 0 -1px 0 #f3ad7959, 0 16px 36px #0007; backdrop-filter:blur(18px) saturate(1.15); -webkit-backdrop-filter:blur(18px) saturate(1.15); }
         .orbit-hero .orbit-glass:before{ content:''; position:absolute; inset:0; border-radius:inherit; background:radial-gradient(ellipse at var(--mx) var(--my), #ffdab433, transparent 64%), linear-gradient(136deg, transparent 37%, #ffffff0d 45%, transparent 55%); pointer-events:none; }
         .orbit-hero .orbit-glass:after{ content:''; position:absolute; inset:5px; border:1px solid #ffffff10; border-radius:14px; pointer-events:none; }
@@ -306,7 +323,11 @@ export default function OrbitHero() {
           <div className="orbit-scene">
             {mounted && (
               <Suspense fallback={null}>
-                <OrbitGlobeScene ref={sceneRef} onActiveItemChange={setActiveIndex} />
+                <OrbitGlobeScene
+                  ref={sceneRef}
+                  onActiveItemChange={setActiveIndex}
+                  onSelectCase={handleSelectCase}
+                />
               </Suspense>
             )}
           </div>

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, TrendingUp } from "lucide-react";
+import { ArrowRight, Palette, TrendingUp } from "lucide-react";
 import { BlogShell } from "@/components/blog/BlogShell";
 
 export const Route = createFileRoute("/blog/")({
@@ -27,6 +27,13 @@ type Post = {
 };
 
 const POSTS: Post[] = [
+  {
+    slug: "/blog/marca-sena-labs",
+    title: "A marca por trás da Sena Labs",
+    description:
+      "De onde vem o símbolo SL, o detalhe da bandeira de chegada e as cores da nova identidade visual.",
+    Icon: Palette,
+  },
   {
     slug: "/blog/gap-adocao-ia",
     title: "A IA já consegue muito mais do que o mercado usa.",

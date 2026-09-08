@@ -1,7 +1,8 @@
 import senaLogoHorizontal from "@/assets/brand/sena-labs-horizontal-light.svg";
 import senaLogoStacked from "@/assets/brand/sena-labs-stacked-light.svg";
+import senaLogoStackedDark from "@/assets/brand/sena-labs-stacked-dark.svg";
 import { Link } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { trackEvent, trackPageview } from "@/lib/track";
 import {
   ArrowRight,
@@ -20,13 +21,12 @@ import {
   Linkedin,
   Zap,
   Building2,
-  ChevronDown,
   LogIn,
   Wrench,
   Menu,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { WHATSAPP_URL } from "./WhatsAppFAB";
+import { WHATSAPP_URL } from "./ContactFAB";
 import ProcessCycle from "./ProcessCycle";
 import OrbitHero from "./OrbitHero";
 import TrackRecord from "./TrackRecord";
@@ -71,8 +71,8 @@ function Flag({ code, name }: { code: string; name: string }) {
 const EMAIL = "felipesmsena@gmail.com";
 const LINKEDIN = "https://linkedin.com/in/senafelipe";
 
-function Eyebrow({ children }: { children: React.ReactNode }) {
-  return <span className="eyebrow">{children}</span>;
+function Eyebrow({ children, className }: { children: React.ReactNode; className?: string }) {
+  return <span className={cn("eyebrow", className)}>{children}</span>;
 }
 
 function Section({
@@ -240,27 +240,7 @@ export default function LandingPage() {
     trackPageview();
   }, []);
 
-  const [submenuOpen, setSubmenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const submenuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!submenuOpen) return;
-    function handlePointerDown(e: PointerEvent) {
-      if (submenuRef.current && !submenuRef.current.contains(e.target as Node)) {
-        setSubmenuOpen(false);
-      }
-    }
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") setSubmenuOpen(false);
-    }
-    document.addEventListener("pointerdown", handlePointerDown);
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("pointerdown", handlePointerDown);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [submenuOpen]);
 
   return (
     <main className="min-h-screen bg-background text-foreground">
@@ -268,75 +248,29 @@ export default function LandingPage() {
       <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <a href="#top" className="inline-flex items-center md:min-w-[280px]">
-            <img src={senaLogoHorizontal} alt="Sena Labs" className="h-8 w-auto" />
+            <img src={senaLogoHorizontal} alt="Sena Labs" className="h-11 w-auto" />
           </a>
           <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 text-sm md:flex">
-            <a href="#pilares" className="hover:text-primary">
-              O que fazemos
-            </a>
-            <a href="#processo" className="hover:text-primary">
-              Como trabalhamos
-            </a>
             <a href="#cases" className="hover:text-primary">
-              Cases
+              Casos de Uso
             </a>
-            <a href="#sobre" className="hover:text-primary">
-              Sobre
-            </a>
+            <Link to="/ferramentas" className="hover:text-primary">
+              Ferramentas
+            </Link>
             <Link to="/blog" className="hover:text-primary">
               Blog
             </Link>
-            <div className="relative" ref={submenuRef}>
-              <button
-                type="button"
-                onClick={() => setSubmenuOpen((o) => !o)}
-                aria-expanded={submenuOpen}
-                aria-haspopup="true"
-                className="inline-flex items-center gap-1 py-2 hover:text-primary"
-              >
-                Área exclusiva
-                <ChevronDown
-                  className={cn(
-                    "h-3.5 w-3.5 transition-transform duration-200",
-                    submenuOpen && "rotate-180",
-                  )}
-                />
-              </button>
-              {/* Submenu — abre e fecha ao clicar/tocar no gatilho */}
-              <div
-                className={cn(
-                  "absolute left-1/2 top-full z-50 w-56 -translate-x-1/2 pt-3 transition duration-150",
-                  submenuOpen ? "visible opacity-100" : "invisible opacity-0",
-                )}
-              >
-                <div className="rounded-2xl border border-border bg-card p-1.5 shadow-lg shadow-black/5">
-                  <a
-                    href="/auth"
-                    className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm transition hover:bg-muted"
-                  >
-                    <LogIn className="h-4 w-4 text-primary" />
-                    Entrar no painel
-                  </a>
-                  <Link
-                    to="/ferramentas"
-                    className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm transition hover:bg-muted"
-                  >
-                    <Wrench className="h-4 w-4 text-primary" />
-                    Ferramentas
-                  </Link>
-                </div>
-              </div>
-            </div>
+            <a href="/auth" className="hover:text-primary">
+              Área exclusiva
+            </a>
           </nav>
           <div className="flex items-center gap-2">
             <a
-              href="https://calendar.app.google/oh4NeMRMtw8v5UP5A"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#contato"
               className="hidden items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 sm:inline-flex"
             >
               Fale comigo
-              <ArrowUpRight className="h-4 w-4" />
+              <ArrowRight className="h-4 w-4" />
             </a>
 
             {/* Menu mobile */}
@@ -353,29 +287,23 @@ export default function LandingPage() {
               <SheetContent side="right" className="flex w-[85%] flex-col sm:max-w-sm">
                 <SheetHeader>
                   <SheetTitle className="flex items-center text-left">
-                    <img src={senaLogoHorizontal} alt="Sena Labs" className="h-6 w-auto" />
+                    <img src={senaLogoHorizontal} alt="Sena Labs" className="h-8 w-auto" />
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="mt-4 flex flex-col gap-1 text-base">
                   <SheetClose asChild>
-                    <a href="#pilares" className="rounded-xl px-3 py-3 transition hover:bg-muted">
-                      O que fazemos
-                    </a>
-                  </SheetClose>
-                  <SheetClose asChild>
-                    <a href="#processo" className="rounded-xl px-3 py-3 transition hover:bg-muted">
-                      Como trabalhamos
-                    </a>
-                  </SheetClose>
-                  <SheetClose asChild>
                     <a href="#cases" className="rounded-xl px-3 py-3 transition hover:bg-muted">
-                      Cases
+                      Casos de Uso
                     </a>
                   </SheetClose>
                   <SheetClose asChild>
-                    <a href="#sobre" className="rounded-xl px-3 py-3 transition hover:bg-muted">
-                      Sobre
-                    </a>
+                    <Link
+                      to="/ferramentas"
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-3 transition hover:bg-muted"
+                    >
+                      <Wrench className="h-4 w-4 text-primary" />
+                      Ferramentas
+                    </Link>
                   </SheetClose>
                   <SheetClose asChild>
                     <Link to="/blog" className="rounded-xl px-3 py-3 transition hover:bg-muted">
@@ -396,27 +324,16 @@ export default function LandingPage() {
                       Entrar no painel
                     </a>
                   </SheetClose>
-                  <SheetClose asChild>
-                    <Link
-                      to="/ferramentas"
-                      className="flex items-center gap-2.5 rounded-xl px-3 py-3 transition hover:bg-muted"
-                    >
-                      <Wrench className="h-4 w-4 text-primary" />
-                      Ferramentas
-                    </Link>
-                  </SheetClose>
                 </nav>
 
                 <div className="mt-auto pt-6">
                   <SheetClose asChild>
                     <a
-                      href="https://calendar.app.google/oh4NeMRMtw8v5UP5A"
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      href="#contato"
                       className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-medium text-primary-foreground hover:opacity-90"
                     >
                       Fale comigo
-                      <ArrowUpRight className="h-4 w-4" />
+                      <ArrowRight className="h-4 w-4" />
                     </a>
                   </SheetClose>
                 </div>
@@ -678,7 +595,10 @@ export default function LandingPage() {
       {/* SOBRE A SENA LABS */}
       <section id="sobre" className="border-t border-border bg-[var(--ink)] text-[var(--paper)]">
         <div className="mx-auto grid w-full max-w-6xl gap-10 px-6 py-20 sm:py-28 md:grid-cols-[0.8fr_1.2fr] md:items-start">
-          <Eyebrow>06 · About Sena Labs</Eyebrow>
+          <div className="flex flex-col items-start">
+            <Eyebrow className="text-white/70">06 · About Sena Labs</Eyebrow>
+            <img src={senaLogoStackedDark} alt="Sena Labs" className="mt-10 h-48 w-auto sm:h-56" />
+          </div>
           <div>
             <h2 className="max-w-3xl text-3xl font-semibold sm:text-5xl">
               Uma empresa de estratégia e tecnologia feita para construir.
@@ -834,7 +754,7 @@ export default function LandingPage() {
           />
           <div className="flex flex-col gap-10">
             <div className="flex flex-col items-start">
-              <Eyebrow>08 · Vamos conversar</Eyebrow>
+              <Eyebrow className="text-white/70">08 · Vamos conversar</Eyebrow>
               <h2 className="mt-4 max-w-3xl text-4xl font-semibold sm:text-5xl lg:text-6xl">
                 Tem um problema que tecnologia poderia resolver?
               </h2>

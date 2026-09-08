@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   Workflow,
@@ -12,6 +12,7 @@ import {
   Play,
   ExternalLink,
   ChevronRight,
+  ArrowRight,
   Disc3,
   Timer,
   FileText,
@@ -20,6 +21,12 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { WHATSAPP_NUMBER } from "@/components/ContactFAB";
+
+function quoteRequestUrl(caseTitle: string) {
+  const text = `Olá, vim pelo site da Sena Labs e gostaria de solicitar um orçamento: ${caseTitle}.`;
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+}
 
 /* ---------- Mini visual mockups (pure SVG/CSS) ---------- */
 
@@ -211,6 +218,8 @@ type Item = {
   sites?: { url: string; screenshot?: string }[];
   /** Ferramentas já em produção, listadas com link direto pra testar. */
   tools?: { name: string; description: string; Icon: LucideIcon; to?: string; href?: string }[];
+  /** Comparativo animado de tempo (sem IA x com IA) quando não há vídeo/site/ferramenta pra mostrar. Estimativa ilustrativa, não métrica medida do cliente. */
+  timeSaved?: { cadence: string; traditionalMinutes: number; aiMinutes: number };
 };
 
 const items: Item[] = [
@@ -300,6 +309,7 @@ const items: Item[] = [
       "Fluxo que monta a proposta a partir de poucos inputs, padronizando texto, escopo e precificação.",
     resultado: "−80% no tempo de elaboração, com mais padronização e menos retrabalho.",
     tags: ["Automação", "IA generativa", "Documentos"],
+    timeSaved: { cadence: "por proposta", traditionalMinutes: 180, aiMinutes: 36 },
   },
   {
     t: "Agentes em conteúdo proprietário",
@@ -312,6 +322,7 @@ const items: Item[] = [
       "Agente de IA treinado no conteúdo da empresa, respondendo com base nas fontes internas.",
     resultado: "Suporte e tomada de decisão em escala, com respostas consistentes.",
     tags: ["Agentes de IA", "RAG", "Base de conhecimento"],
+    timeSaved: { cadence: "por pergunta respondida", traditionalMinutes: 10, aiMinutes: 0.5 },
   },
   {
     t: "Visualização de dados com IA",
@@ -323,6 +334,7 @@ const items: Item[] = [
       "Pipeline que consolida os dados e gera dashboards executivos atualizados automaticamente.",
     resultado: "Dashboards executivos prontos para decisão, sem trabalho manual.",
     tags: ["Dados", "Dashboards", "Automação"],
+    timeSaved: { cadence: "por relatório mensal", traditionalMinutes: 240, aiMinutes: 5 },
   },
   {
     t: "LMS gamificado",
@@ -334,6 +346,7 @@ const items: Item[] = [
       "Plataforma de ensino própria com trilhas, vídeos, quizzes e rankings — com identidade da marca.",
     resultado: "Mais engajamento e aprendizado mensurável, em ambiente próprio.",
     tags: ["Plataforma", "LMS", "Gamificação"],
+    timeSaved: { cadence: "por novo colaborador treinado", traditionalMinutes: 360, aiMinutes: 30 },
   },
   {
     t: "Retenção de pacientes via WhatsApp",
@@ -352,6 +365,7 @@ const items: Item[] = [
       "Integração de sistemas",
       "Painel de acompanhamento",
     ],
+    timeSaved: { cadence: "por dia de trabalho da recepção", traditionalMinutes: 45, aiMinutes: 2 },
   },
 ];
 
@@ -362,6 +376,136 @@ function CaseRow({ label, text }: { label: string; text: string }) {
         {label}
       </span>
       <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{text}</p>
+    </div>
+  );
+}
+
+function formatMinutes(min: number) {
+  if (min < 1) return `${Math.round(min * 60)}s`;
+  if (min < 60) return `${Math.round(min)}min`;
+  const h = Math.floor(min / 60);
+  const rem = Math.round(min % 60);
+  return rem > 0 ? `${h}h${rem}min` : `${h}h`;
+}
+
+function useCountUp(target: number, active: boolean, durationMs = 1400) {
+  const [value, setValue] = useState(0);
+  useEffect(() => {
+    if (!active) return;
+    let raf = 0;
+    const start = performance.now();
+    function tick(now: number) {
+      const t = Math.min(1, (now - start) / durationMs);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setValue(target * eased);
+      if (t < 1) raf = requestAnimationFrame(tick);
+    }
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [target, active, durationMs]);
+  return value;
+}
+
+function StopwatchDial({
+  label,
+  minutes,
+  maxMinutes,
+  accent,
+  active,
+}: {
+  label: string;
+  minutes: number;
+  maxMinutes: number;
+  accent: boolean;
+  active: boolean;
+}) {
+  const animated = useCountUp(minutes, active);
+  const radius = 42;
+  const circumference = 2 * Math.PI * radius;
+  const fraction = maxMinutes > 0 ? Math.min(1, animated / maxMinutes) : 0;
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <div className="relative h-28 w-28 shrink-0">
+        <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90">
+          <circle
+            cx="50"
+            cy="50"
+            r={radius}
+            fill="none"
+            strokeWidth="8"
+            className="stroke-border"
+          />
+          <circle
+            cx="50"
+            cy="50"
+            r={radius}
+            fill="none"
+            strokeWidth="8"
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            strokeDashoffset={circumference * (1 - fraction)}
+            className={accent ? "stroke-primary" : "stroke-muted-foreground/40"}
+          />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="font-mono text-base font-semibold text-foreground">
+            {formatMinutes(animated)}
+          </span>
+        </div>
+      </div>
+      <span className="text-xs font-medium text-muted-foreground">{label}</span>
+    </div>
+  );
+}
+
+/** Comparativo animado de tempo (sem IA x com IA). Valores são estimativas ilustrativas. */
+function TimeSavedComparison({
+  cadence,
+  traditionalMinutes,
+  aiMinutes,
+}: {
+  cadence: string;
+  traditionalMinutes: number;
+  aiMinutes: number;
+}) {
+  const [active, setActive] = useState(false);
+  useEffect(() => {
+    const id = setTimeout(() => setActive(true), 150);
+    return () => clearTimeout(id);
+  }, []);
+  const savedPct = Math.round((1 - aiMinutes / traditionalMinutes) * 100);
+
+  return (
+    <div className="flex flex-col items-center gap-4 py-4">
+      <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+        Tempo {cadence}
+      </span>
+      <div className="flex items-center gap-6 sm:gap-10">
+        <StopwatchDial
+          label="Sem IA"
+          minutes={traditionalMinutes}
+          maxMinutes={traditionalMinutes}
+          accent={false}
+          active={active}
+        />
+        <div className="flex flex-col items-center gap-1.5">
+          <ArrowRight className="h-5 w-5 text-primary" />
+          <span className="whitespace-nowrap rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
+            −{savedPct}%
+          </span>
+        </div>
+        <StopwatchDial
+          label="Com IA"
+          minutes={aiMinutes}
+          maxMinutes={traditionalMinutes}
+          accent
+          active={active}
+        />
+      </div>
+      <span className="max-w-[280px] text-center text-[11px] leading-relaxed text-muted-foreground">
+        *Estimativa ilustrativa comparando um processo manual típico com o mesmo processo com IA —
+        não é uma métrica medida deste cliente.
+      </span>
     </div>
   );
 }
@@ -482,6 +626,21 @@ function CaseMedia({ item }: { item: Item }) {
     );
   }
 
+  if (item.timeSaved) {
+    return (
+      <div>
+        <div className="mx-auto h-32 max-w-[280px]">
+          <item.Mock />
+        </div>
+        <TimeSavedComparison
+          cadence={item.timeSaved.cadence}
+          traditionalMinutes={item.timeSaved.traditionalMinutes}
+          aiMinutes={item.timeSaved.aiMinutes}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="relative">
       <div className="mx-auto h-44 max-w-[320px]">
@@ -541,9 +700,21 @@ function CompactCard({ item, onOpen }: { item: Item; onOpen: () => void }) {
   );
 }
 
+// Compartilhado com OrbitHero.tsx: clicar num card do hero abre o case correspondente aqui.
+const OPEN_CASE_EVENT = "sena:open-case";
+
 export default function TrackRecord() {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
   const active = openIdx !== null ? items[openIdx] : null;
+
+  useEffect(() => {
+    function onOpenCase(e: Event) {
+      const index = (e as CustomEvent<{ index: number }>).detail?.index;
+      if (typeof index === "number") setOpenIdx(index);
+    }
+    window.addEventListener(OPEN_CASE_EVENT, onOpenCase);
+    return () => window.removeEventListener(OPEN_CASE_EVENT, onOpenCase);
+  }, []);
 
   return (
     <div>
@@ -581,6 +752,14 @@ export default function TrackRecord() {
                 </span>
               ))}
             </div>
+            <a
+              href={quoteRequestUrl(active.t)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 self-center rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+            >
+              Solicite um orçamento
+            </a>
           </div>
 
           <div className="bg-[var(--paper)] p-6">

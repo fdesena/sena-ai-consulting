@@ -80,15 +80,16 @@ export type OrbitGlobeHandle = {
 
 type Props = {
   onActiveItemChange: (index: number) => void;
+  onSelectCase: (caseIndex: number) => void;
 };
 
 const OrbitGlobeScene = forwardRef<OrbitGlobeHandle, Props>(function OrbitGlobeScene(
-  { onActiveItemChange },
+  { onActiveItemChange, onSelectCase },
   ref,
 ) {
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const cardRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const satelliteRefs = useRef<(HTMLDivElement | null)[]>([]);
   const pauseButtonRef = useRef<HTMLButtonElement>(null);
   const pauseIconRef = useRef<HTMLSpanElement>(null);
@@ -334,11 +335,15 @@ const OrbitGlobeScene = forwardRef<OrbitGlobeHandle, Props>(function OrbitGlobeS
         <div className="orbit-world" aria-hidden="true">
           <canvas ref={canvasRef} />
           {ITEMS.map((item, i) => (
-            <div
+            <button
               key={item.tag}
+              type="button"
+              tabIndex={-1}
               ref={(node) => {
                 cardRefs.current[i] = node;
               }}
+              onClick={() => onSelectCase(item.caseIndex)}
+              aria-label={`Ver exemplo: ${item.tag}`}
               className="orbit-card"
             >
               <div className="orbit-glass" />
@@ -353,7 +358,7 @@ const OrbitGlobeScene = forwardRef<OrbitGlobeHandle, Props>(function OrbitGlobeS
                   <IconSpan name="next" />
                 </div>
               </div>
-            </div>
+            </button>
           ))}
           {SATELLITES.map((_, i) => (
             <div
