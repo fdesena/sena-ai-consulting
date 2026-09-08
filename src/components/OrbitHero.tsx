@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { trackEvent } from "@/lib/track";
 import { cn } from "@/lib/utils";
 import { AREAS, ITEMS, ORBIT_SANS } from "./orbit-hero-data";
@@ -14,7 +14,6 @@ export const OPEN_CASE_EVENT = "sena:open-case";
 
 const monoStyle = { fontFamily: "var(--orbit-mono)" } as const;
 
-const STAGE_COUNT = AREAS.length;
 const TEXT_TRANSITION = { duration: 0.45, ease: [0.22, 1, 0.36, 1] } as const;
 
 type HeadlineSegment = { text: string; accent?: boolean };
@@ -48,138 +47,28 @@ export default function OrbitHero() {
   const sceneRef = useRef<OrbitGlobeHandle>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [mounted, setMounted] = useState(false);
-  const [stage, setStage] = useState(0);
-  const stageRef = useRef(0);
+  // -1 = título estático inicial. Depois de 6s, passa a alternar pergunta/resposta
+  // de cada solução, agrupadas por área (Marketing → Vendas → Operacional → Gerencial).
+  const [textIndex, setTextIndex] = useState(-1);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setTextIndex((i) => (i + 1) % ITEMS.length);
+    }, 6000);
+    return () => window.clearInterval(id);
+  }, []);
+
   const activeItem = ITEMS[activeIndex];
+  const textItem = textIndex >= 0 ? ITEMS[textIndex] : null;
 
   function handleSelectCase(caseIndex: number) {
     window.dispatchEvent(new CustomEvent(OPEN_CASE_EVENT, { detail: { index: caseIndex } }));
     document.getElementById("cases")?.scrollIntoView({ behavior: "smooth" });
   }
-
-  // Scroll-jack de estágio único: cada gesto de scroll avança/retrocede exatamente
-  // um estágio (não uma posição contínua), travando a página até soltar nos limites.
-  useEffect(() => {
-    const wrap = wrapRef.current;
-    if (!wrap) return;
-    const mq = window.matchMedia("(min-width: 761px)");
-    const STEP_COOLDOWN_MS = 650;
-    const ENGAGE_THRESHOLD_PX = 8;
-
-    let locked = mq.matches;
-    let cooldownUntil = 0;
-    let lastY = window.scrollY;
-
-    function applyStage(next: number) {
-      const clamped = Math.max(0, Math.min(STAGE_COUNT, next));
-      if (clamped === stageRef.current) return;
-      stageRef.current = clamped;
-      setStage(clamped);
-      if (clamped === 0) {
-        sceneRef.current?.setAutoplayLocked(false);
-      } else {
-        sceneRef.current?.setAutoplayLocked(true);
-        sceneRef.current?.moveToArea(clamped - 1);
-      }
-    }
-
-    function align() {
-      const rect = wrap!.getBoundingClientRect();
-      window.scrollTo({ top: window.scrollY + rect.top, behavior: "auto" });
-    }
-
-    function onWheel(e: WheelEvent) {
-      if (!mq.matches) return;
-      // Self-correct: a programmatic scroll elsewhere (e.g. clicking a card to
-      // jump to Cases) can leave `locked` stale — only hijack the wheel while
-      // the hero is actually the section filling the viewport.
-      const alignedRect = wrap!.getBoundingClientRect();
-      if (Math.abs(alignedRect.top) > ENGAGE_THRESHOLD_PX) {
-        locked = false;
-        return;
-      }
-      if (!locked) return;
-      const goingDown = e.deltaY > 0;
-      const goingUp = e.deltaY < 0;
-      if (!goingDown && !goingUp) return;
-
-      if (goingDown && stageRef.current >= STAGE_COUNT) {
-        locked = false;
-        return;
-      }
-      if (goingUp && stageRef.current <= 0) {
-        locked = false;
-        return;
-      }
-
-      e.preventDefault();
-      const now = performance.now();
-      if (now < cooldownUntil) return;
-      cooldownUntil = now + STEP_COOLDOWN_MS;
-      applyStage(stageRef.current + (goingDown ? 1 : -1));
-    }
-
-    function onScrollWindow() {
-      const y = window.scrollY;
-      const movingDown = y > lastY;
-      const movingUp = y < lastY;
-      lastY = y;
-      if (!mq.matches) {
-        locked = false;
-        return;
-      }
-      if (locked) return;
-      const rect = wrap!.getBoundingClientRect();
-      if (Math.abs(rect.top) > ENGAGE_THRESHOLD_PX) return;
-      locked = true;
-      align();
-      if (movingUp) applyStage(STAGE_COUNT);
-      else if (movingDown) applyStage(0);
-    }
-
-    function onResize() {
-      if (locked && mq.matches) align();
-    }
-
-    function onMqChange() {
-      if (!mq.matches) {
-        locked = false;
-        applyStage(0);
-      } else {
-        locked = true;
-        lastY = window.scrollY;
-      }
-    }
-
-    window.addEventListener("wheel", onWheel, { passive: false });
-    window.addEventListener("scroll", onScrollWindow, { passive: true });
-    window.addEventListener("resize", onResize);
-    mq.addEventListener("change", onMqChange);
-    return () => {
-      window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("scroll", onScrollWindow);
-      window.removeEventListener("resize", onResize);
-      mq.removeEventListener("change", onMqChange);
-    };
-  }, []);
-
-  // Dentro de cada área (estágio 1-4), alterna entre os 2 itens da área a cada
-  // poucos segundos, até o usuário escrolar para a próxima área ou voltar.
-  useEffect(() => {
-    if (stage === 0) return;
-    const areaIndex = stage - 1;
-    let toggle = 0;
-    const id = window.setInterval(() => {
-      toggle = toggle ? 0 : 1;
-      sceneRef.current?.focusItem(areaIndex * 2 + toggle);
-    }, 3200);
-    return () => window.clearInterval(id);
-  }, [stage]);
 
   return (
     <section id="top" className="orbit-hero" ref={wrapRef}>
@@ -197,9 +86,11 @@ export default function OrbitHero() {
         .orbit-hero .orbit-word{ display:inline-block; will-change:transform,opacity; }
         .orbit-hero .orbit-word--accent{ color:var(--orbit-orange); }
         .orbit-hero .orbit-lede{ font-size:17px; line-height:1.65; color:var(--orbit-soft); max-width:35ch; margin:0; }
-        .orbit-hero .orbit-ctas{ margin-top:26px; display:flex; flex-wrap:wrap; gap:12px; }
+        .orbit-hero .orbit-ctas{ margin-top:26px; display:flex; align-items:center; flex-wrap:wrap; gap:24px; }
         .orbit-hero .orbit-btn-solid{ display:inline-flex; align-items:center; justify-content:center; gap:8px; border-radius:999px; background:var(--orbit-cta); color:#101112; padding:14px 26px; font-size:14px; font-weight:600; transition:opacity .2s ease; }
         .orbit-hero .orbit-btn-solid:hover{ opacity:.88; }
+        .orbit-hero .orbit-text-link{ font-size:14px; color:var(--orbit-soft); border-bottom:1px solid currentColor; padding-bottom:4px; transition:color .2s; }
+        .orbit-hero .orbit-text-link:hover{ color:var(--orbit-ink); }
         .orbit-hero .orbit-scene{ min-width:0; position:relative; }
         .orbit-hero .orbit-stage-canvas{ height:590px; position:relative; isolation:isolate; overflow:hidden; --mx:66%; --my:26%; background:radial-gradient(ellipse at 50% 49%, #cf875815, transparent 62%); }
         .orbit-hero .orbit-stage-canvas:after{ content:''; position:absolute; inset:0; pointer-events:none; z-index:101; background:linear-gradient(0deg, var(--orbit-ground) 0%, transparent 13% 91%, var(--orbit-ground) 100%); }
@@ -228,7 +119,13 @@ export default function OrbitHero() {
         .orbit-hero .orbit-counter{ font-family:var(--orbit-mono); font-size:12px; color:#969894; margin:0 14px; min-width:65px; display:inline-block; }
         .orbit-hero .orbit-counter strong{ font-weight:400; color:var(--orbit-ink); }
         .orbit-hero .orbit-motion-label{ font-family:var(--orbit-mono); font-size:12px; color:#a2a3a0; margin-left:3px; }
-        .orbit-hero .orbit-page-footer{ display:flex; justify-content:space-between; gap:20px; margin:22px 0 28px; color:#8e908c; font-family:var(--orbit-mono); font-size:12px; }
+        .orbit-hero .orbit-active-solution{ margin:22px 4px 0; padding:18px 0 0; border-top:1px solid var(--orbit-line); display:grid; grid-template-columns:1fr auto; gap:20px; align-items:start; min-height:96px; }
+        .orbit-hero .orbit-active-caption{ font-size:12px; letter-spacing:.05em; color:var(--orbit-orange); display:block; margin-bottom:8px; }
+        .orbit-hero .orbit-active-copy p{ font-size:15px; line-height:1.5; color:var(--orbit-soft); max-width:44ch; margin:0; }
+        .orbit-hero .orbit-page-footer{ display:flex; justify-content:space-between; align-items:center; gap:20px; margin:22px 0 28px; color:#8e908c; font-family:var(--orbit-mono); font-size:12px; }
+        .orbit-hero .orbit-focus-list{ list-style:none; display:flex; gap:28px; padding:0; margin:0; }
+        .orbit-hero .orbit-jump-link{ display:flex; align-items:center; gap:10px; color:#8e908c; transition:color .2s; }
+        .orbit-hero .orbit-jump-link:hover{ color:var(--orbit-ink); }
         @media (min-width:1550px){
           .orbit-hero .orbit-grid{ min-height:710px; }
           .orbit-hero .orbit-stage-canvas{ height:670px; }
@@ -265,9 +162,9 @@ export default function OrbitHero() {
         <div className="orbit-grid">
           <div className="orbit-intro">
             <AnimatePresence mode="wait">
-              {stage === 0 ? (
+              {!textItem ? (
                 <motion.div
-                  key="stage-0"
+                  key="intro-default"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
@@ -291,20 +188,20 @@ export default function OrbitHero() {
                 </motion.div>
               ) : (
                 <motion.div
-                  key={`stage-${stage}`}
+                  key={`intro-${textIndex}`}
                   initial={{ opacity: 0, y: 26 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -26 }}
                   transition={TEXT_TRANSITION}
                 >
                   <span className="orbit-stage-tag" style={monoStyle}>
-                    <b>{String(stage).padStart(2, "0")}</b>
-                    <span>/ {AREAS[stage - 1].label}</span>
+                    <b>{String(textItem.area + 1).padStart(2, "0")}</b>
+                    <span>/ {AREAS[textItem.area].label}</span>
                   </span>
                   <h2 className="orbit-heading">
-                    <AnimatedHeadline segments={[{ text: `${activeItem.short}?` }]} />
+                    <AnimatedHeadline segments={[{ text: `${textItem.short}?` }]} />
                   </h2>
-                  <p className="orbit-lede">{activeItem.result}</p>
+                  <p className="orbit-lede">{textItem.result}</p>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -317,6 +214,9 @@ export default function OrbitHero() {
                 Realizar diagnóstico
                 <ArrowRight className="h-4 w-4" />
               </Link>
+              <a href="#cases" className="orbit-text-link">
+                Explorar aplicações ↓
+              </a>
             </div>
           </div>
 
@@ -330,11 +230,35 @@ export default function OrbitHero() {
                 />
               </Suspense>
             )}
+            <div className="orbit-active-solution">
+              <div key={activeIndex} className="orbit-active-copy">
+                <span className="orbit-active-caption" style={monoStyle}>
+                  {String(activeIndex + 1).padStart(2, "0")} / {AREAS[activeItem.area].label}
+                </span>
+                <p>{activeItem.result}</p>
+              </div>
+              <button
+                type="button"
+                aria-label={`Ver detalhes: ${activeItem.tag}`}
+                onClick={() => handleSelectCase(activeItem.caseIndex)}
+                className="orbit-control"
+              >
+                <ArrowUpRight className="h-4 w-4" />
+              </button>
+            </div>
           </div>
         </div>
 
         <div className="orbit-page-footer">
-          <span>Estratégia humana. Tecnologia sob medida.</span>
+          <ul className="orbit-focus-list" aria-label="Áreas de atuação">
+            <li>Estratégia de negócio</li>
+            <li>Inteligência artificial</li>
+            <li>Software sob medida</li>
+          </ul>
+          <a href="#cases" className="orbit-jump-link">
+            Da ideia à aplicação
+            <ArrowRight className="h-3.5 w-3.5 -rotate-45" />
+          </a>
         </div>
       </div>
     </section>

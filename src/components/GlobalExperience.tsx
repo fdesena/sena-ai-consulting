@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { ExternalLink, Linkedin, ArrowLeft, ArrowRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import selectUsaImg from "@/assets/felipe-selectusa.png";
 import miamiImg from "@/assets/felipe-miami-goglobal.png";
@@ -160,7 +161,7 @@ const EXPERIENCES: Experience[] = [
   },
 ];
 
-export default function GlobalExperience() {
+export default function GlobalExperience({ dark = false }: { dark?: boolean }) {
   const [isPaused, setIsPaused] = useState(false);
   const [dbPosts, setDbPosts] = useState<Experience[]>([]);
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -210,13 +211,18 @@ export default function GlobalExperience() {
   return (
     <div>
       <div>
-        <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+        <p
+          className={cn(
+            "text-xs font-medium uppercase tracking-wider",
+            dark ? "text-white/50" : "text-muted-foreground",
+          )}
+        >
           Experiências Profissionais Globais
         </p>
         <h3 className="mt-3 text-2xl font-semibold sm:text-3xl">
           Onde a estratégia foi aplicada — ao vivo, com instituições e líderes globais.
         </h3>
-        <p className="mt-3 max-w-2xl text-muted-foreground">
+        <p className={cn("mt-3 max-w-2xl", dark ? "text-white/70" : "text-muted-foreground")}>
           Uma seleção de programas, projetos e palestras conduzidos ao lado de universidades,
           governos e empresas em diferentes países.
         </p>
@@ -227,14 +233,24 @@ export default function GlobalExperience() {
         <button
           onClick={() => nudge(-1)}
           aria-label="Voltar"
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:border-primary hover:text-primary"
+          className={cn(
+            "flex h-10 w-10 items-center justify-center rounded-full border transition hover:border-primary hover:text-primary",
+            dark
+              ? "border-white/15 bg-white/5 text-white/80"
+              : "border-border bg-card text-foreground",
+          )}
         >
           <ArrowLeft className="h-4 w-4" />
         </button>
         <button
           onClick={() => nudge(1)}
           aria-label="Avançar"
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:border-primary hover:text-primary"
+          className={cn(
+            "flex h-10 w-10 items-center justify-center rounded-full border transition hover:border-primary hover:text-primary",
+            dark
+              ? "border-white/15 bg-white/5 text-white/80"
+              : "border-border bg-card text-foreground",
+          )}
         >
           <ArrowRight className="h-4 w-4" />
         </button>

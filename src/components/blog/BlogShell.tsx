@@ -1,61 +1,71 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
-import senaLogoHorizontal from "@/assets/brand/sena-labs-horizontal-light.svg";
+import SiteHeader from "@/components/SiteHeader";
 
 type Props = {
   /** Eyebrow em mono acima do título (ex.: "Blog"). */
   eyebrow?: string;
   title: string;
   description?: string;
-  /** Quando false, esconde o link "Voltar ao blog" (usado no índice). */
+  /** Nota lateral (borda laranja) — usada para avisos editoriais curtos. */
+  note?: string;
+  /** Quando false, esconde o breadcrumb "Voltar ao blog" (usado no índice). */
   back?: boolean;
+  /** Largura do miolo de leitura — "wide" para o índice (grades), "narrow" para artigos. */
+  width?: "wide" | "narrow";
   children: React.ReactNode;
 };
 
 /**
- * Casca compartilhada das páginas de /blog — mesma barra, tipografia e
- * paleta do site público, no mesmo padrão do ToolShell usado em /ferramentas.
+ * Casca compartilhada das páginas de /blog — header escuro do site,
+ * hero editorial em papel claro e leitura confortável para os artigos.
  */
-export function BlogShell({ eyebrow, title, description, back = true, children }: Props) {
-  return (
-    <div className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
-          <a href="/" className="inline-flex items-center gap-2">
-            <img src={senaLogoHorizontal} alt="Sena Labs" className="h-9 w-auto" />
-            <span className="font-mono text-xs text-muted-foreground">Blog</span>
-          </a>
-          <div className="flex items-center gap-3 text-sm">
-            {back && (
-              <Link
-                to="/blog"
-                className="inline-flex items-center gap-1.5 text-muted-foreground transition hover:text-primary"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                <span className="hidden sm:inline">Voltar ao blog</span>
-              </Link>
-            )}
-            <a
-              href="/"
-              className="rounded-full border border-foreground/15 px-4 py-2 transition hover:border-foreground/40"
-            >
-              Site
-            </a>
-          </div>
-        </div>
-      </header>
+export function BlogShell({
+  eyebrow,
+  title,
+  description,
+  note,
+  back = true,
+  width = "wide",
+  children,
+}: Props) {
+  const maxWidth = width === "narrow" ? "max-w-3xl" : "max-w-6xl";
 
-      <main className="mx-auto max-w-6xl px-6 py-10 sm:py-14">
-        <div className="mb-8">
+  return (
+    <div className="min-h-screen bg-[var(--paper)] text-[var(--paper-ink,var(--ink))]">
+      <SiteHeader />
+
+      <main className={`mx-auto ${maxWidth} px-6 py-14 sm:py-20`}>
+        <div className="mb-4 flex items-center gap-3 text-sm text-muted-foreground">
+          <Link to="/" className="hover:text-primary">
+            Início
+          </Link>
+          <span aria-hidden="true">/</span>
+          {back ? (
+            <Link to="/blog" className="hover:text-primary">
+              Blog
+            </Link>
+          ) : (
+            <span>Blog</span>
+          )}
+        </div>
+
+        <div className="mb-10">
           {eyebrow && (
-            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
+            <span className="font-mono text-sm uppercase tracking-[0.08em] text-primary">
               {eyebrow}
             </span>
           )}
-          <h1 className="mt-2 max-w-3xl text-3xl font-semibold tracking-tight sm:text-4xl">
+          <h1 className="mt-4 max-w-[17ch] text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
             {title}
           </h1>
-          {description && <p className="mt-3 max-w-2xl text-muted-foreground">{description}</p>}
+          {description && (
+            <p className="mt-5 max-w-[48ch] text-lg text-muted-foreground">{description}</p>
+          )}
+          {note && (
+            <p className="mt-6 max-w-[65ch] border-l-2 border-primary pl-4 text-sm text-muted-foreground">
+              {note}
+            </p>
+          )}
         </div>
 
         {children}
@@ -64,9 +74,9 @@ export function BlogShell({ eyebrow, title, description, back = true, children }
       <footer className="border-t border-border">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-8 text-sm text-muted-foreground">
           <span>© {new Date().getFullYear()} Sena Labs · Felipe Sena</span>
-          <a href="/" className="hover:underline">
+          <Link to="/" className="hover:text-primary hover:underline">
             senaconsulting.app
-          </a>
+          </Link>
         </div>
       </footer>
     </div>

@@ -1,38 +1,24 @@
-import senaLogoHorizontal from "@/assets/brand/sena-labs-horizontal-light.svg";
-import senaLogoStacked from "@/assets/brand/sena-labs-stacked-light.svg";
-import senaLogoStackedDark from "@/assets/brand/sena-labs-stacked-dark.svg";
+import senaLogoHorizontalDark from "@/assets/brand/sena-labs-horizontal-dark.svg";
+import miamiImg from "@/assets/felipe-miami-goglobal.png";
+import selectUsaImg from "@/assets/felipe-selectusa.png";
+import hultAlumniImg from "@/assets/felipe-hult-alumni.png";
+import hultChallengeImg from "@/assets/felipe-hult-challenge.png";
+import myllenniumImg from "@/assets/felipe-myllennium.png";
+import mitSolveImg from "@/assets/felipe-mit-solve.png";
+import bostonBeyondImg from "@/assets/felipe-boston-beyond.png";
+import epicMalasiaImg from "@/assets/felipe-epic-malasia.png";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { trackEvent, trackPageview } from "@/lib/track";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  GraduationCap,
-  Compass,
-  Bot,
-  Workflow,
-  LayoutDashboard,
-  Presentation,
-  Users,
-  Target,
-  TrendingUp,
-  MessageSquare,
-  Mail,
-  Linkedin,
-  Zap,
-  Building2,
-  LogIn,
-  Wrench,
-  Menu,
-} from "lucide-react";
+import { ArrowRight, Building2, LogIn, Wrench, Menu } from "lucide-react";
 import { motion } from "framer-motion";
 import { WHATSAPP_URL } from "./ContactFAB";
-import ProcessCycle from "./ProcessCycle";
+import ProcessRail from "./ProcessRail";
+import ScheduleButton from "./ScheduleButton";
+import ReadingProgress from "./ReadingProgress";
 import OrbitHero from "./OrbitHero";
 import TrackRecord from "./TrackRecord";
-import GlobalExperience from "./GlobalExperience";
 import { RING_1_TOOLS, RING_2_TOOLS, RING_3_TOOLS, type ToolIcon } from "@/data/tool-icons";
-import felipeImg from "@/assets/felipe-sena-profile.png";
 import { cn } from "@/lib/utils";
 import {
   Sheet,
@@ -43,36 +29,31 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-const COUNTRIES = [
-  { code: "BR", name: "Brasil" },
-  { code: "US", name: "Estados Unidos" },
-  { code: "GB", name: "Reino Unido" },
-  { code: "PT", name: "Portugal" },
-  { code: "ES", name: "Espanha" },
-  { code: "MY", name: "Malásia" },
-  { code: "CN", name: "China (Xangai)" },
-  { code: "IT", name: "Itália" },
-  { code: "JO", name: "Jordânia" },
-];
-
-function Flag({ code, name }: { code: string; name: string }) {
-  return (
-    <img
-      src={`https://flagcdn.com/w40/${code.toLowerCase()}.png`}
-      srcSet={`https://flagcdn.com/w80/${code.toLowerCase()}.png 2x`}
-      alt={name}
-      title={name}
-      loading="lazy"
-      className="h-5 w-7 rounded-sm object-cover ring-1 ring-border"
-    />
-  );
-}
-
 const EMAIL = "felipesmsena@gmail.com";
 const LINKEDIN = "https://linkedin.com/in/senafelipe";
 
 function Eyebrow({ children, className }: { children: React.ReactNode; className?: string }) {
   return <span className={cn("eyebrow", className)}>{children}</span>;
+}
+
+/**
+ * Foto com filtro/duotone laranja da marca — usada nos cards de experiência.
+ * O filtro some no hover (revela a cor original) e o card ganha um contorno laranja.
+ * Requer que o elemento pai tenha a classe `group`.
+ */
+function PhotoTile({ src, alt }: { src: string; alt: string }) {
+  return (
+    <div className="relative aspect-video overflow-hidden rounded-lg bg-white/5 ring-1 ring-transparent transition-all duration-300 group-hover:ring-primary/70">
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        className="h-full w-full scale-100 object-cover grayscale-[35%] transition-all duration-500 group-hover:scale-[1.04] group-hover:grayscale-0"
+      />
+      <div className="pointer-events-none absolute inset-0 bg-primary/35 mix-blend-color transition-opacity duration-500 group-hover:opacity-0" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+    </div>
+  );
 }
 
 function Section({
@@ -91,23 +72,9 @@ function Section({
   );
 }
 
-const capacitarItems = [
-  { t: "Mapeamento e melhoria de processos", Icon: Workflow },
-  { t: "Seleção e implementação de ferramentas", Icon: Compass },
-  { t: "Capacitação e adoção pelo time", Icon: Users },
-];
-
-const construirItems = [
-  { t: "Assistentes de IA customizados", Icon: Bot },
-  { t: "Apps e automações de fluxos", Icon: Workflow },
-  { t: "Plataformas, dashboards e LMS", Icon: LayoutDashboard },
-];
-
-const orientarItems = [
-  { t: "Indicadores para gestão do negócio", Icon: Target },
-  { t: "Análise de oportunidades e gargalos", Icon: MessageSquare },
-  { t: "Estratégia baseada em dados e ROI", Icon: TrendingUp },
-];
+const capacitarTags = ["Processos", "Ferramentas", "Capacitação"];
+const construirTags = ["Agentes de IA", "Apps e plataformas", "Automações"];
+const orientarTags = ["Indicadores", "Análise", "Estratégia"];
 
 function ToolIconBadge({ tool }: { tool: ToolIcon }) {
   return (
@@ -245,12 +212,12 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       {/* NAV */}
-      <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur">
+      <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-[var(--ink)]/95 text-[var(--paper)] backdrop-blur">
         <div className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <a href="#top" className="inline-flex items-center md:min-w-[280px]">
-            <img src={senaLogoHorizontal} alt="Sena Labs" className="h-11 w-auto" />
+            <img src={senaLogoHorizontalDark} alt="Sena Labs" className="h-11 w-auto" />
           </a>
-          <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 text-sm md:flex">
+          <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 text-sm text-white/70 md:flex">
             <a href="#cases" className="hover:text-primary">
               Casos de Uso
             </a>
@@ -279,46 +246,49 @@ export default function LandingPage() {
                 <button
                   type="button"
                   aria-label="Abrir menu"
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/60 text-foreground transition hover:border-primary hover:text-primary md:hidden"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-[var(--paper)] transition hover:border-primary hover:text-primary md:hidden"
                 >
                   <Menu className="h-5 w-5" />
                 </button>
               </SheetTrigger>
-              <SheetContent side="right" className="flex w-[85%] flex-col sm:max-w-sm">
+              <SheetContent
+                side="right"
+                className="flex w-[85%] flex-col border-white/10 bg-[var(--ink)] text-[var(--paper)] sm:max-w-sm"
+              >
                 <SheetHeader>
                   <SheetTitle className="flex items-center text-left">
-                    <img src={senaLogoHorizontal} alt="Sena Labs" className="h-8 w-auto" />
+                    <img src={senaLogoHorizontalDark} alt="Sena Labs" className="h-8 w-auto" />
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="mt-4 flex flex-col gap-1 text-base">
                   <SheetClose asChild>
-                    <a href="#cases" className="rounded-xl px-3 py-3 transition hover:bg-muted">
+                    <a href="#cases" className="rounded-xl px-3 py-3 transition hover:bg-white/10">
                       Casos de Uso
                     </a>
                   </SheetClose>
                   <SheetClose asChild>
                     <Link
                       to="/ferramentas"
-                      className="flex items-center gap-2.5 rounded-xl px-3 py-3 transition hover:bg-muted"
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-3 transition hover:bg-white/10"
                     >
                       <Wrench className="h-4 w-4 text-primary" />
                       Ferramentas
                     </Link>
                   </SheetClose>
                   <SheetClose asChild>
-                    <Link to="/blog" className="rounded-xl px-3 py-3 transition hover:bg-muted">
+                    <Link to="/blog" className="rounded-xl px-3 py-3 transition hover:bg-white/10">
                       Blog
                     </Link>
                   </SheetClose>
 
-                  <div className="my-3 border-t border-border" />
-                  <span className="px-3 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                  <div className="my-3 border-t border-white/10" />
+                  <span className="px-3 font-mono text-[11px] uppercase tracking-[0.18em] text-white/50">
                     Área exclusiva
                   </span>
                   <SheetClose asChild>
                     <a
                       href="/auth"
-                      className="mt-1 flex items-center gap-2.5 rounded-xl px-3 py-3 transition hover:bg-muted"
+                      className="mt-1 flex items-center gap-2.5 rounded-xl px-3 py-3 transition hover:bg-white/10"
                     >
                       <LogIn className="h-4 w-4 text-primary" />
                       Entrar no painel
@@ -341,6 +311,7 @@ export default function LandingPage() {
             </Sheet>
           </div>
         </div>
+        <ReadingProgress />
       </header>
 
       {/* HERO — Órbita Sena Labs (sticky scroll, canvas 3D) */}
@@ -419,7 +390,9 @@ export default function LandingPage() {
       {/* CASES */}
       <Section id="cases" className="border-t border-border">
         <div>
-          <Eyebrow>Cases / Results</Eyebrow>
+          <Eyebrow>
+            <span className="text-primary">01 /</span> Cases e aplicações
+          </Eyebrow>
           <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
             Resultados concretos. Sistemas em produção.
           </h2>
@@ -434,158 +407,182 @@ export default function LandingPage() {
       </Section>
 
       {/* DESAFIO */}
-      <Section id="desafio" className="border-t border-border">
-        <Eyebrow>O desafio</Eyebrow>
-        <h2 className="mt-4 max-w-4xl text-3xl font-semibold sm:text-5xl">
-          Entre o discurso da IA e o resultado real, existe um abismo.
-        </h2>
-        <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-          A dificuldade não está mais no acesso às ferramentas — está em transformá-las em processos
-          melhores, produtividade e decisões mais rápidas.
-        </p>
+      <section
+        id="desafio"
+        className="border-y border-white/10 bg-[var(--ink)] text-[var(--paper)]"
+      >
+        <div className="mx-auto w-full max-w-6xl px-6 py-24 sm:py-32">
+          <Eyebrow className="justify-center text-white/50">
+            <span className="text-primary">02 /</span> O desafio
+          </Eyebrow>
+          <h2 className="mx-auto mt-6 max-w-3xl text-center text-3xl font-semibold sm:text-5xl">
+            Ter acesso à IA é só o começo.
+            <br />
+            <span className="text-white/45">
+              Fazer sentido para o negócio
+              <br />é o próximo passo.
+            </span>
+          </h2>
 
-        <p className="mt-14 eyebrow text-primary">Soa familiar?</p>
-        <div className="mt-5 grid gap-6 sm:grid-cols-2">
-          <article className="rounded-2xl border border-border/40 bg-card p-8 transition hover:border-primary hover:shadow-md sm:p-10">
-            <div className="flex items-center gap-3">
-              <Zap className="h-5 w-5 text-primary" strokeWidth={1.5} />
-              <span className="eyebrow">Para líderes e profissionais</span>
+          <div className="mx-auto mt-16 grid max-w-4xl gap-12 sm:grid-cols-2">
+            <div className="border-t border-white/25 pt-6">
+              <span className="font-mono text-xs uppercase tracking-[0.18em] text-primary">
+                Para líderes e profissionais
+              </span>
+              <h3 className="mt-5 max-w-[24ch] text-xl font-semibold tracking-tight sm:text-2xl">
+                Quer produzir mais.
+                <br />
+                Continua preso ao manual.
+              </h3>
+              <p className="mt-4 max-w-[42ch] text-white/60">
+                A oportunidade existe, mas falta transformar ferramentas soltas em uma forma melhor
+                de trabalhar.
+              </p>
             </div>
-            <h3 className="mt-5 text-xl font-semibold tracking-tight sm:text-2xl">
-              Quer produzir mais. Continua preso ao manual.
-            </h3>
-            <p className="mt-4 border-l-2 border-primary/50 pl-4 text-lg italic leading-relaxed text-foreground/90">
-              “Sei que a IA podia me poupar horas por dia — mas no fim continuo fazendo quase tudo
-              na mão.”
-            </p>
-          </article>
-          <article className="rounded-2xl border border-border/40 bg-card p-8 transition hover:border-primary hover:shadow-md sm:p-10">
-            <div className="flex items-center gap-3">
-              <Building2 className="h-5 w-5 text-primary" strokeWidth={1.5} />
-              <span className="eyebrow">Para empresas e gestores</span>
+            <div className="border-t border-white/25 pt-6">
+              <span className="font-mono text-xs uppercase tracking-[0.18em] text-primary">
+                Para empresas e gestores
+              </span>
+              <h3 className="mt-5 max-w-[24ch] text-xl font-semibold tracking-tight sm:text-2xl">
+                Precisa de algo próprio.
+                <br />
+                Não sabe por onde começar.
+              </h3>
+              <p className="mt-4 max-w-[42ch] text-white/60">
+                A solução precisa acompanhar o seu processo, conversar com os seus sistemas e fazer
+                parte da rotina do time.
+              </p>
             </div>
-            <h3 className="mt-5 text-xl font-semibold tracking-tight sm:text-2xl">
-              Quer soluções próprias. Não sabe o que dá pra construir.
-            </h3>
-            <p className="mt-4 border-l-2 border-primary/50 pl-4 text-lg italic leading-relaxed text-foreground/90">
-              “Preciso de algo sob medida pra minha operação — só não sei por onde começar nem se o
-              time vai adotar.”
-            </p>
-          </article>
+          </div>
+          <div
+            aria-hidden
+            className="mx-auto -mb-6 mt-11 h-[68px] w-px bg-gradient-to-b from-primary to-transparent"
+          />
         </div>
-      </Section>
+      </section>
 
       {/* PILARES */}
-      <Section id="pilares" className="border-t border-border !pb-0">
-        <Eyebrow>O que fazemos</Eyebrow>
-        <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
-          Tecnologia aplicada a problemas reais.
-        </h2>
-        <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-          Melhoramos operações, construímos produtos e transformamos dados em decisões.
-        </p>
-      </Section>
+      <Section id="pilares" className="border-t border-border">
+        <div className="grid gap-6 sm:grid-cols-2 sm:items-end sm:gap-16">
+          <Eyebrow className="sm:col-span-2">
+            <span className="text-primary">03 /</span> O que fazemos
+          </Eyebrow>
+          <h2 className="text-3xl font-semibold sm:text-5xl">
+            Tecnologia aplicada.
+            <br />
+            Em três frentes.
+          </h2>
+          <p className="text-lg text-muted-foreground">
+            Melhoramos operações, construímos ferramentas próprias e usamos dados para orientar
+            decisões.
+          </p>
+        </div>
 
-      {/* PILAR BLOCKS */}
-      <PillarBlock
-        id="capacitar"
-        n="01"
-        title="Aumentar produtividade"
-        sub="Melhoramos processos, reduzimos trabalho manual e implementamos ferramentas mais eficientes para o negócio."
-        items={capacitarItems}
-        divider={false}
-      />
-      <PillarBlock
-        id="construir"
-        n="02"
-        title="Construir ferramentas"
-        sub="Soluções customizadas para seu caso, com agilidade e eficiência de custo."
-        items={construirItems}
-        dark
-      />
-      <PillarBlock
-        id="orientar"
-        n="03"
-        title="Direcionar decisões"
-        sub="Decisões baseadas em dados e estratégias que geram ROI no negócio."
-        items={orientarItems}
-      />
-
-      {/* COMO TRABALHAMOS */}
-      <Section id="processo" className="border-t border-border">
-        <Eyebrow>04 · Como trabalhamos</Eyebrow>
-        <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
-          Entender → Desenhar → Construir → Implementar → Evoluir.
-        </h2>
-        <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-          Da investigação do problema à evolução do produto, estratégia e execução caminham juntas.
-          Cada entrega gera dados para o próximo ciclo.
-        </p>
-        <div className="mt-16">
-          <ProcessCycle />
+        <div className="mt-10">
+          <PillarRow
+            id="capacitar"
+            n="01"
+            title={
+              <>
+                Aumentar
+                <br />
+                produtividade.
+              </>
+            }
+            sub="Revisar processos, reduzir trabalho manual e preparar o time para usar a tecnologia com autonomia."
+            tags={capacitarTags}
+          />
+          <PillarRow
+            id="construir"
+            n="02"
+            title={
+              <>
+                Construir
+                <br />
+                ferramentas.
+              </>
+            }
+            sub="Desenvolver soluções que acompanham o seu negócio, das primeiras regras à operação no dia a dia."
+            tags={construirTags}
+          />
+          <PillarRow
+            id="orientar"
+            n="03"
+            title={
+              <>
+                Direcionar
+                <br />
+                decisões.
+              </>
+            }
+            sub="Organizar informações, identificar oportunidades e definir prioridades com base nos dados do negócio."
+            tags={orientarTags}
+            last
+          />
         </div>
       </Section>
+
+      {/* COMO TRABALHAMOS */}
+      <section id="processo" className="border-y border-[#d1d3d5] bg-[#e8eaec] text-[#1a1c1e]">
+        <div className="mx-auto w-full max-w-6xl px-6 py-20 sm:py-28">
+          <ProcessRail />
+        </div>
+      </section>
 
       {/* FORMAS DE TRABALHAR */}
       <Section id="como-ajudar" className="border-t border-border">
-        <Eyebrow>05 · Ways to work with us</Eyebrow>
+        <Eyebrow>
+          <span className="text-primary">05 /</span> Como podemos ajudar
+        </Eyebrow>
         <h2 className="mt-4 max-w-3xl text-3xl font-semibold sm:text-5xl">
-          Entre pela etapa que faz sentido agora.
+          Comece pela etapa que faz sentido agora.
         </h2>
         <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-          De capacitação pontual à construção completa de um produto digital.
+          Da capacitação do time à construção de uma solução completa.
         </p>
 
-        <div className="mt-12 grid gap-4 md:grid-cols-3">
+        <div className="mt-12 grid border-y border-border sm:grid-cols-3">
           {[
             {
-              name: "Learn",
-              title: "Aprender e mobilizar",
-              text: "Palestras e treinamentos para tornar IA prática, segura e útil no dia a dia do time.",
+              name: "01 / Capacitação",
+              title: "Aprender e mobilizar.",
+              text: "Palestras e treinamentos para tornar a IA prática e útil no dia a dia do seu time.",
               action: "Capacitar meu time",
-              Icon: Presentation,
             },
             {
-              name: "Advisory",
-              title: "Decidir o caminho",
-              text: "Diagnóstico, desenho de solução e priorização para transformar uma oportunidade em plano executável.",
+              name: "02 / Estratégia",
+              title: "Decidir o caminho.",
+              text: "Diagnóstico, desenho de solução e priorização para transformar uma oportunidade em plano.",
               action: "Mapear oportunidades",
-              Icon: Compass,
             },
             {
-              name: "Build",
-              title: "Construir e implementar",
-              text: "Agentes, automações, apps, dashboards e plataformas sob medida, integrados à operação.",
+              name: "03 / Desenvolvimento",
+              title: "Construir e implementar.",
+              text: "Agentes, automações, apps, dashboards e plataformas sob medida para a sua operação.",
               action: "Construir uma solução",
-              Icon: Bot,
             },
-          ].map(({ name, title, text, action, Icon }, index) => (
+          ].map(({ name, title, text, action }, index) => (
             <article
               key={name}
               className={cn(
-                "group flex min-h-[330px] flex-col rounded-2xl border p-7 transition sm:p-9",
-                index === 2
-                  ? "border-primary bg-[var(--ink)] text-[var(--paper)] shadow-lg"
-                  : "border-border/60 bg-card hover:border-primary/50",
+                "flex flex-col items-start py-9 sm:px-8 sm:py-10",
+                index > 0 && "border-t border-border sm:border-t-0 sm:border-l",
+                index === 0 && "sm:pl-0",
+                index === 2 && "sm:pr-0",
               )}
             >
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs uppercase tracking-[0.2em] text-primary">
-                  0{index + 1} · {name}
-                </span>
-                <Icon className="h-5 w-5 text-primary" strokeWidth={1.5} />
-              </div>
-              <h3 className="mt-8 text-2xl font-semibold">{title}</h3>
-              <p className={cn("mt-4", index === 2 ? "text-white/70" : "text-muted-foreground")}>
-                {text}
-              </p>
+              <span className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                {name}
+              </span>
+              <h3 className="mt-7 text-2xl font-semibold sm:text-3xl">{title}</h3>
+              <p className="mt-4 text-muted-foreground">{text}</p>
               <a
                 href="https://calendar.app.google/oh4NeMRMtw8v5UP5A"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-auto inline-flex items-center gap-2 pt-8 text-sm font-medium text-primary"
               >
-                {action} <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                {action} <ArrowRight className="h-4 w-4" />
               </a>
             </article>
           ))}
@@ -593,231 +590,277 @@ export default function LandingPage() {
       </Section>
 
       {/* SOBRE A SENA LABS */}
-      <section id="sobre" className="border-t border-border bg-[var(--ink)] text-[var(--paper)]">
-        <div className="mx-auto grid w-full max-w-6xl gap-10 px-6 py-20 sm:py-28 md:grid-cols-[0.8fr_1.2fr] md:items-start">
-          <div className="flex flex-col items-start">
-            <Eyebrow className="text-white/70">06 · About Sena Labs</Eyebrow>
-            <img src={senaLogoStackedDark} alt="Sena Labs" className="mt-10 h-48 w-auto sm:h-56" />
-          </div>
-          <div>
-            <h2 className="max-w-3xl text-3xl font-semibold sm:text-5xl">
-              Uma empresa de estratégia e tecnologia feita para construir.
+      <section id="sobre" className="border-t border-white/10 bg-[var(--ink)] text-[var(--paper)]">
+        <div className="mx-auto w-full max-w-6xl px-6 pb-20 pt-20 sm:pb-28 sm:pt-28">
+          <Eyebrow className="text-white/50">
+            <span className="text-primary">06 /</span> Sobre a Sena Labs
+          </Eyebrow>
+          <div className="mt-6 grid gap-10 sm:grid-cols-[1.3fr_0.7fr] sm:gap-16">
+            <h2 className="text-3xl font-semibold sm:text-5xl">
+              Visão de negócio.
+              <br />
+              Capacidade de construir.
             </h2>
-            <p className="mt-6 max-w-2xl text-lg text-white/70">
-              A Sena Labs transforma problemas de negócio em soluções digitais úteis. Combinamos
-              visão estratégica, IA, dados e desenvolvimento de software para entregar produtos que
-              entram na operação — e evoluem com ela.
-            </p>
-            <div className="mt-10 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-3">
-              {[
-                ["Estratégia", "Clareza sobre o problema e o resultado esperado."],
-                ["Tecnologia", "A solução certa, integrada ao que já existe."],
-                ["Execução", "Produto implementado, adotado e mensurável."],
-              ].map(([title, text]) => (
-                <div key={title} className="bg-[var(--ink)] p-6">
-                  <h3 className="text-lg font-semibold text-primary">{title}</h3>
-                  <p className="mt-2 text-sm text-white/60">{text}</p>
+            <div>
+              <p className="text-lg text-white/70">
+                A Sena Labs combina estratégia, inteligência artificial, dados e desenvolvimento de
+                software para criar soluções digitais úteis — que entram na operação e evoluem com
+                ela.
+              </p>
+              <div className="mt-6 flex flex-col border-t border-white/15">
+                {[
+                  ["Estratégia", "01"],
+                  ["Tecnologia", "02"],
+                  ["Execução", "03"],
+                ].map(([title, index]) => (
+                  <div
+                    key={title}
+                    className="flex items-center justify-between border-b border-white/15 py-3 font-mono text-sm text-white/70"
+                  >
+                    <span>{title}</span>
+                    <span className="text-primary">{index}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* FUNDADOR */}
+        <div id="fundador" className="border-t border-white/10">
+          <div className="mx-auto grid w-full max-w-6xl gap-12 px-6 py-16 sm:grid-cols-[0.72fr_1.28fr] sm:gap-[72px] sm:py-20">
+            <div>
+              <Eyebrow className="text-white/50">
+                <span className="text-primary">07 /</span> Fundador
+              </Eyebrow>
+              <h3 className="mt-5 text-4xl font-semibold sm:text-5xl">Felipe Sena.</h3>
+              <p className="mt-3 text-sm text-white/50">Estratégia, produto e execução.</p>
+              <a
+                href={LINKEDIN}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-7 inline-block border-b border-current pb-1 text-sm text-[#ffb081] hover:text-primary"
+              >
+                Conheça minha trajetória ↗
+              </a>
+            </div>
+
+            <div>
+              <p className="max-w-[55ch] text-lg leading-relaxed text-white/80 sm:text-xl">
+                Consultor de Estratégia e Tecnologia pela Boston Innovation Gateway, com experiência
+                na construção de soluções de IA, dados e automação para empresas e programas
+                internacionais.
+              </p>
+              <div className="mt-8 grid gap-6 sm:grid-cols-2">
+                <div className="border-t border-white/20 pt-4">
+                  <b className="text-sm font-medium text-white">Negócio e análise de dados</b>
+                  <p className="mt-2 text-sm leading-relaxed text-white/55">
+                    Mestrados em International Business e Business Analytics pela Hult International
+                    Business School.
+                  </p>
                 </div>
+                <div className="border-t border-white/20 pt-4">
+                  <b className="text-sm font-medium text-white">Produto e execução</b>
+                  <p className="mt-2 text-sm leading-relaxed text-white/55">
+                    Experiências em Sicredi, XP Investimentos, HP Tech Ventures e liderança de
+                    produto na Rivool Finance.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mx-auto w-full max-w-6xl border-t border-white/10 px-6 pb-20 pt-16 sm:pb-28">
+            <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+              <h3 className="text-xl font-semibold sm:text-2xl">
+                Experiência aplicada, em diferentes contextos.
+              </h3>
+              <p className="font-mono text-xs text-white/50">
+                São Paulo · Boston · Atuação internacional
+              </p>
+            </div>
+            <div className="mt-6 grid gap-7 sm:grid-cols-3">
+              {[
+                {
+                  small: "Internacionalização",
+                  b: "Go Global · University of Miami ↗",
+                  span: "Gestão de projetos de internacionalização com empresas, universidades e consultores.",
+                  href: "https://www.linkedin.com/in/senafelipe/",
+                  image: miamiImg,
+                },
+                {
+                  small: "Ensino & IA",
+                  b: "Hult International Business School ↗",
+                  span: "Atuação como professor assistente em disciplinas de inteligência artificial.",
+                  href: "https://www.linkedin.com/feed/update/urn:li:ugcPost:7191442511838535680",
+                  image:
+                    "https://media.licdn.com/dms/image/v2/D4D22AQFC_jmUaFdOqQ/feedshare-image-high-res/feedshare-image-high-res/0/1714573503942?e=2147483647&v=beta&t=UgwEEBnkxBBANPnFFMIoWDTfW-Tv73Wj24vO0G4mBe4",
+                },
+                {
+                  small: "Produto & negócios",
+                  b: "Rivool Finance · SelectUSA ↗",
+                  span: "Apresentação de uma plataforma de tokenização de crédito agrícola.",
+                  href: "https://portal.agrosummit.com.br/agfintech-brasileira-e-selecionada-para-maior-evento-de-investimento-dos-eua",
+                  image: selectUsaImg,
+                },
+              ].map((item) => (
+                <a
+                  key={item.small}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group block border-t border-white/20 pt-4 transition hover:border-primary/60"
+                >
+                  <PhotoTile src={item.image} alt={item.b} />
+                  <small className="mt-4 block font-mono text-xs text-[#ffb081]">
+                    {item.small}
+                  </small>
+                  <b className="mt-2 block font-normal">{item.b}</b>
+                  <span className="mt-2 block text-sm text-white/55">{item.span}</span>
+                </a>
               ))}
+            </div>
+
+            <details className="group mt-7 border-t border-white/10">
+              <summary className="cursor-pointer py-5 text-sm text-white/80">
+                Ver outras experiências e programas
+              </summary>
+              <div className="grid gap-6 pt-2 sm:grid-cols-2 lg:grid-cols-4">
+                {[
+                  {
+                    b: "Visita ao escritório da Lovable AI ↗",
+                    span: "Boston · Ecossistema de IA e desenvolvimento de produtos.",
+                    href: "https://www.linkedin.com/feed/update/urn:li:ugcPost:7465860189200670721",
+                    image:
+                      "https://media.licdn.com/dms/image/v2/D4D22AQH2TuCoc2iSDg/feedshare-shrink_800/B4DZ5wQR85JcAc-/0/1779999776834?e=2147483647&v=beta&t=0Zo9XjI4HHXu1dRod75VHHDZYRqYyxK8jMehb-6HF6I",
+                  },
+                  {
+                    b: "Encontro Alumni Hult ↗",
+                    span: "Organização de encontro com a comunidade global da Hult em Boston.",
+                    href: "https://www.linkedin.com/posts/senafelipe_activity-7465827955500367872",
+                    image: hultAlumniImg,
+                  },
+                  {
+                    b: "Business Challenge · Hult ↗",
+                    span: "IA aplicada à estratégia, em parceria com Prof. Patrick Lynch.",
+                    href: "https://www.linkedin.com/posts/senafelipe_it-was-a-distinct-pleasure-to-participate-activity-7143594499804459008-T8Co",
+                    image: hultChallengeImg,
+                  },
+                  {
+                    b: "La Salle Barcelona ↗",
+                    span: "Recepção de alunos em programa imersivo de inovação em Boston.",
+                    href: "https://www.linkedin.com/feed/update/urn:li:ugcPost:7211738960128032768",
+                    image:
+                      "https://media.licdn.com/dms/image/v2/D4D22AQGfQ3v0TXIXbg/feedshare-image-high-res/feedshare-image-high-res/0/1719412540093?e=2147483647&v=beta&t=Z3HWh4F6arSeTkHNk-EYUw4FKn7eLQqxyaRmxrEktJQ",
+                  },
+                  {
+                    b: "Myllennium Award ↗",
+                    span: "Programa de aceleração para empreendedores italianos.",
+                    href: "https://www.linkedin.com/posts/senafelipe_lesperienza-del-boston-innovation-gateway-activity-7176944036270784513-87zo",
+                    image: myllenniumImg,
+                  },
+                  {
+                    b: "MIT Solve & Digital Strategy Conference ↗",
+                    span: "Discussões sobre IA, produtividade e agentes contextuais.",
+                    href: "https://www.linkedin.com/posts/senafelipe_digitaltransformation-artificialintelligence-activity-7123746921839493120-ePnZ",
+                    image: mitSolveImg,
+                  },
+                  {
+                    b: "Boston Beyond · Sistema FIEC + MIT ILP ↗",
+                    span: "Programa executivo sobre IA aplicada e deep learning.",
+                    href: "https://www.linkedin.com/feed/update/urn:li:ugcPost:7121963915718074368",
+                    image: bostonBeyondImg,
+                  },
+                  {
+                    b: "EPIC Boston · Delegação da Malásia ↗",
+                    span: "Expedição com lideranças de ciência, tecnologia e negócios.",
+                    href: "https://www.linkedin.com/posts/senafelipe_epicboston-innovationmanagement-collaboration-activity-7068354948282871808-K--8",
+                    image: epicMalasiaImg,
+                  },
+                ].map((item) => (
+                  <a
+                    key={item.b}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group block text-sm transition"
+                  >
+                    <PhotoTile src={item.image} alt={item.b} />
+                    <b className="mt-3 block font-normal">{item.b}</b>
+                    <span className="mt-1.5 block text-white/55">{item.span}</span>
+                  </a>
+                ))}
+              </div>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA FINAL */}
+      <section id="contato" className="border-t border-white/10 bg-[#1e2022] text-[var(--paper)]">
+        <div className="relative mx-auto grid w-full max-w-6xl gap-12 overflow-hidden px-6 py-20 sm:py-28 md:grid-cols-[1fr_0.6fr] md:items-center">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-primary/15 blur-3xl"
+          />
+          <div>
+            <Eyebrow className="text-white/50">
+              <span className="text-primary">08 /</span> Vamos conversar
+            </Eyebrow>
+            <h2 className="mt-4 max-w-2xl text-4xl font-semibold sm:text-5xl lg:text-6xl">
+              Tem um problema que{" "}
+              <span className="text-[#ffb081]">tecnologia poderia resolver?</span>
+            </h2>
+            <p className="mt-5 max-w-xl text-lg text-white/70">
+              Conte o contexto. Nós ajudamos a transformar a pergunta em uma solução que funciona.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-3 justify-self-start md:justify-self-end md:w-full md:max-w-[340px]">
+            <ScheduleButton className="[&_button]:!w-full" />
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-between gap-2 rounded-md border border-white/20 px-5 py-3.5 font-medium text-white hover:bg-white/10"
+            >
+              Conversar pelo WhatsApp <span>↗</span>
+            </a>
+            <div className="mt-1 flex items-center justify-between gap-4 text-sm text-white/60">
+              <a href={`mailto:${EMAIL}`} className="hover:text-primary">
+                E-mail ↗
+              </a>
+              <a
+                href={LINKEDIN}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-primary"
+              >
+                LinkedIn ↗
+              </a>
             </div>
           </div>
         </div>
       </section>
 
-      {/* FUNDADOR */}
-      <Section id="fundador" className="border-t border-border">
-        <div className="grid gap-12 md:grid-cols-[auto_1fr] md:items-center">
-          <div className="flex flex-col items-center gap-6 md:items-start">
-            <div className="relative">
-              <div
-                aria-hidden
-                className="absolute -inset-3 rounded-full bg-gradient-to-br from-primary/30 to-transparent blur-xl"
-              />
-              <div className="relative h-56 w-56 overflow-hidden rounded-full ring-4 ring-primary/20 ring-offset-4 ring-offset-background sm:h-64 sm:w-64">
-                <img
-                  src={felipeImg}
-                  alt="Felipe Sena, fundador da Sena Labs"
-                  className="h-full w-full object-cover object-[center_15%]"
-                  loading="lazy"
-                />
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <a
-                href={LINKEDIN}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-card hover:border-primary hover:text-primary"
-              >
-                <Linkedin className="h-5 w-5" />
-              </a>
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="WhatsApp"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-card hover:border-[#25D366] hover:text-[#25D366]"
-              >
-                <svg viewBox="0 0 32 32" className="h-5 w-5" fill="currentColor" aria-hidden="true">
-                  <path d="M19.11 17.27c-.27-.14-1.6-.79-1.85-.88-.25-.09-.43-.14-.61.14-.18.27-.7.88-.86 1.06-.16.18-.32.2-.59.07-.27-.14-1.14-.42-2.17-1.34-.8-.71-1.34-1.59-1.5-1.86-.16-.27-.02-.42.12-.55.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47l-.52-.01c-.18 0-.48.07-.73.34s-.96.94-.96 2.29.99 2.66 1.13 2.84c.14.18 1.95 2.98 4.72 4.18.66.29 1.17.46 1.57.59.66.21 1.26.18 1.74.11.53-.08 1.6-.65 1.83-1.28.23-.63.23-1.18.16-1.28-.07-.11-.25-.18-.52-.32zM16.02 5.33c-5.86 0-10.62 4.76-10.62 10.62 0 1.87.49 3.69 1.42 5.29L5.4 26.67l5.55-1.46a10.6 10.6 0 0 0 5.07 1.29h.01c5.85 0 10.61-4.76 10.62-10.61 0-2.84-1.1-5.5-3.11-7.51a10.55 10.55 0 0 0-7.52-3.05zm0 19.4h-.01a8.78 8.78 0 0 1-4.48-1.23l-.32-.19-3.29.86.88-3.21-.21-.33a8.77 8.77 0 0 1-1.34-4.68c0-4.85 3.94-8.79 8.78-8.79 2.35 0 4.55.92 6.21 2.58a8.74 8.74 0 0 1 2.57 6.22c0 4.84-3.94 8.77-8.79 8.77z" />
-                </svg>
-              </a>
-            </div>
-          </div>
-
-          <div>
-            <Eyebrow>07 · Founder</Eyebrow>
-            <h2 className="mt-4 text-3xl font-semibold sm:text-5xl">
-              Felipe Sena. Estratégia, produto e execução em escala global.
-            </h2>
-            <p className="mt-5 text-lg text-muted-foreground">
-              <span className="font-medium text-foreground">
-                Consultor de Estratégia e Tecnologia
-              </span>{" "}
-              pela <span className="font-medium text-foreground">Boston Innovation Gateway</span>.
-              Desde 2022, desenvolve e integra soluções de IA, dados e automação para aumentar
-              produtividade, reduzir trabalho manual e apoiar decisões em empresas, governos e
-              ecossistemas de inovação globais.
-            </p>
-
-            <ul className="mt-8 space-y-3 text-muted-foreground">
-              <li className="flex gap-3">
-                <Target className="mt-1 h-5 w-5 shrink-0 text-primary" strokeWidth={1.6} />
-                <span>
-                  <span className="font-medium text-foreground">
-                    Liderança de Produto e Projetos Digitais Globais
-                  </span>{" "}
-                  — Think-Big / Boston Innovation Gateway.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <TrendingUp className="mt-1 h-5 w-5 shrink-0 text-primary" strokeWidth={1.6} />
-                <span>
-                  Passagem por grandes empresas como{" "}
-                  <span className="font-medium text-foreground">Sicredi</span>,{" "}
-                  <span className="font-medium text-foreground">XP Investimentos</span> e{" "}
-                  <span className="font-medium text-foreground">HP Tech Ventures</span>. Empreendeu
-                  na <span className="font-medium text-foreground">Rivool Finance</span> como Chefe
-                  de Produto (CPO), onde desenvolveu e automatizou a plataforma de tokenização de
-                  crédito agrícola.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <GraduationCap className="mt-1 h-5 w-5 shrink-0 text-primary" strokeWidth={1.6} />
-                <span>
-                  <span className="font-medium text-foreground">Mestrado duplo</span> em Negócios
-                  Internacionais &amp; Business Analytics — Hult International Business School.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <Compass className="mt-1 h-5 w-5 shrink-0 text-primary" strokeWidth={1.6} />
-                <span>
-                  Atuação em <span className="font-medium text-foreground">São Paulo · Boston</span>{" "}
-                  · projetos em 4 continentes &amp; 22 países.
-                </span>
-              </li>
-            </ul>
-
-            <div className="mt-8">
-              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                Experiência internacional trabalhando com clientes globais
-              </p>
-              <div className="mt-3 flex flex-wrap items-center gap-3">
-                {COUNTRIES.map((c) => (
-                  <div
-                    key={c.code}
-                    className="flex items-center"
-                    title={c.name}
-                    aria-label={c.name}
-                  >
-                    <Flag code={c.code} name={c.name} />
-                  </div>
-                ))}
-                <span className="text-xs text-muted-foreground">+ outros</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-20 border-t border-border pt-16">
-          <GlobalExperience />
-        </div>
-      </Section>
-
-      {/* CTA FINAL */}
-      <Section id="contato" className="border-t border-border">
-        <div className="relative overflow-hidden rounded-3xl bg-[var(--ink)] p-10 text-[var(--paper)] sm:p-16">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-primary/20 blur-3xl"
-          />
-          <div className="flex flex-col gap-10">
-            <div className="flex flex-col items-start">
-              <Eyebrow className="text-white/70">08 · Vamos conversar</Eyebrow>
-              <h2 className="mt-4 max-w-3xl text-4xl font-semibold sm:text-5xl lg:text-6xl">
-                Tem um problema que tecnologia poderia resolver?
-              </h2>
-              <p className="mt-5 max-w-xl text-lg text-white/70">
-                Conte o contexto. Nós ajudamos a transformar a pergunta em uma solução que funciona.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <a
-                  href={WHATSAPP_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground hover:opacity-90"
-                >
-                  <MessageSquare className="h-4 w-4" /> WhatsApp
-                </a>
-                <a
-                  href={`mailto:${EMAIL}`}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/30 px-6 py-3 font-medium text-white hover:bg-white/10"
-                >
-                  <Mail className="h-4 w-4" /> E-mail
-                </a>
-                <a
-                  href={LINKEDIN}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/30 px-6 py-3 font-medium text-white hover:bg-white/10"
-                >
-                  <Linkedin className="h-4 w-4" /> LinkedIn
-                </a>
-              </div>
-            </div>
-            <div className="overflow-hidden rounded-2xl border border-white/10 bg-white">
-              <iframe
-                src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ3lQu1KctmL-8Unulcxey7NwiGFaiclYwd__oUfWmzqOMuGx2ZqHjylaG9sJq4QunHcHg06MH7q?gv=true"
-                style={{ border: 0 }}
-                width="100%"
-                className="h-[600px] sm:h-[700px]"
-                frameBorder={0}
-                title="Agendar conversa com Felipe Sena"
-              />
-            </div>
-          </div>
-        </div>
-      </Section>
-
-      <footer className="border-t border-border">
-        <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-10 text-sm text-muted-foreground">
+      <footer className="border-t border-white/10 bg-[var(--ink)] text-white/60">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-10 text-sm">
           <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
             <div className="flex flex-col items-start gap-2">
-              <img src={senaLogoStacked} alt="Sena Labs" className="h-16 w-auto" />
+              <img src={senaLogoHorizontalDark} alt="Sena Labs" className="h-8 w-auto" />
               <span>© {new Date().getFullYear()} Sena Labs · Felipe Sena</span>
             </div>
             <div className="flex flex-wrap items-center gap-4">
-              <a href="/politica-de-privacidade" className="hover:underline">
+              <a href="/politica-de-privacidade" className="hover:text-primary hover:underline">
                 Política de Privacidade
               </a>
-              <a href="/termos-de-uso" className="hover:underline">
+              <a href="/termos-de-uso" className="hover:text-primary hover:underline">
                 Termos de Uso
               </a>
-              <a href="/exclusao-de-dados" className="hover:underline">
+              <a href="/exclusao-de-dados" className="hover:text-primary hover:underline">
                 Exclusão de Dados
               </a>
-              <Link to="/ferramentas" className="hover:underline">
+              <Link to="/ferramentas" className="hover:text-primary hover:underline">
                 Ferramentas
               </Link>
               <span>São Paulo · Boston · Global</span>
@@ -829,63 +872,46 @@ export default function LandingPage() {
   );
 }
 
-function PillarBlock({
+function PillarRow({
   id,
   n,
   title,
   sub,
-  items,
-  dark = false,
-  divider = true,
+  tags,
+  last = false,
 }: {
   id: string;
   n: string;
-  title: string;
+  title: React.ReactNode;
   sub: string;
-  items: { t: string; Icon: typeof Bot }[];
-  dark?: boolean;
-  divider?: boolean;
+  tags: string[];
+  last?: boolean;
 }) {
   return (
-    <section
+    <article
       id={id}
-      className={`${divider ? "border-t border-border" : ""} ${dark ? "bg-[var(--ink)] text-[var(--paper)]" : ""}`}
+      className={`group grid gap-5 border-t border-border py-10 sm:grid-cols-[64px_1fr_1fr] sm:gap-8 sm:py-12 ${
+        last ? "border-b" : ""
+      }`}
     >
-      <div className="mx-auto w-full max-w-6xl px-6 py-20 sm:py-28">
-        <div className="grid gap-12 md:grid-cols-[1fr_1.6fr] md:items-start">
-          <div className="md:sticky md:top-28">
-            <span className="font-mono text-xs uppercase tracking-[0.2em] text-primary">
-              Pilar {n}
+      <span className="font-mono text-sm text-muted-foreground">{n}</span>
+      <div>
+        <span className="mb-4 block h-0.5 w-8 bg-primary transition-all duration-500 group-hover:w-16" />
+        <h3 className="max-w-[13ch] text-3xl font-semibold leading-[1.12] sm:text-5xl">{title}</h3>
+      </div>
+      <div>
+        <p className="max-w-[44ch] text-lg text-muted-foreground">{sub}</p>
+        <div className="mt-5 flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <span
+              key={tag}
+              className="rounded border border-border px-2.5 py-1 font-mono text-xs text-muted-foreground"
+            >
+              {tag}
             </span>
-            <h2 className="mt-3 text-4xl font-semibold sm:text-6xl">{title}.</h2>
-            <p className={`mt-4 text-lg ${dark ? "opacity-80" : "text-muted-foreground"}`}>{sub}</p>
-          </div>
-          <div className="grid gap-3">
-            {items.map((it) => (
-              <article
-                key={it.t}
-                className={`flex items-center gap-4 rounded-xl border p-5 transition hover:translate-x-1 ${
-                  dark
-                    ? "border-white/15 bg-white/[0.03] hover:border-primary"
-                    : "border-border bg-card hover:border-primary"
-                }`}
-              >
-                <div
-                  className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg ${
-                    dark ? "bg-primary/15 text-primary" : "bg-primary/10 text-primary"
-                  }`}
-                >
-                  <it.Icon className="h-5 w-5" strokeWidth={1.6} />
-                </div>
-                <h3 className="text-base font-medium sm:text-lg">{it.t}</h3>
-                <ArrowUpRight
-                  className={`ml-auto h-4 w-4 ${dark ? "opacity-50" : "text-muted-foreground"}`}
-                />
-              </article>
-            ))}
-          </div>
+          ))}
         </div>
       </div>
-    </section>
+    </article>
   );
 }
