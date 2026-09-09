@@ -1,11 +1,9 @@
 import { useMemo } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { WHATSAPP_NUMBER } from "@/components/ContactFAB";
-import { whatsappMessage } from "../export";
+import { AGENDA_URL, whatsappMessage } from "../export";
 import type { Answers, DiagnosticoReport } from "../types";
 import { outlineDarkButtonClass, primaryButtonClass } from "./Controls";
-
-const AGENDA_URL = "https://calendar.app.google/oh4NeMRMtw8v5UP5A";
 
 interface ContactDialogProps {
   open: boolean;
@@ -77,11 +75,6 @@ export default function ContactDialog({
             Ver agenda ↗
           </a>
         </div>
-
-        <p className="mt-4 text-sm text-[#5d6870]">
-          Seus dados de contato e o resultado deste diagnóstico já estão registrados conosco. A
-          agenda abre separadamente, sem enviar dados adicionais.
-        </p>
       </DialogContent>
     </Dialog>
   );

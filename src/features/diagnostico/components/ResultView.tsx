@@ -1,12 +1,28 @@
+import { useEffect, useRef, useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { areaFor } from "../engine";
-import { buildExportPayload, downloadFile, reportText } from "../export";
+import {
+  buildActionablePrompt,
+  buildDiagnosticoWorkbook,
+  downloadFile,
+  downloadWorkbook,
+  reportText,
+} from "../export";
 import type { Answers, DiagnosticoReport, StepId } from "../types";
 import { transcriptFor } from "../engine";
-import { OutlineButtonDark, PrimaryButton } from "./Controls";
+import type { LeadFields } from "./IntroCapture";
+import { OutlineButtonDark, PrimaryButton, outlineDarkButtonClass } from "./Controls";
 
 interface ResultViewProps {
   answers: Answers;
   report: DiagnosticoReport;
+  lead: LeadFields;
+  leadId: string | null;
   onEditStep: (stepId: StepId) => void;
   onBackToQuestions: () => void;
   onOpenContact: () => void;
@@ -16,11 +32,59 @@ interface ResultViewProps {
 export default function ResultView({
   answers,
   report: r,
+  lead,
+  leadId,
   onEditStep,
   onBackToQuestions,
   onOpenContact,
   saveFailed,
 }: ResultViewProps) {
+  const printAreaRef = useRef<HTMLDivElement>(null);
+  const [emailStatus, setEmailStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  useEffect(() => {
+    const openBefore: HTMLDetailsElement[] = [];
+    function handleBeforePrint() {
+      const container = printAreaRef.current;
+      if (!container) return;
+      for (const el of container.querySelectorAll("details")) {
+        if (el.open) openBefore.push(el);
+        el.open = true;
+      }
+    }
+    function handleAfterPrint() {
+      const container = printAreaRef.current;
+      if (!container) return;
+      for (const el of container.querySelectorAll("details")) {
+        el.open = openBefore.includes(el);
+      }
+      openBefore.length = 0;
+    }
+    window.addEventListener("beforeprint", handleBeforePrint);
+    window.addEventListener("afterprint", handleAfterPrint);
+    return () => {
+      window.removeEventListener("beforeprint", handleBeforePrint);
+      window.removeEventListener("afterprint", handleAfterPrint);
+    };
+  }, []);
+
+  async function handleSendEmail() {
+    if (!leadId || emailStatus === "sending") return;
+    setEmailStatus("sending");
+    try {
+      const resp = await fetch("/api/public/diagnostico/email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: leadId }),
+      });
+      if (!resp.ok) throw new Error(`status ${resp.status}`);
+      setEmailStatus("sent");
+    } catch (err) {
+      console.error("diagnostico email send failed", err);
+      setEmailStatus("error");
+    }
+  }
+
   const b = areaFor(answers);
   const conditions = r.blockers.length ? r.blockers : [b.dependency];
   const independence =
@@ -42,8 +106,28 @@ export default function ResultView({
         : "";
   const transcript = transcriptFor(answers);
 
+  function downloadTxt() {
+    downloadFile(
+      "meu-diagnostico-sena-labs.txt",
+      reportText(answers, r),
+      "text/plain;charset=utf-8",
+    );
+  }
+
+  function downloadXlsx() {
+    downloadWorkbook(buildDiagnosticoWorkbook(answers, r, lead), "meu-diagnostico-sena-labs.xlsx");
+  }
+
+  function downloadPrompt() {
+    downloadFile(
+      "prompt-acionavel-sena-labs.txt",
+      buildActionablePrompt(answers, r, lead),
+      "text/plain;charset=utf-8",
+    );
+  }
+
   return (
-    <div className="py-10 sm:py-14">
+    <div ref={printAreaRef} className="py-10 sm:py-14">
       <div className="grid grid-cols-1 items-end gap-6 border-b border-white/15 pb-8 sm:grid-cols-[1.3fr_1fr] sm:gap-10">
         <div>
           <div className="font-mono text-xs uppercase tracking-[0.09em] text-[#ffb081]">
@@ -62,22 +146,38 @@ export default function ResultView({
             para acompanhar.
           </p>
         </div>
-        <div className="diagnostico-no-print flex flex-wrap justify-start gap-2.5 sm:justify-end">
-          <OutlineButtonDark
-            type="button"
-            onClick={() =>
-              downloadFile(
-                "meu-diagnostico-sena-labs.txt",
-                reportText(answers, r),
-                "text/plain;charset=utf-8",
-              )
-            }
-          >
-            Baixar diagnóstico ↓
-          </OutlineButtonDark>
-          <OutlineButtonDark type="button" onClick={() => window.print()}>
-            Imprimir / PDF
-          </OutlineButtonDark>
+        <div className="diagnostico-no-print flex flex-wrap items-start justify-start gap-2.5 sm:justify-end">
+          <div className="flex flex-col items-start gap-1.5 sm:items-end">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button type="button" className={outlineDarkButtonClass()}>
+                  Exportar Relatório
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onSelect={downloadTxt}>
+                  Baixar diagnóstico (.txt) ↓
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => window.print()}>Imprimir / PDF</DropdownMenuItem>
+                <DropdownMenuItem
+                  disabled={!leadId || emailStatus === "sending"}
+                  onSelect={handleSendEmail}
+                >
+                  {emailStatus === "sending" ? "Enviando…" : "Enviar por email"}
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={downloadPrompt}>
+                  Baixar Prompt Acionável
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            {emailStatus === "sent" ? (
+              <p className="text-xs text-[#9fd6a8]">E-mail enviado para {lead.email}.</p>
+            ) : emailStatus === "error" ? (
+              <p role="alert" className="text-xs text-[#f0b088]">
+                Não foi possível enviar o e-mail agora. Tente novamente.
+              </p>
+            ) : null}
+          </div>
         </div>
       </div>
 
@@ -199,7 +299,25 @@ export default function ResultView({
         </section>
       ) : null}
 
-      <section className="diagnostico-no-print mt-10 flex flex-col items-start gap-6 rounded-[10px] border border-white/15 bg-[#25292d] p-7 sm:flex-row sm:items-center sm:justify-between">
+      <section className="diagnostico-no-print mt-10 rounded-[10px] border border-white/15 bg-[#20242a] p-7">
+        <h2 className="text-xl font-medium sm:text-2xl">Prefere começar sozinho?</h2>
+        <p className="mt-3 max-w-[64ch] text-[#b8c0c7]">
+          Baixe um prompt pronto com os dados deste diagnóstico e cole na ferramenta de IA que
+          preferir (ChatGPT, Claude, Gemini etc.). Ela vai aprofundar a entrevista e te devolver um
+          plano de implementação acionável para os próximos 30 dias.
+        </p>
+        <ol className="mt-4 max-w-[64ch] list-decimal space-y-1.5 pl-5 text-sm text-[#9aa4ac]">
+          <li>Baixe o prompt abaixo.</li>
+          <li>Cole em uma conversa nova na IA de sua escolha.</li>
+          <li>Responda as perguntas de aprofundamento que ela fizer.</li>
+          <li>Peça o plano de 30 dias quando achar que já deu contexto suficiente.</li>
+        </ol>
+        <OutlineButtonDark type="button" onClick={downloadPrompt} className="mt-5">
+          Baixar prompt personalizado ↓
+        </OutlineButtonDark>
+      </section>
+
+      <section className="diagnostico-no-print mt-8 flex flex-col items-start gap-6 rounded-[10px] border border-white/15 bg-[#25292d] p-7 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-xl font-medium sm:text-2xl">
             {answers.when === "explore"
@@ -216,7 +334,11 @@ export default function ResultView({
         </PrimaryButton>
       </section>
 
-      <details className="mt-8 border-t border-white/15 pt-6">
+      <h2 className="mt-8 hidden border-t border-[#ccc] pt-6 text-xl font-medium print:block">
+        Apêndice — respostas completas do diagnóstico
+      </h2>
+
+      <details className="mt-8 border-t border-white/15 pt-6 print:mt-0 print:border-t-0">
         <summary className="min-h-11 cursor-pointer text-[#c6cdd3]">
           Revisar minhas respostas
         </summary>
@@ -254,17 +376,8 @@ export default function ResultView({
       </details>
 
       <div className="diagnostico-no-print mt-7 flex flex-wrap gap-3">
-        <OutlineButtonDark
-          type="button"
-          onClick={() =>
-            downloadFile(
-              "meu-diagnostico-sena-labs.json",
-              JSON.stringify(buildExportPayload(answers, r), null, 2),
-              "application/json",
-            )
-          }
-        >
-          Exportar respostas e plano (.json)
+        <OutlineButtonDark type="button" onClick={downloadXlsx}>
+          Exportar respostas e plano (.xlsx)
         </OutlineButtonDark>
         <OutlineButtonDark type="button" onClick={onBackToQuestions}>
           Voltar às perguntas

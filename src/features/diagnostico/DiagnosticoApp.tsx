@@ -24,18 +24,40 @@ import { PrimaryButton, TextButton } from "./components/Controls";
 const DIAGNOSTIC_VERSION = "sena-diagnostico-1.0";
 const EMPTY_LEAD: LeadFields = { nome: "", email: "", whatsapp: "", negocio: "" };
 
-export default function DiagnosticoApp() {
-  const [phase, setPhase] = useState<"intro" | "questions" | "result">("intro");
-  const [lead, setLead] = useState<LeadFields>(EMPTY_LEAD);
+interface DiagnosticoAppProps {
+  // Renderiza sem <SiteHeader/> nem o fundo full-bleed — usado quando o
+  // componente é embutido dentro de outro layout (ex.: /painel/diagnostico),
+  // que já tem seu próprio chrome.
+  embedded?: boolean;
+  // Id do usuário logado, repassado como userId ao criar o lead — vincula a
+  // linha de diagnostico_leads à conta.
+  authUserId?: string;
+  // Pré-preenche a captura de contato (ex.: e-mail já conhecido da conta).
+  initialLead?: Partial<LeadFields>;
+  // Hidrata direto na fase de resultado a partir de um diagnóstico já salvo,
+  // em vez de sempre começar em "intro".
+  initialCompleted?: { leadId: string; answers: Answers; report: DiagnosticoReport };
+}
+
+export default function DiagnosticoApp({
+  embedded = false,
+  authUserId,
+  initialLead,
+  initialCompleted,
+}: DiagnosticoAppProps = {}) {
+  const [phase, setPhase] = useState<"intro" | "questions" | "result">(
+    initialCompleted ? "result" : "intro",
+  );
+  const [lead, setLead] = useState<LeadFields>({ ...EMPTY_LEAD, ...initialLead });
   const [consent, setConsent] = useState(false);
-  const [leadId, setLeadId] = useState<string | null>(null);
+  const [leadId, setLeadId] = useState<string | null>(initialCompleted?.leadId ?? null);
   const [leadStatus, setLeadStatus] = useState<"idle" | "saving" | "error">("idle");
   const [leadError, setLeadError] = useState("");
   const [completionSaveFailed, setCompletionSaveFailed] = useState(false);
 
-  const [answers, setAnswers] = useState<Answers>({});
+  const [answers, setAnswers] = useState<Answers>(initialCompleted?.answers ?? {});
   const [position, setPosition] = useState(0);
-  const [report, setReport] = useState<DiagnosticoReport | null>(null);
+  const [report, setReport] = useState<DiagnosticoReport | null>(initialCompleted?.report ?? null);
   const [formError, setFormError] = useState("");
   const [contactOpen, setContactOpen] = useState(false);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -81,6 +103,7 @@ export default function DiagnosticoApp() {
           whatsapp: lead.whatsapp.trim(),
           negocio: lead.negocio.trim() || null,
           consentimento: true,
+          userId: authUserId,
         }),
       });
       const data = await resp.json().catch(() => null);
@@ -200,12 +223,17 @@ export default function DiagnosticoApp() {
     setPhase("questions");
   }
 
+  // Evita aninhar <main> quando embutido dentro de um layout que já tem o seu.
+  const Wrapper = embedded ? "div" : "main";
+
   return (
     <>
-      <div className="diagnostico-no-print">
-        <SiteHeader />
-      </div>
-      <main className="min-h-screen bg-ink text-paper">
+      {embedded ? null : (
+        <div className="diagnostico-no-print">
+          <SiteHeader />
+        </div>
+      )}
+      <Wrapper className={embedded ? "bg-ink text-paper" : "min-h-screen bg-ink text-paper"}>
         <div
           className={
             phase === "result"
@@ -313,6 +341,8 @@ export default function DiagnosticoApp() {
             <ResultView
               answers={answers}
               report={report}
+              lead={lead}
+              leadId={leadId}
               onEditStep={handleEditStep}
               onBackToQuestions={handleBackToQuestions}
               onOpenContact={() => setContactOpen(true)}
@@ -332,7 +362,7 @@ export default function DiagnosticoApp() {
             </button>
           </footer>
         ) : null}
-      </main>
+      </Wrapper>
       {report ? (
         <ContactDialog
           open={contactOpen}

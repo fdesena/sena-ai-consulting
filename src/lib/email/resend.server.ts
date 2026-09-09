@@ -4,6 +4,11 @@
 // so the queue dispatcher's existing 429 (rate-limit backoff) and 403 (move to
 // DLQ) handling keeps working unchanged.
 
+interface ResendAttachment {
+  filename: string;
+  content: string; // base64-encoded file content
+}
+
 interface ResendSendInput {
   to: string;
   from: string;
@@ -11,6 +16,8 @@ interface ResendSendInput {
   html?: string | null;
   text?: string | null;
   unsubscribe_token?: string | null;
+  bcc?: string[];
+  attachments?: ResendAttachment[];
 }
 
 export class EmailSendError extends Error {
@@ -55,9 +62,11 @@ export async function sendResendEmail(
     body: JSON.stringify({
       from,
       to: input.to,
+      bcc: input.bcc?.length ? input.bcc : undefined,
       subject: input.subject,
       html: input.html ?? undefined,
       text: input.text ?? undefined,
+      attachments: input.attachments?.length ? input.attachments : undefined,
       headers: Object.keys(headers).length ? headers : undefined,
     }),
   });

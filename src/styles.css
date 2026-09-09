@@ -126,9 +126,20 @@
   }
 }
 
+/* Bolha flutuante de contato: nunca deve aparecer na impressão de nenhuma
+   página (ela é montada fora de qualquer área com escopo de impressão). */
+@media print {
+  #contact-fab-launcher {
+    display: none !important;
+  }
+}
+
 /* Diagnóstico: o resultado é lido/impresso em PDF a partir de um layout escuro,
    então força-se um fundo claro e texto escuro legível ao imprimir. */
 @media print {
+  @page {
+    margin: 14mm;
+  }
   .diagnostico-no-print,
   [role="dialog"] {
     display: none !important;
@@ -139,5 +150,17 @@
     color: #111 !important;
     box-shadow: none !important;
     border-color: #ccc !important;
+  }
+  .diagnostico-print-area article,
+  .diagnostico-print-area aside,
+  .diagnostico-print-area section > div,
+  .diagnostico-print-area details {
+    break-inside: avoid;
+  }
+  .diagnostico-print-area details {
+    margin-bottom: 12px;
+  }
+  .diagnostico-print-area details[open] summary {
+    margin-bottom: 8px;
   }
 }

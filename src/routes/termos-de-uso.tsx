@@ -107,6 +107,13 @@ function TermsOfUse() {
             exclusivamente com base no conteúdo público do site, sem um diagnóstico ou consultoria
             formal.
           </p>
+          <p className="mt-3">
+            O diagnóstico de oportunidades pode oferecer um prompt para uso em ferramentas de IA de
+            terceiros (como ChatGPT, Claude ou Gemini), a seu critério. A Sena Labs não presta esse
+            serviço de IA, não revisa o conteúdo gerado por essas ferramentas e não se
+            responsabiliza pelo uso, pela implementação ou pelos resultados obtidos a partir desses
+            prompts.
+          </p>
         </section>
 
         <section>
