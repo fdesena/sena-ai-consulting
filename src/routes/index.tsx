@@ -1,8 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import LandingPage from "@/components/LandingPage";
-import ogImage from "@/assets/og-sena.jpg.asset.json";
 
-const OG_IMAGE_URL = `https://www.senalabs.tech${ogImage.url}`;
+const OG_IMAGE_URL = "https://www.senalabs.tech/og-image.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
