@@ -23,10 +23,10 @@ export const Route = createFileRoute("/blog/gap-adocao-ia")({
         content:
           "O gap de adoção de IA, com dados da Anthropic: o que já é possível vs. o que se usa em média.",
       },
-      { property: "og:url", content: "https://senaconsulting.app/blog/gap-adocao-ia" },
+      { property: "og:url", content: "https://www.senalabs.tech/blog/gap-adocao-ia" },
       { property: "og:type", content: "article" },
     ],
-    links: [{ rel: "canonical", href: "https://senaconsulting.app/blog/gap-adocao-ia" }],
+    links: [{ rel: "canonical", href: "https://www.senalabs.tech/blog/gap-adocao-ia" }],
   }),
   component: GapAdocaoIaPost,
 });

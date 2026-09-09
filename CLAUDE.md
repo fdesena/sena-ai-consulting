@@ -1,4 +1,4 @@
-# CLAUDE.md - Sena Consulting Website
+# CLAUDE.md - Sena Labs Website
 
 ## Stack & Tech
 
@@ -7,7 +7,7 @@
 - **Package Manager:** Bun
 - **Animation:** Framer-motion + CSS @keyframes
 - **Database:** Supabase (blog_posts table for GlobalExperience) — own project, no longer Lovable Cloud
-- **Deployment:** Vercel (self-hosted), production domain is `senaconsulting.app`. **No longer using Lovable** — GitHub sync + custom domain were disconnected 2026-06-29; GitHub is the sole source of truth (no bidirectional sync to reconcile).
+- **Deployment:** Vercel (self-hosted), production domain is `www.senalabs.tech` (migrated from `senaconsulting.app` on 2026-09-09; the old domain 301-redirects to the new one — verify `www.senaconsulting.app` also redirects, it was found still serving live duplicate content). **No longer using Lovable** — GitHub sync + custom domain were disconnected 2026-06-29; GitHub is the sole source of truth (no bidirectional sync to reconcile).
 - **Known leftover Lovable coupling:** `@lovable.dev/vite-tanstack-config` is still required for the build (Nitro/Vercel preset, etc). One side effect: images imported via `src/assets/*.asset.json` (`import x from "@/assets/foo.png.asset.json"`, then `x.url`) resolve to `/__l5e/assets-v1/...`, a path only served by that package's dev-only proxy plugin (needs `LOVABLE_PREVIEW_HOST`, which isn't set). **These URLs 404 in production and in local dev.** Don't use the `.asset.json` import pattern for new images — drop a real image file in `src/assets/` and `import img from "@/assets/foo.png"` directly (plain Vite asset import), or put it in `public/` and reference by path.
 
 ## Git Workflow & Commit Process
@@ -106,7 +106,7 @@ bun run dev --port 8080
 
 - All pages must have proper meta tags in route head() function
 - Use schema.org JSON-LD for Organization, WebSite, and product metadata
-- Update og:url to production domain (senaconsulting.app)
+- Update og:url to production domain (www.senalabs.tech)
 - Add canonical URLs to prevent duplicate content issues
 - Page-specific descriptions improve CTR in search results
 

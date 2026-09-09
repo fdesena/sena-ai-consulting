@@ -6,5 +6,13 @@ A Sena Labs transforma problemas de negócio em produtos digitais, automações,
 
 ## Pages
 
-- [Home](/): Visão geral dos serviços, casos e abordagem.
-- [Diagnóstico Bússola Digital & IA](/diagnostico): Diagnóstico estruturado para mapear onde IA e automação geram retorno real no seu negócio.
+- [Home](https://www.senalabs.tech/): Visão geral dos serviços, casos e abordagem.
+- [Diagnóstico de oportunidades](https://www.senalabs.tech/diagnostico): Diagnóstico gratuito de cerca de 8 minutos que prioriza uma oportunidade real no negócio do usuário — sem nota de maturidade, sem comparação de mercado e sem ROI inventado — e devolve um plano inicial de ações.
+- [Ferramentas](https://www.senalabs.tech/ferramentas): Aplicações gratuitas prontas para uso (roleta de sorteio, temporizador, gerador de documentos).
+- [Blog](https://www.senalabs.tech/blog): Artigos sobre estratégia, IA e software aplicados ao trabalho real.
+  - [O que você recebe no diagnóstico de oportunidades](https://www.senalabs.tech/blog/diagnostico)
+  - [Antes de automatizar, entenda o trabalho](https://www.senalabs.tech/blog/automatizar)
+  - [Um agente de IA começa pelo conhecimento da empresa](https://www.senalabs.tech/blog/agentes)
+  - [Quando o processo não cabe na ferramenta](https://www.senalabs.tech/blog/software)
+  - [A IA já consegue muito mais do que o mercado usa](https://www.senalabs.tech/blog/gap-adocao-ia)
+  - [A marca por trás da Sena Labs](https://www.senalabs.tech/blog/marca-sena-labs)

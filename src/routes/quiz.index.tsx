@@ -10,7 +10,7 @@ import { TEAM_EMOJIS } from "@/lib/quiz/types";
 export const Route = createFileRoute("/quiz/")({
   head: () => ({
     meta: [
-      { title: "Entrar no Quiz — Sena Consulting" },
+      { title: "Entrar no Quiz — Sena Labs" },
       {
         name: "description",
         content: "Digite o PIN do quiz para entrar e jogar ao vivo com a sua equipe.",

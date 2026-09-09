@@ -76,7 +76,7 @@ export function ToolShell({
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-8 text-sm text-muted-foreground">
           <span>© {new Date().getFullYear()} Sena Labs · Felipe Sena</span>
           <Link to="/" className="hover:text-primary hover:underline">
-            senaconsulting.app
+            www.senalabs.tech
           </Link>
         </div>
       </footer>

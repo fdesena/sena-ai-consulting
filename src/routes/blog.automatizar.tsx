@@ -11,10 +11,10 @@ export const Route = createFileRoute("/blog/automatizar")({
           "O melhor ponto de partida para a IA pode ser uma pergunta simples: onde o seu time está perdendo tempo?",
       },
       { property: "og:title", content: "Antes de automatizar, entenda o trabalho." },
-      { property: "og:url", content: "https://senaconsulting.app/blog/automatizar" },
+      { property: "og:url", content: "https://www.senalabs.tech/blog/automatizar" },
       { property: "og:type", content: "article" },
     ],
-    links: [{ rel: "canonical", href: "https://senaconsulting.app/blog/automatizar" }],
+    links: [{ rel: "canonical", href: "https://www.senalabs.tech/blog/automatizar" }],
   }),
   component: AutomatizarPost,
 });

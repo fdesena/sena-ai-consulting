@@ -13,9 +13,9 @@ export const Route = createFileRoute("/blog/")({
           "Dados, análises e bastidores sobre estratégia, IA e tecnologia aplicada — direto da Sena Labs.",
       },
       { property: "og:title", content: "Blog — Sena Labs" },
-      { property: "og:url", content: "https://senaconsulting.app/blog" },
+      { property: "og:url", content: "https://www.senalabs.tech/blog" },
     ],
-    links: [{ rel: "canonical", href: "https://senaconsulting.app/blog" }],
+    links: [{ rel: "canonical", href: "https://www.senalabs.tech/blog" }],
   }),
   component: BlogIndex,
 });

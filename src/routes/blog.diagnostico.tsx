@@ -12,10 +12,10 @@ export const Route = createFileRoute("/blog/diagnostico")({
           "Um percurso de cerca de 8 minutos que prioriza uma oportunidade real no seu negócio e devolve um plano inicial — sem nota de maturidade, sem comparação de mercado e sem ROI inventado.",
       },
       { property: "og:title", content: "O que você recebe no diagnóstico de oportunidades." },
-      { property: "og:url", content: "https://senaconsulting.app/blog/diagnostico" },
+      { property: "og:url", content: "https://www.senalabs.tech/blog/diagnostico" },
       { property: "og:type", content: "article" },
     ],
-    links: [{ rel: "canonical", href: "https://senaconsulting.app/blog/diagnostico" }],
+    links: [{ rel: "canonical", href: "https://www.senalabs.tech/blog/diagnostico" }],
   }),
   component: DiagnosticoPost,
 });

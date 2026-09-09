@@ -5,7 +5,7 @@ import { Timer } from "@/components/ferramentas/Timer";
 export const Route = createFileRoute("/ferramentas/temporizador")({
   head: () => ({
     meta: [
-      { title: "Temporizador — Sena Consulting" },
+      { title: "Temporizador — Sena Labs" },
       {
         name: "description",
         content:

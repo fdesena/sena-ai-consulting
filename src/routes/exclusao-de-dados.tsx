@@ -5,18 +5,17 @@ const EMAIL = "felipesmsena@gmail.com";
 export const Route = createFileRoute("/exclusao-de-dados")({
   head: () => ({
     meta: [
-      { title: "Exclusão de Dados do Usuário — Sena Consulting" },
+      { title: "Exclusão de Dados do Usuário — Sena Labs" },
       {
         name: "description",
-        content:
-          "Instruções para solicitar a exclusão dos seus dados pessoais junto à Sena Consulting.",
+        content: "Instruções para solicitar a exclusão dos seus dados pessoais junto à Sena Labs.",
       },
-      { property: "og:title", content: "Exclusão de Dados do Usuário — Sena Consulting" },
-      { property: "og:url", content: "https://senaconsulting.app/exclusao-de-dados" },
+      { property: "og:title", content: "Exclusão de Dados do Usuário — Sena Labs" },
+      { property: "og:url", content: "https://www.senalabs.tech/exclusao-de-dados" },
       { property: "og:type", content: "website" },
       { name: "robots", content: "noindex, follow" },
     ],
-    links: [{ rel: "canonical", href: "https://senaconsulting.app/exclusao-de-dados" }],
+    links: [{ rel: "canonical", href: "https://www.senalabs.tech/exclusao-de-dados" }],
   }),
   component: DataDeletion,
 });
@@ -34,10 +33,9 @@ function DataDeletion() {
       <div className="prose prose-neutral mt-8 max-w-none space-y-6 text-sm leading-relaxed text-foreground/90">
         <section>
           <p>
-            Se você trocou mensagens com a Sena Consulting pelo WhatsApp, e-mail, LinkedIn ou
-            preencheu algum formulário em nosso site (como o diagnóstico Bússola Digital & IA), você
-            pode solicitar a exclusão dos seus dados pessoais armazenados por nós a qualquer
-            momento.
+            Se você trocou mensagens com a Sena Labs pelo WhatsApp, e-mail, LinkedIn ou preencheu
+            algum formulário em nosso site (como o diagnóstico de oportunidades), você pode
+            solicitar a exclusão dos seus dados pessoais armazenados por nós a qualquer momento.
           </p>
         </section>
 

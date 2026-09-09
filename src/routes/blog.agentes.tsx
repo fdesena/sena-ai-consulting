@@ -13,10 +13,10 @@ export const Route = createFileRoute("/blog/agentes")({
           "Antes de discutir o que um agente pode responder, precisamos decidir de onde suas respostas devem vir.",
       },
       { property: "og:title", content: "Um agente de IA começa pelo conhecimento da empresa." },
-      { property: "og:url", content: "https://senaconsulting.app/blog/agentes" },
+      { property: "og:url", content: "https://www.senalabs.tech/blog/agentes" },
       { property: "og:type", content: "article" },
     ],
-    links: [{ rel: "canonical", href: "https://senaconsulting.app/blog/agentes" }],
+    links: [{ rel: "canonical", href: "https://www.senalabs.tech/blog/agentes" }],
   }),
   component: AgentesPost,
 });

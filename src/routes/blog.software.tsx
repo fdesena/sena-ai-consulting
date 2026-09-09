@@ -11,10 +11,10 @@ export const Route = createFileRoute("/blog/software")({
           "Criar um sistema próprio é uma decisão de negócio. O primeiro passo é entender onde a ferramenta atual ajuda e onde exige trabalho extra.",
       },
       { property: "og:title", content: "Quando o processo não cabe na ferramenta." },
-      { property: "og:url", content: "https://senaconsulting.app/blog/software" },
+      { property: "og:url", content: "https://www.senalabs.tech/blog/software" },
       { property: "og:type", content: "article" },
     ],
-    links: [{ rel: "canonical", href: "https://senaconsulting.app/blog/software" }],
+    links: [{ rel: "canonical", href: "https://www.senalabs.tech/blog/software" }],
   }),
   component: SoftwarePost,
 });

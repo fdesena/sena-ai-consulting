@@ -5,16 +5,16 @@ import SiteHeader from "@/components/SiteHeader";
 export const Route = createFileRoute("/ferramentas/")({
   head: () => ({
     meta: [
-      { title: "Ferramentas — Sena Consulting" },
+      { title: "Ferramentas — Sena Labs" },
       {
         name: "description",
         content:
-          "Ferramentas gratuitas da Sena Consulting: roleta de sorteio, temporizador para eventos e gerador de documentos em lote.",
+          "Ferramentas gratuitas da Sena Labs: roleta de sorteio, temporizador para eventos e gerador de documentos em lote.",
       },
-      { property: "og:title", content: "Ferramentas — Sena Consulting" },
-      { property: "og:url", content: "https://senaconsulting.app/ferramentas" },
+      { property: "og:title", content: "Ferramentas — Sena Labs" },
+      { property: "og:url", content: "https://www.senalabs.tech/ferramentas" },
     ],
-    links: [{ rel: "canonical", href: "https://senaconsulting.app/ferramentas" }],
+    links: [{ rel: "canonical", href: "https://www.senalabs.tech/ferramentas" }],
   }),
   component: FerramentasIndex,
 });
@@ -160,7 +160,7 @@ function FerramentasIndex() {
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-8 text-sm text-white/50">
           <span>© {new Date().getFullYear()} Sena Labs · Felipe Sena</span>
           <Link to="/" className="hover:text-primary">
-            senaconsulting.app
+            www.senalabs.tech
           </Link>
         </div>
       </footer>

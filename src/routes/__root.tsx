@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import ChatwootWidget from "../components/ChatwootWidget";
 import ContactFAB from "../components/ContactFAB";
+import PostHogInit from "../components/PostHogInit";
 
 function NotFoundComponent() {
   return (
@@ -115,8 +116,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@context": "https://schema.org",
           "@type": "Organization",
           name: "Sena Labs",
-          url: "https://senaconsulting.app",
-          logo: "https://senaconsulting.app/apple-touch-icon.png",
+          url: "https://www.senalabs.tech",
+          logo: "https://www.senalabs.tech/apple-touch-icon.png",
           founder: { "@type": "Person", name: "Felipe Sena" },
           areaServed: "Worldwide",
           description: "Estratégia, IA e desenvolvimento de software.",
@@ -128,7 +129,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@context": "https://schema.org",
           "@type": "WebSite",
           name: "Sena Labs",
-          url: "https://senaconsulting.app",
+          url: "https://www.senalabs.tech",
         }),
       },
     ],
@@ -162,6 +163,7 @@ function RootComponent() {
       <Outlet />
       <ChatwootWidget />
       <ContactFAB />
+      <PostHogInit />
     </QueryClientProvider>
   );
 }

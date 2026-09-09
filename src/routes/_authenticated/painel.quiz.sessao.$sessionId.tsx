@@ -215,7 +215,7 @@ function HostSessionPage() {
           <p className="mb-1 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
             Entrar em
           </p>
-          <p className="mb-4 text-sm text-muted-foreground">senaconsulting.app/quiz</p>
+          <p className="mb-4 text-sm text-muted-foreground">www.senalabs.tech/quiz</p>
           <p className="mb-6 font-mono text-6xl font-bold tracking-[0.15em] text-primary">
             {session.pin}
           </p>

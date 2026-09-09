@@ -15,7 +15,7 @@ export const Route = createFileRoute("/auth")({
       },
       { name: "robots", content: "noindex,follow" },
     ],
-    links: [{ rel: "canonical", href: "https://senaconsulting.app/auth" }],
+    links: [{ rel: "canonical", href: "https://www.senalabs.tech/auth" }],
   }),
   component: AuthPage,
 });
