@@ -8,6 +8,7 @@ const PayloadSchema = z.object({
   whatsapp: z.string().trim().min(8).max(50),
   negocio: z.string().trim().max(200).optional().nullable(),
   consentimento: z.literal(true),
+  userId: z.string().uuid().optional(),
 });
 
 function corsHeaders() {
@@ -54,6 +55,7 @@ export const Route = createFileRoute("/api/public/diagnostico/start")({
             whatsapp: data.whatsapp,
             negocio: data.negocio || null,
             consentimento: true,
+            user_id: data.userId ?? null,
           })
           .select("id")
           .single();

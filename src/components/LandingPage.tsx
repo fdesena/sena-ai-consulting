@@ -870,7 +870,7 @@ export default function LandingPage() {
           </div>
 
           <div className="flex flex-col gap-3 justify-self-start md:justify-self-end md:w-full md:max-w-[340px]">
-            <ScheduleButton className="[&_button]:!w-full" />
+            <ScheduleButton className="[&_button]:!box-border [&_button]:!h-auto [&_button]:!w-full [&_button]:!rounded-md [&_button]:!border-0 [&_button]:!px-5 [&_button]:!py-3.5 [&_button]:!text-base [&_button]:!font-medium [&_button]:!leading-tight [&_button]:!shadow-none" />
             <a
               href={WHATSAPP_URL}
               target="_blank"
@@ -916,7 +916,6 @@ export default function LandingPage() {
               <Link to="/ferramentas" className="hover:text-primary hover:underline">
                 Ferramentas
               </Link>
-              <span>São Paulo · Boston · Global</span>
             </div>
           </div>
         </div>

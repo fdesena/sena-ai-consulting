@@ -49,7 +49,11 @@ export default function ContactFAB() {
   }, [open]);
 
   return (
-    <div ref={rootRef} className="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-3">
+    <div
+      ref={rootRef}
+      id="contact-fab-launcher"
+      className="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-3"
+    >
       {open && (
         <div className="flex flex-col gap-2 rounded-2xl border border-[#fc7c3426] bg-card/95 p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_10px_26px_-6px_rgba(0,0,0,0.18),0_22px_55px_-18px_rgba(252,124,52,0.45)] backdrop-blur-md">
           <a
