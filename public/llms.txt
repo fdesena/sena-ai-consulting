@@ -1,8 +1,8 @@
 # Sena Labs
 
-> Estratégia, IA e software — de São Paulo e Boston, atuando globalmente. Do problema ao produto, com resultados mensuráveis.
+> Treinamentos práticos e soluções digitais para reduzir retrabalho, simplificar operações e devolver tempo às equipes.
 
-A Sena Labs transforma problemas de negócio em produtos digitais, automações, agentes de IA, dashboards e plataformas em produção. Combina estratégia, IA, dados e desenvolvimento de software. O fundador, Felipe Sena, atua entre Brasil e Estados Unidos com experiência em projetos de inovação globais (MIT Solve, Hult Prize, Boston Innovation Gateway, SelectUSA).
+A Sena Labs ajuda empresas a trabalhar melhor e recuperar tempo por meio de treinamentos práticos, estratégia, automações, agentes de IA, dashboards e software sob medida. O fundador, Felipe Sena, atua entre Brasil e Estados Unidos com experiência em projetos de inovação globais (MIT Solve, Hult Prize, Boston Innovation Gateway, SelectUSA).
 
 ## Pages
 

@@ -33,7 +33,7 @@ export const ITEMS: OrbitItem[] = [
     tag: "Sena Labs",
     code: "00",
     eyebrow: "ESTRATÉGIA + TECNOLOGIA",
-    tagline: "Estratégia, IA & Software sob medida",
+    tagline: "Treinamento, Estratégia, IA & Software",
   },
   {
     tag: "Site",

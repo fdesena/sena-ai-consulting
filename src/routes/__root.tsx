@@ -80,11 +80,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Sena Labs — Estratégia, IA e Software" },
+      { title: "Sena Labs — Treinamento, Estratégia, IA e Software" },
       {
         name: "description",
         content:
-          "Estratégia, IA e desenvolvimento de software para transformar problemas de negócio em produtos digitais que funcionam.",
+          "Treinamentos práticos e soluções digitais para reduzir retrabalho, simplificar operações e devolver tempo às equipes.",
       },
       { name: "author", content: "Felipe Sena" },
       { property: "og:site_name", content: "Sena Labs" },
@@ -122,7 +122,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           logo: "https://www.senalabs.tech/apple-touch-icon.png",
           founder: { "@type": "Person", name: "Felipe Sena" },
           areaServed: "Worldwide",
-          description: "Estratégia, IA e desenvolvimento de software.",
+          description:
+            "Treinamentos práticos e soluções digitais para reduzir retrabalho, simplificar operações e devolver tempo às equipes.",
         }),
       },
       {

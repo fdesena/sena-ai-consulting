@@ -345,7 +345,7 @@ const OrbitGlobeScene = forwardRef<OrbitGlobeHandle, Props>(function OrbitGlobeS
                 ref={(node) => {
                   cardRefs.current[i] = node;
                 }}
-                aria-label="Sena Labs — Estratégia, IA & Software sob medida"
+                aria-label="Sena Labs — Treinamento, Estratégia, IA & Software"
                 className="orbit-card orbit-card--brand"
               >
                 <div className="orbit-glass" />

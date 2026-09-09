@@ -175,7 +175,7 @@ export default function OrbitHero() {
                   transition={TEXT_TRANSITION}
                 >
                   <span className="orbit-eyebrow">
-                    Sena Labs · Estratégia, IA &amp; Software sob medida
+                    Sena Labs · Treinamento, Estratégia, IA &amp; Software
                   </span>
                   <h1 className="orbit-heading">
                     <AnimatedHeadline

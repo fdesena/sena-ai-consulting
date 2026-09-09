@@ -370,10 +370,10 @@ export default function LandingPage() {
             <div>
               <div className="flex items-center gap-2">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
-                <Eyebrow>Sena Labs · Estratégia, IA &amp; Software</Eyebrow>
+                <Eyebrow>Sena Labs · Treinamento, Estratégia, IA &amp; Software</Eyebrow>
               </div>
               <h1 className="mt-6 text-5xl font-semibold tracking-tight sm:text-7xl">
-                Do problema ao produto.
+                Mais tempo para o que realmente importa.
               </h1>
               <p className="mt-6 max-w-lg text-lg text-muted-foreground sm:text-xl">
                 Entendemos o problema, desenhamos a solução e construímos tecnologia que funciona —

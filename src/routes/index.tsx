@@ -6,30 +6,30 @@ const OG_IMAGE_URL = "https://www.senalabs.tech/og-image.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Sena Labs — Estratégia, IA e Software" },
+      { title: "Sena Labs — Treinamento, Estratégia, IA e Software" },
       {
         name: "description",
         content:
-          "Transformamos problemas de negócio em produtos digitais, automações, agentes de IA, dashboards e plataformas que funcionam.",
+          "Treinamentos práticos e soluções digitais para reduzir retrabalho, simplificar operações e devolver tempo às equipes.",
       },
-      { property: "og:title", content: "Sena Labs — Do problema ao produto" },
+      { property: "og:title", content: "Sena Labs — Treinamento, Estratégia, IA e Software" },
       {
         property: "og:description",
         content:
-          "Estratégia, IA e desenvolvimento de software. São Paulo · Boston — atuação global.",
+          "Treinamentos práticos e soluções digitais para reduzir retrabalho e devolver tempo às equipes.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://www.senalabs.tech/" },
       { property: "og:image", content: OG_IMAGE_URL },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },
-      { property: "og:image:alt", content: "Sena Labs — Do problema ao produto" },
+      { property: "og:image:alt", content: "Sena Labs — Treinamento, Estratégia, IA e Software" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Sena Labs — Do problema ao produto" },
+      { name: "twitter:title", content: "Sena Labs — Treinamento, Estratégia, IA e Software" },
       {
         name: "twitter:description",
         content:
-          "Estratégia, IA e desenvolvimento de software. São Paulo · Boston — atuação global.",
+          "Treinamentos práticos e soluções digitais para reduzir retrabalho e devolver tempo às equipes.",
       },
       { name: "twitter:image", content: OG_IMAGE_URL },
     ],
