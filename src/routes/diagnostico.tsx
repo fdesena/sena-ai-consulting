@@ -1,49 +1,31 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect } from "react";
+import DiagnosticoApp from "@/features/diagnostico/DiagnosticoApp";
 
 export const Route = createFileRoute("/diagnostico")({
   head: () => ({
     meta: [
-      { title: "Diagnóstico Bússola Digital & IA — Sena Consulting" },
+      { title: "Diagnóstico de oportunidades — Sena Labs" },
       {
         name: "description",
         content:
-          "Diagnóstico estruturado para mapear onde IA e automação geram retorno real no seu negócio antes de investir tempo e dinheiro.",
+          "Identifique uma oportunidade prioritária para seu negócio e receba um plano inicial de ação, sem precisar conhecer ferramentas de IA.",
       },
-      { property: "og:title", content: "Diagnóstico Bússola Digital & IA — Sena Consulting" },
+      { property: "og:title", content: "Diagnóstico de oportunidades — Sena Labs" },
       {
         property: "og:description",
-        content: "Mapeie suas maiores oportunidades com IA e automação antes de investir.",
+        content:
+          "Um plano inicial de ação a partir da sua situação real, sem nota de maturidade e sem cadastro.",
       },
       { property: "og:url", content: "https://senaconsulting.app/diagnostico" },
       { property: "og:type", content: "website" },
-      { name: "twitter:title", content: "Diagnóstico Bússola Digital & IA — Sena Consulting" },
+      { name: "twitter:title", content: "Diagnóstico de oportunidades — Sena Labs" },
       {
         name: "twitter:description",
-        content: "Mapeie suas maiores oportunidades com IA e automação antes de investir.",
+        content:
+          "Um plano inicial de ação a partir da sua situação real, sem nota de maturidade e sem cadastro.",
       },
     ],
     links: [{ rel: "canonical", href: "https://senaconsulting.app/diagnostico" }],
   }),
-  component: DiagnosticoRedirect,
+  component: DiagnosticoApp,
 });
-
-function DiagnosticoRedirect() {
-  useEffect(() => {
-    window.location.replace("/diagnostico.html");
-  }, []);
-  return (
-    <main
-      style={{
-        minHeight: "100vh",
-        display: "grid",
-        placeItems: "center",
-        background: "#F8F7F4",
-        color: "#1A1916",
-        fontFamily: "system-ui",
-      }}
-    >
-      <p>Abrindo o diagnóstico…</p>
-    </main>
-  );
-}

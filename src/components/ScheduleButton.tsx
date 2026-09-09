@@ -16,7 +16,13 @@ declare global {
 }
 
 /** Botão oficial de agendamento do Google Calendar (abre o overlay de horários). */
-export default function ScheduleButton({ className }: { className?: string }) {
+export default function ScheduleButton({
+  className,
+  label = "Agendar uma conversa",
+}: {
+  className?: string;
+  label?: string;
+}) {
   const targetRef = useRef<HTMLDivElement>(null);
   const loadedRef = useRef(false);
 
@@ -36,7 +42,7 @@ export default function ScheduleButton({ className }: { className?: string }) {
       window.calendar.schedulingButton.load({
         url: CALENDAR_URL,
         color: "#fc7c34",
-        label: "Agendar uma conversa",
+        label,
         target: targetRef.current,
       });
     }

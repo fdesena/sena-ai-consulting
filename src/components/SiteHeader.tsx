@@ -1,7 +1,7 @@
 import senaLogoHorizontalDark from "@/assets/brand/sena-labs-horizontal-dark.svg";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
 import ReadingProgress from "./ReadingProgress";
+import ScheduleButton from "./ScheduleButton";
 
 /** Header escuro compartilhado pelas páginas fora da home (blog, ferramentas, área exclusiva). */
 export default function SiteHeader() {
@@ -21,18 +21,14 @@ export default function SiteHeader() {
           <Link to="/blog" className="hover:text-primary">
             Blog
           </Link>
+          <Link to="/diagnostico" className="hover:text-primary">
+            Diagnóstico gratuito
+          </Link>
           <Link to="/auth" className="hover:text-primary">
             Área exclusiva
           </Link>
         </nav>
-        <a
-          href="https://calendar.app.google/oh4NeMRMtw8v5UP5A"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
-        >
-          Fale comigo <ArrowRight className="h-4 w-4" />
-        </a>
+        <ScheduleButton label="Fale comigo" className="[&_button]:!rounded-full" />
       </div>
       <ReadingProgress />
     </header>

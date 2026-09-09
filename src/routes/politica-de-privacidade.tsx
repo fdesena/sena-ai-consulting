@@ -5,13 +5,13 @@ const EMAIL = "felipesmsena@gmail.com";
 export const Route = createFileRoute("/politica-de-privacidade")({
   head: () => ({
     meta: [
-      { title: "Política de Privacidade — Sena Consulting" },
+      { title: "Política de Privacidade — Sena Labs" },
       {
         name: "description",
         content:
-          "Política de Privacidade da Sena Consulting: como coletamos, usamos e protegemos dados de contato, incluindo comunicação via WhatsApp.",
+          "Política de Privacidade da Sena Labs: como coletamos, usamos e protegemos dados de contato, incluindo comunicação via WhatsApp.",
       },
-      { property: "og:title", content: "Política de Privacidade — Sena Consulting" },
+      { property: "og:title", content: "Política de Privacidade — Sena Labs" },
       { property: "og:url", content: "https://senaconsulting.app/politica-de-privacidade" },
       { property: "og:type", content: "website" },
       { name: "robots", content: "noindex, follow" },
@@ -29,14 +29,16 @@ function PrivacyPolicy() {
       </Link>
 
       <h1 className="mt-6 text-3xl font-semibold">Política de Privacidade</h1>
-      <p className="mt-2 text-sm text-muted-foreground">Última atualização: 1º de agosto de 2026</p>
+      <p className="mt-2 text-sm text-muted-foreground">
+        Última atualização: 9 de setembro de 2026
+      </p>
 
       <div className="prose prose-neutral mt-8 max-w-none space-y-6 text-sm leading-relaxed text-foreground/90">
         <section>
           <h2 className="text-lg font-semibold">1. Quem somos</h2>
           <p>
-            A Sena Consulting ("nós") é uma consultoria de IA e automação operada por Felipe Sena.
-            Esta política explica como coletamos, usamos e protegemos as informações de pessoas que
+            A Sena Labs ("nós") é uma consultoria de IA e automação operada por Felipe Sena. Esta
+            política explica como coletamos, usamos e protegemos as informações de pessoas que
             entram em contato conosco pelo site, e-mail, LinkedIn ou WhatsApp, incluindo interações
             automatizadas realizadas através da API do WhatsApp Business (Meta).
           </p>
@@ -49,7 +51,9 @@ function PrivacyPolicy() {
             <li>Nome, número de telefone e conteúdo das mensagens trocadas via WhatsApp;</li>
             <li>Endereço de e-mail e conteúdo de mensagens enviadas por formulários ou e-mail;</li>
             <li>
-              Respostas fornecidas em nosso diagnóstico de IA e automação (Bússola Digital & IA);
+              No diagnóstico de oportunidades, mediante seu consentimento explícito antes de
+              começar: nome, e-mail, WhatsApp, nome do seu negócio (opcional) e as respostas dadas
+              ao longo do diagnóstico;
             </li>
             <li>
               Dados de uso do site (páginas visitadas, origem do tráfego) para fins estatísticos.
@@ -74,7 +78,10 @@ function PrivacyPolicy() {
               WhatsApp;
             </li>
             <li>Agendar reuniões e dar continuidade a propostas de consultoria;</li>
-            <li>Gerar o diagnóstico solicitado e enviar seu resultado por e-mail ou WhatsApp;</li>
+            <li>
+              Gerar o diagnóstico de oportunidades solicitado, exibido diretamente no seu navegador
+              e, caso você opte por continuar a conversa, dar continuidade pelo WhatsApp;
+            </li>
             <li>Melhorar nossos serviços e comunicação.</li>
           </ul>
         </section>
@@ -87,8 +94,8 @@ function PrivacyPolicy() {
             abaixo.
           </p>
           <p>
-            Dados do site e da área de clientes — nome, e-mail, respostas de diagnóstico e dados de
-            uso:
+            Dados do site e da área de clientes — nome, e-mail, WhatsApp, negócio informado,
+            respostas de diagnóstico e dados de uso:
           </p>
           <ul className="list-disc pl-6">
             <li>Supabase, Inc. (Estados Unidos) — banco de dados;</li>
@@ -101,7 +108,7 @@ function PrivacyPolicy() {
           </p>
           <ul className="list-disc pl-6">
             <li>Meta Platforms, Inc. — infraestrutura da API do WhatsApp Business;</li>
-            <li>servidores operados diretamente pela Sena Consulting, em datacenter no Brasil.</li>
+            <li>servidores operados diretamente pela Sena Labs, em datacenter no Brasil.</li>
           </ul>
           <p>
             Estes dados não são armazenados no Supabase, na Vercel nem em qualquer outro prestador

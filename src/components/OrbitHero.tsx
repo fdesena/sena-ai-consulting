@@ -147,7 +147,8 @@ export default function OrbitHero() {
           .orbit-hero .orbit-stage-canvas{ height:420px; margin-top:23px; }
           .orbit-hero .orbit-scene-label{ top:4px; left:0; }
           .orbit-hero .orbit-axis-label{ right:0; }
-          .orbit-hero .orbit-page-footer{ font-size:12px; line-height:1.6; }
+          .orbit-hero .orbit-page-footer{ font-size:12px; line-height:1.6; flex-wrap:wrap; row-gap:12px; }
+          .orbit-hero .orbit-focus-list{ flex-wrap:wrap; row-gap:8px; }
           .orbit-hero .orbit-scene-controls{ margin-top:-8px; }
         }
         @media (prefers-reduced-motion:reduce){
