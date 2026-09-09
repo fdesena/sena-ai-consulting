@@ -1,6 +1,7 @@
 export type IconKey = "web" | "video" | "file" | "retention" | "agent" | "crm" | "chart" | "learn";
 
-export type OrbitItem = {
+export type ServiceItem = {
+  kind?: "service";
   tag: string;
   category: string;
   icon: IconKey;
@@ -13,9 +14,27 @@ export type OrbitItem = {
   /** Índice do case correspondente em TrackRecord.tsx (seção Cases/Resultados). */
   caseIndex: number;
 };
+
+/** Card institucional da marca — participa da órbita, mas não abre case nem entra no carrossel de perguntas. */
+export type BrandItem = {
+  kind: "brand";
+  tag: string;
+  code: string;
+  eyebrow: string;
+  tagline: string;
+};
+
+export type OrbitItem = ServiceItem | BrandItem;
 export type OrbitArea = { label: string; color: string };
 
 export const ITEMS: OrbitItem[] = [
+  {
+    kind: "brand",
+    tag: "Sena Labs",
+    code: "00",
+    eyebrow: "ESTRATÉGIA + TECNOLOGIA",
+    tagline: "Estratégia, IA & Software sob medida",
+  },
   {
     tag: "Site",
     category: "Websites sob medida",
@@ -126,6 +145,19 @@ export const ITEMS: OrbitItem[] = [
     caseIndex: 6,
   },
 ];
+
+export const isBrandItem = (item: OrbitItem): item is BrandItem => item.kind === "brand";
+
+/** Só as soluções (sem a marca) — alimenta o carrossel de pergunta/resposta do texto do hero. */
+export const SERVICE_ITEMS: ServiceItem[] = ITEMS.filter(
+  (item): item is ServiceItem => !isBrandItem(item),
+);
+
+/** Rótulo "SL / NN" de cada card: "00" para a marca, "01"–"08" na ordem das soluções, independente da posição na órbita. */
+export const ITEM_CODES: string[] = (() => {
+  let n = 0;
+  return ITEMS.map((item) => (isBrandItem(item) ? item.code : String(++n).padStart(2, "0")));
+})();
 
 export const AREAS: OrbitArea[] = [
   { label: "Marketing e Divulgação", color: "#C9853B" },
