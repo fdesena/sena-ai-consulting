@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { trackEvent } from "@/lib/track";
 import { cn } from "@/lib/utils";
-import { AREAS, ITEMS, ORBIT_SANS } from "./orbit-hero-data";
+import { AREAS, isBrandItem, ITEMS, ORBIT_SANS, SERVICE_ITEMS } from "./orbit-hero-data";
 import type { OrbitGlobeHandle } from "./OrbitGlobeScene";
 
 const OrbitGlobeScene = lazy(() => import("./OrbitGlobeScene"));
@@ -57,13 +57,13 @@ export default function OrbitHero() {
 
   useEffect(() => {
     const id = window.setInterval(() => {
-      setTextIndex((i) => (i + 1) % ITEMS.length);
+      setTextIndex((i) => (i + 1) % SERVICE_ITEMS.length);
     }, 6000);
     return () => window.clearInterval(id);
   }, []);
 
   const activeItem = ITEMS[activeIndex];
-  const textItem = textIndex >= 0 ? ITEMS[textIndex] : null;
+  const textItem = textIndex >= 0 ? SERVICE_ITEMS[textIndex] : null;
 
   function handleSelectCase(caseIndex: number) {
     window.dispatchEvent(new CustomEvent(OPEN_CASE_EVENT, { detail: { index: caseIndex } }));
@@ -107,7 +107,10 @@ export default function OrbitHero() {
         .orbit-hero .orbit-card-top{ display:flex; align-items:center; justify-content:space-between; color:var(--orbit-orange); }
         .orbit-hero .orbit-card-top svg{ width:27px; height:27px; }
         .orbit-hero .orbit-card-code{ font-family:var(--orbit-mono); font-size:12px; color:#c5b5a7; }
+        .orbit-hero .orbit-card-eyebrow{ font-family:var(--orbit-mono); font-size:9px; letter-spacing:.08em; color:#c5b5a7; }
         .orbit-hero .orbit-card-title{ font-size:30px; line-height:1; letter-spacing:-.04em; font-weight:550; color:var(--orbit-ink); }
+        .orbit-hero .orbit-card-brand-lockup{ display:flex; align-items:center; }
+        .orbit-hero .orbit-card-brand-lockup img{ display:block; width:auto; height:30px; max-width:100%; }
         .orbit-hero .orbit-card-footer{ display:flex; justify-content:space-between; align-items:center; gap:8px; font-family:var(--orbit-mono); font-size:12px; color:#c7b8aa; }
         .orbit-hero .orbit-card-footer span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .orbit-hero .orbit-card-footer svg{ width:16px; height:16px; }
@@ -232,20 +235,31 @@ export default function OrbitHero() {
               </Suspense>
             )}
             <div className="orbit-active-solution">
-              <div key={activeIndex} className="orbit-active-copy">
-                <span className="orbit-active-caption" style={monoStyle}>
-                  {String(activeIndex + 1).padStart(2, "0")} / {AREAS[activeItem.area].label}
-                </span>
-                <p>{activeItem.result}</p>
-              </div>
-              <button
-                type="button"
-                aria-label={`Ver detalhes: ${activeItem.tag}`}
-                onClick={() => handleSelectCase(activeItem.caseIndex)}
-                className="orbit-control"
-              >
-                <ArrowUpRight className="h-4 w-4" />
-              </button>
+              {isBrandItem(activeItem) ? (
+                <div key={activeIndex} className="orbit-active-copy">
+                  <span className="orbit-active-caption" style={monoStyle}>
+                    SL / {activeItem.code} · {activeItem.tag}
+                  </span>
+                  <p>{activeItem.tagline}.</p>
+                </div>
+              ) : (
+                <>
+                  <div key={activeIndex} className="orbit-active-copy">
+                    <span className="orbit-active-caption" style={monoStyle}>
+                      {String(activeIndex + 1).padStart(2, "0")} / {AREAS[activeItem.area].label}
+                    </span>
+                    <p>{activeItem.result}</p>
+                  </div>
+                  <button
+                    type="button"
+                    aria-label={`Ver detalhes: ${activeItem.tag}`}
+                    onClick={() => handleSelectCase(activeItem.caseIndex)}
+                    className="orbit-control"
+                  >
+                    <ArrowUpRight className="h-4 w-4" />
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>

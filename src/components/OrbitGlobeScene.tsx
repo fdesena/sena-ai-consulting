@@ -1,5 +1,6 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from "react";
-import { ITEMS, type IconKey } from "./orbit-hero-data";
+import senaLogoHorizontal from "@/assets/brand/sena-labs-horizontal-dark.svg";
+import { isBrandItem, ITEMS, ITEM_CODES, type IconKey } from "./orbit-hero-data";
 
 const TAU = Math.PI * 2;
 const COUNT = ITEMS.length;
@@ -134,7 +135,8 @@ const OrbitGlobeScene = forwardRef<OrbitGlobeHandle, Props>(function OrbitGlobeS
     ref,
     () => ({
       moveToArea(areaIndex: number) {
-        goToItem(areaIndex * 2);
+        const target = ITEMS.findIndex((item) => !isBrandItem(item) && item.area === areaIndex);
+        if (target >= 0) goToItem(target);
       },
       focusItem(itemIndex: number) {
         goToItem(itemIndex);
@@ -329,37 +331,65 @@ const OrbitGlobeScene = forwardRef<OrbitGlobeHandle, Props>(function OrbitGlobeS
         ref={stageRef}
         className="orbit-stage-canvas"
         role="img"
-        aria-label="Órbita animada das oito soluções da Sena Labs; o card mais próximo está descrito à esquerda."
+        aria-label="Órbita animada da Sena Labs: marca e oito soluções; o card mais próximo está descrito à esquerda."
       >
         <div className="orbit-scene-label">Possibilidades em órbita</div>
         <div className="orbit-world" aria-hidden="true">
           <canvas ref={canvasRef} />
-          {ITEMS.map((item, i) => (
-            <button
-              key={item.tag}
-              type="button"
-              tabIndex={-1}
-              ref={(node) => {
-                cardRefs.current[i] = node;
-              }}
-              onClick={() => onSelectCase(item.caseIndex)}
-              aria-label={`Ver exemplo: ${item.tag}`}
-              className="orbit-card"
-            >
-              <div className="orbit-glass" />
-              <div className="orbit-card-content">
-                <div className="orbit-card-top">
-                  <IconSpan name={item.icon} />
-                  <span className="orbit-card-code">SL / {String(i + 1).padStart(2, "0")}</span>
+          {ITEMS.map((item, i) =>
+            isBrandItem(item) ? (
+              <button
+                key={item.tag}
+                type="button"
+                tabIndex={-1}
+                ref={(node) => {
+                  cardRefs.current[i] = node;
+                }}
+                aria-label="Sena Labs — Estratégia, IA & Software sob medida"
+                className="orbit-card orbit-card--brand"
+              >
+                <div className="orbit-glass" />
+                <div className="orbit-card-content">
+                  <div className="orbit-card-top">
+                    <span className="orbit-card-eyebrow">{item.eyebrow}</span>
+                    <span className="orbit-card-code">SL / {ITEM_CODES[i]}</span>
+                  </div>
+                  <div className="orbit-card-brand-lockup">
+                    <img src={senaLogoHorizontal} alt="Sena Labs" draggable={false} />
+                  </div>
+                  <div className="orbit-card-footer">
+                    <span>{item.tagline}</span>
+                    <IconSpan name="next" />
+                  </div>
                 </div>
-                <div className="orbit-card-title">{item.tag}</div>
-                <div className="orbit-card-footer">
-                  <span>{item.category}</span>
-                  <IconSpan name="next" />
+              </button>
+            ) : (
+              <button
+                key={item.tag}
+                type="button"
+                tabIndex={-1}
+                ref={(node) => {
+                  cardRefs.current[i] = node;
+                }}
+                onClick={() => onSelectCase(item.caseIndex)}
+                aria-label={`Ver exemplo: ${item.tag}`}
+                className="orbit-card"
+              >
+                <div className="orbit-glass" />
+                <div className="orbit-card-content">
+                  <div className="orbit-card-top">
+                    <IconSpan name={item.icon} />
+                    <span className="orbit-card-code">SL / {ITEM_CODES[i]}</span>
+                  </div>
+                  <div className="orbit-card-title">{item.tag}</div>
+                  <div className="orbit-card-footer">
+                    <span>{item.category}</span>
+                    <IconSpan name="next" />
+                  </div>
                 </div>
-              </div>
-            </button>
-          ))}
+              </button>
+            ),
+          )}
           {SATELLITES.map((_, i) => (
             <div
               key={i}
