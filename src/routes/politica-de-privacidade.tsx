@@ -12,11 +12,11 @@ export const Route = createFileRoute("/politica-de-privacidade")({
           "Política de Privacidade da Sena Labs: como coletamos, usamos e protegemos dados de contato, incluindo comunicação via WhatsApp.",
       },
       { property: "og:title", content: "Política de Privacidade — Sena Labs" },
-      { property: "og:url", content: "https://senaconsulting.app/politica-de-privacidade" },
+      { property: "og:url", content: "https://www.senalabs.tech/politica-de-privacidade" },
       { property: "og:type", content: "website" },
       { name: "robots", content: "noindex, follow" },
     ],
-    links: [{ rel: "canonical", href: "https://senaconsulting.app/politica-de-privacidade" }],
+    links: [{ rel: "canonical", href: "https://www.senalabs.tech/politica-de-privacidade" }],
   }),
   component: PrivacyPolicy,
 });

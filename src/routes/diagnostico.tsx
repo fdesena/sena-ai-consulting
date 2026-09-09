@@ -16,7 +16,7 @@ export const Route = createFileRoute("/diagnostico")({
         content:
           "Um plano inicial de ação a partir da sua situação real, sem nota de maturidade e sem cadastro.",
       },
-      { property: "og:url", content: "https://senaconsulting.app/diagnostico" },
+      { property: "og:url", content: "https://www.senalabs.tech/diagnostico" },
       { property: "og:type", content: "website" },
       { name: "twitter:title", content: "Diagnóstico de oportunidades — Sena Labs" },
       {
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/diagnostico")({
           "Um plano inicial de ação a partir da sua situação real, sem nota de maturidade e sem cadastro.",
       },
     ],
-    links: [{ rel: "canonical", href: "https://senaconsulting.app/diagnostico" }],
+    links: [{ rel: "canonical", href: "https://www.senalabs.tech/diagnostico" }],
   }),
   component: DiagnosticoApp,
 });

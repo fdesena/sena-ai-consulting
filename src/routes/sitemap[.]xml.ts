@@ -1,36 +1,33 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
-const BASE_URL = "https://senaconsulting.app";
+const BASE_URL = "https://www.senalabs.tech";
 
-interface SitemapEntry {
-  path: string;
-  lastmod?: string;
-  changefreq?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
-  priority?: string;
-}
+// Apenas URLs canônicas que devem ser indexadas — Google ignora priority/changefreq
+// (https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap),
+// então o sitemap lista só <loc>. Páginas noindex (termos, privacidade, auth,
+// exclusão de dados) ficam de fora de propósito.
+const PATHS = [
+  "/",
+  "/diagnostico",
+  "/blog",
+  "/blog/automatizar",
+  "/blog/agentes",
+  "/blog/software",
+  "/blog/gap-adocao-ia",
+  "/blog/marca-sena-labs",
+  "/blog/diagnostico",
+  "/ferramentas",
+  "/ferramentas/roleta",
+  "/ferramentas/temporizador",
+  "/ferramentas/gerador-de-documentos",
+];
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async () => {
-        const entries: SitemapEntry[] = [
-          { path: "/", changefreq: "weekly", priority: "1.0" },
-          { path: "/diagnostico", changefreq: "monthly", priority: "0.8" },
-        ];
-
-        const urls = entries.map((e) =>
-          [
-            `  <url>`,
-            `    <loc>${BASE_URL}${e.path}</loc>`,
-            e.lastmod ? `    <lastmod>${e.lastmod}</lastmod>` : null,
-            e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
-            e.priority ? `    <priority>${e.priority}</priority>` : null,
-            `  </url>`,
-          ]
-            .filter(Boolean)
-            .join("\n"),
-        );
+        const urls = PATHS.map((path) => `  <url>\n    <loc>${BASE_URL}${path}</loc>\n  </url>`);
 
         const xml = [
           `<?xml version="1.0" encoding="UTF-8"?>`,

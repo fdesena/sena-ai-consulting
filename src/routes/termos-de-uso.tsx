@@ -11,11 +11,11 @@ export const Route = createFileRoute("/termos-de-uso")({
         content: "Termos de Uso da Sena Labs, em conformidade com a LGPD.",
       },
       { property: "og:title", content: "Termos de Uso — Sena Labs" },
-      { property: "og:url", content: "https://senaconsulting.app/termos-de-uso" },
+      { property: "og:url", content: "https://www.senalabs.tech/termos-de-uso" },
       { property: "og:type", content: "website" },
       { name: "robots", content: "noindex, follow" },
     ],
-    links: [{ rel: "canonical", href: "https://senaconsulting.app/termos-de-uso" }],
+    links: [{ rel: "canonical", href: "https://www.senalabs.tech/termos-de-uso" }],
   }),
   component: TermsOfUse,
 });
@@ -36,8 +36,8 @@ function TermsOfUse() {
         <section>
           <h2 className="text-lg font-semibold">1. Aceitação dos termos</h2>
           <p>
-            Ao acessar o site senaconsulting.app ou interagir com a Sena Labs por e-mail, LinkedIn
-            ou WhatsApp (incluindo automações via API do WhatsApp Business), você concorda com estes
+            Ao acessar o site senalabs.tech ou interagir com a Sena Labs por e-mail, LinkedIn ou
+            WhatsApp (incluindo automações via API do WhatsApp Business), você concorda com estes
             Termos de Uso e com nossa{" "}
             <Link to="/politica-de-privacidade" className="underline">
               Política de Privacidade

@@ -24,7 +24,7 @@ import alicerceLogo from "@/assets/alicerce-logo.png";
 export const Route = createFileRoute("/ferramentas/roleta")({
   head: () => ({
     meta: [
-      { title: "Roleta de Sorteio — Sena Consulting" },
+      { title: "Roleta de Sorteio — Sena Labs" },
       {
         name: "description",
         content:

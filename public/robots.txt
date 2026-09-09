@@ -5,4 +5,4 @@ Disallow: /auth
 Disallow: /api/
 Disallow: /lovable/
 
-Sitemap: https://senaconsulting.app/sitemap.xml
+Sitemap: https://www.senalabs.tech/sitemap.xml

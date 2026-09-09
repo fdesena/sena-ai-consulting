@@ -28,7 +28,7 @@ export class EmailSendError extends Error {
 // Matches the /email/unsubscribe route handler.
 function siteBaseUrl(): string {
   const fromEnv =
-    process.env.PUBLIC_SITE_URL || process.env.VITE_PUBLIC_SITE_URL || "https://senaconsulting.app";
+    process.env.PUBLIC_SITE_URL || process.env.VITE_PUBLIC_SITE_URL || "https://www.senalabs.tech";
   return fromEnv.replace(/\/$/, "");
 }
 

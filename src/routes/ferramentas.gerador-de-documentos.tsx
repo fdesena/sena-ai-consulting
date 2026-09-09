@@ -8,7 +8,7 @@ import { useEffect } from "react";
 export const Route = createFileRoute("/ferramentas/gerador-de-documentos")({
   head: () => ({
     meta: [
-      { title: "Gerador de Documentos — Sena Consulting" },
+      { title: "Gerador de Documentos — Sena Labs" },
       {
         name: "description",
         content:

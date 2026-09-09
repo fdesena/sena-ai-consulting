@@ -19,10 +19,10 @@ export const Route = createFileRoute("/blog/marca-sena-labs")({
         content:
           "O símbolo, as cores e o raciocínio por trás da nova identidade visual da Sena Labs.",
       },
-      { property: "og:url", content: "https://senaconsulting.app/blog/marca-sena-labs" },
+      { property: "og:url", content: "https://www.senalabs.tech/blog/marca-sena-labs" },
       { property: "og:type", content: "article" },
     ],
-    links: [{ rel: "canonical", href: "https://senaconsulting.app/blog/marca-sena-labs" }],
+    links: [{ rel: "canonical", href: "https://www.senalabs.tech/blog/marca-sena-labs" }],
   }),
   component: BrandPost,
 });
