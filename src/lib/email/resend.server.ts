@@ -39,13 +39,15 @@ function siteBaseUrl(): string {
   return fromEnv.replace(/\/$/, "");
 }
 
-export async function sendResendEmail(
-  input: ResendSendInput,
-  opts: { apiKey: string; from?: string },
-): Promise<{ id: string }> {
-  // Prefer the verified RESEND_FROM sender; fall back to the payload's from.
-  const from = opts.from || input.from;
+// Domínio antigo — usado só como fallback se o remetente principal
+// (RESEND_FROM, esperado em @senalabs.tech) falhar o envio.
+const DEFAULT_FALLBACK_FROM = "contato@senaconsulting.app";
 
+async function attemptResendSend(
+  input: ResendSendInput,
+  from: string,
+  apiKey: string,
+): Promise<{ id: string }> {
   const headers: Record<string, string> = {};
   if (input.unsubscribe_token) {
     const url = `${siteBaseUrl()}/email/unsubscribe?token=${input.unsubscribe_token}`;
@@ -56,7 +58,7 @@ export async function sendResendEmail(
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${opts.apiKey}`,
+      Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -88,4 +90,26 @@ export async function sendResendEmail(
 
   const data = await res.json().catch(() => ({}));
   return { id: data?.id ?? "" };
+}
+
+export async function sendResendEmail(
+  input: ResendSendInput,
+  opts: { apiKey: string; from?: string; fromFallback?: string },
+): Promise<{ id: string }> {
+  // Prefer the verified RESEND_FROM sender (senalabs.tech); fall back to the
+  // payload's from, then to the old senaconsulting.app domain only if the
+  // primary send fails (e.g. domain not yet verified in Resend).
+  const from = opts.from || input.from;
+  const fallbackFrom = opts.fromFallback || DEFAULT_FALLBACK_FROM;
+
+  try {
+    return await attemptResendSend(input, from, opts.apiKey);
+  } catch (err) {
+    if (!fallbackFrom || fallbackFrom === from) throw err;
+    console.error(
+      `Resend send from "${from}" failed, retrying with fallback "${fallbackFrom}"`,
+      err,
+    );
+    return await attemptResendSend(input, fallbackFrom, opts.apiKey);
+  }
 }

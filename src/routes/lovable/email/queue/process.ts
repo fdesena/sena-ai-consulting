@@ -245,7 +245,7 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
                   text: payload.text,
                   unsubscribe_token: payload.unsubscribe_token,
                 },
-                { apiKey, from: resendFrom },
+                { apiKey, from: resendFrom, fromFallback: process.env.RESEND_FROM_FALLBACK },
               );
 
               // Log success

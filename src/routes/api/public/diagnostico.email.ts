@@ -113,7 +113,7 @@ export const Route = createFileRoute("/api/public/diagnostico/email")({
                 },
               ],
             },
-            { apiKey, from: resendFrom },
+            { apiKey, from: resendFrom, fromFallback: process.env.RESEND_FROM_FALLBACK },
           );
         } catch (err) {
           const status = err instanceof EmailSendError ? err.status : 500;
