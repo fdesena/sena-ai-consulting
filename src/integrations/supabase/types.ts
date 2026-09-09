@@ -152,6 +152,57 @@ export type Database = {
         };
         Relationships: [];
       };
+      diagnostico_leads: {
+        Row: {
+          id: string;
+          created_at: string;
+          completed_at: string | null;
+          schema_version: string;
+          nome: string | null;
+          email: string | null;
+          whatsapp: string | null;
+          consentimento: boolean;
+          negocio: string | null;
+          goal: string | null;
+          priority_area: string | null;
+          areas: Json;
+          answers: Json;
+          report: Json;
+        };
+        Insert: {
+          id?: string;
+          created_at?: string;
+          completed_at?: string | null;
+          schema_version: string;
+          nome?: string | null;
+          email?: string | null;
+          whatsapp?: string | null;
+          consentimento?: boolean;
+          negocio?: string | null;
+          goal?: string | null;
+          priority_area?: string | null;
+          areas?: Json;
+          answers?: Json;
+          report?: Json;
+        };
+        Update: {
+          id?: string;
+          created_at?: string;
+          completed_at?: string | null;
+          schema_version?: string;
+          nome?: string | null;
+          email?: string | null;
+          whatsapp?: string | null;
+          consentimento?: boolean;
+          negocio?: string | null;
+          goal?: string | null;
+          priority_area?: string | null;
+          areas?: Json;
+          answers?: Json;
+          report?: Json;
+        };
+        Relationships: [];
+      };
       email_send_log: {
         Row: {
           created_at: string;

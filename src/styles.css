@@ -125,3 +125,19 @@
     color: var(--muted-foreground);
   }
 }
+
+/* Diagnóstico: o resultado é lido/impresso em PDF a partir de um layout escuro,
+   então força-se um fundo claro e texto escuro legível ao imprimir. */
+@media print {
+  .diagnostico-no-print,
+  [role="dialog"] {
+    display: none !important;
+  }
+  .diagnostico-print-area,
+  .diagnostico-print-area * {
+    background: #fff !important;
+    color: #111 !important;
+    box-shadow: none !important;
+    border-color: #ccc !important;
+  }
+}

@@ -1,12 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
-import type { Json } from "@/integrations/supabase/types";
 
 const PayloadSchema = z.object({
-  id: z.string().uuid(),
   schemaVersion: z.string().trim().min(1).max(40),
-  answers: z.record(z.string(), z.any()),
-  report: z.record(z.string(), z.any()),
+  nome: z.string().trim().min(1).max(200),
+  email: z.string().trim().email().max(255),
+  whatsapp: z.string().trim().min(8).max(50),
+  negocio: z.string().trim().max(200).optional().nullable(),
+  consentimento: z.literal(true),
 });
 
 function corsHeaders() {
@@ -17,10 +18,10 @@ function corsHeaders() {
   } as const;
 }
 
-// Completes a diagnostic lead created by diagnostico.start.ts once the visitor
-// reaches the result — attaches the full answers/report to the same row that
-// already holds their contact info and consent.
-export const Route = createFileRoute("/api/public/diagnostico/submit")({
+// Captures the lead at the start of the diagnostic — before any question is
+// shown — once the visitor accepts the terms/privacy consent on the welcome
+// screen. The row is later completed (answers/report) by diagnostico.submit.ts.
+export const Route = createFileRoute("/api/public/diagnostico/start")({
   server: {
     handlers: {
       OPTIONS: async () => new Response(null, { status: 204, headers: corsHeaders() }),
@@ -42,35 +43,33 @@ export const Route = createFileRoute("/api/public/diagnostico/submit")({
           );
         }
         const data = parsed.data;
-        const answers = data.answers as Record<string, unknown>;
-        const report = data.report as Record<string, unknown>;
-        const areas = Array.isArray(answers.areas) ? answers.areas : [];
-        const goal = typeof answers.goal === "string" ? answers.goal : null;
-        const priorityArea = typeof report.key === "string" ? report.key : null;
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const upd = await supabaseAdmin
+        const ins = await supabaseAdmin
           .from("diagnostico_leads")
-          .update({
+          .insert({
             schema_version: data.schemaVersion,
-            goal,
-            priority_area: priorityArea,
-            areas,
-            answers: answers as Json,
-            report: report as Json,
-            completed_at: new Date().toISOString(),
+            nome: data.nome,
+            email: data.email.toLowerCase(),
+            whatsapp: data.whatsapp,
+            negocio: data.negocio || null,
+            consentimento: true,
           })
-          .eq("id", data.id);
+          .select("id")
+          .single();
 
-        if (upd.error) {
-          console.error("update diagnostico_leads failed", upd.error);
+        if (ins.error || !ins.data) {
+          console.error("insert diagnostico_leads (start) failed", ins.error);
           return Response.json(
-            { ok: false, error: "db_update_failed" },
+            { ok: false, error: "db_insert_failed" },
             { status: 500, headers: corsHeaders() },
           );
         }
 
-        return Response.json({ ok: true }, { status: 200, headers: corsHeaders() });
+        return Response.json(
+          { ok: true, id: ins.data.id },
+          { status: 200, headers: corsHeaders() },
+        );
       },
     },
   },

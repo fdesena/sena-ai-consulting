@@ -51,7 +51,7 @@ export default function ContactFAB() {
   return (
     <div ref={rootRef} className="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-3">
       {open && (
-        <div className="flex flex-col gap-2 rounded-2xl border border-border bg-card p-2 shadow-lg shadow-black/10">
+        <div className="flex flex-col gap-2 rounded-2xl border border-[#fc7c3426] bg-card/95 p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_10px_26px_-6px_rgba(0,0,0,0.18),0_22px_55px_-18px_rgba(252,124,52,0.45)] backdrop-blur-md">
           <a
             href={WHATSAPP_URL}
             target="_blank"
@@ -85,9 +85,13 @@ export default function ContactFAB() {
         aria-expanded={open}
         aria-haspopup="true"
         aria-label={open ? "Fechar opções de contato" : "Falar com a Sena Labs"}
-        className="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg ring-1 ring-black/10 transition-transform hover:scale-105"
+        className="relative flex h-14 w-14 items-center justify-center rounded-full border border-white/50 bg-[linear-gradient(150deg,#ffb081_0%,#fc7c34_55%,#d9631d_100%)] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.6),inset_0_-3px_8px_rgba(0,0,0,0.22),0_4px_10px_rgba(0,0,0,0.28),0_14px_30px_rgba(252,124,52,0.4)] backdrop-blur-[14px] backdrop-saturate-150 transition-transform before:pointer-events-none before:absolute before:inset-0 before:rounded-full before:bg-[radial-gradient(circle_at_30%_22%,rgba(255,255,255,0.55),transparent_55%),linear-gradient(135deg,transparent_40%,rgba(255,255,255,0.14)_50%,transparent_60%)] before:content-[''] after:pointer-events-none after:absolute after:inset-[2px] after:rounded-full after:border after:border-white/15 after:content-[''] hover:scale-105"
       >
-        {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
+        {open ? (
+          <X className="relative h-6 w-6 drop-shadow-[0_1px_1px_rgba(0,0,0,0.25)]" />
+        ) : (
+          <MessageCircle className="relative h-6 w-6 drop-shadow-[0_1px_1px_rgba(0,0,0,0.25)]" />
+        )}
       </button>
     </div>
   );

@@ -8,10 +8,10 @@ import mitSolveImg from "@/assets/felipe-mit-solve.png";
 import bostonBeyondImg from "@/assets/felipe-boston-beyond.png";
 import epicMalasiaImg from "@/assets/felipe-epic-malasia.png";
 import { Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { trackEvent, trackPageview } from "@/lib/track";
-import { ArrowRight, Building2, LogIn, Wrench, Menu } from "lucide-react";
-import { motion } from "framer-motion";
+import { ArrowRight, Building2, Compass, LogIn, Wrench, Menu } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
 import { WHATSAPP_URL } from "./ContactFAB";
 import ProcessRail from "./ProcessRail";
 import ScheduleButton from "./ScheduleButton";
@@ -208,6 +208,31 @@ export default function LandingPage() {
   }, []);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
+  const ctaStageRef = useRef<HTMLDivElement>(null);
+  const ctaGlowRef = useRef<HTMLDivElement>(null);
+
+  // Glow do CTA final acompanha o cursor, igual ao brilho dos cards do hero.
+  useEffect(() => {
+    const stage = ctaStageRef.current;
+    const glow = ctaGlowRef.current;
+    if (!stage || !glow) return;
+    function onPointerMove(event: PointerEvent) {
+      const bounds = stage!.getBoundingClientRect();
+      glow!.style.setProperty("--mx", `${((event.clientX - bounds.left) / bounds.width) * 100}%`);
+      glow!.style.setProperty("--my", `${((event.clientY - bounds.top) / bounds.height) * 100}%`);
+    }
+    function onPointerLeave() {
+      glow!.style.setProperty("--mx", "68%");
+      glow!.style.setProperty("--my", "28%");
+    }
+    stage.addEventListener("pointermove", onPointerMove);
+    stage.addEventListener("pointerleave", onPointerLeave);
+    return () => {
+      stage.removeEventListener("pointermove", onPointerMove);
+      stage.removeEventListener("pointerleave", onPointerLeave);
+    };
+  }, []);
 
   return (
     <main className="min-h-screen bg-background text-foreground">
@@ -232,6 +257,13 @@ export default function LandingPage() {
             </a>
           </nav>
           <div className="flex items-center gap-2">
+            <Link
+              to="/diagnostico"
+              className="hidden items-center gap-2 rounded-full border border-white/25 px-4 py-2 text-sm font-medium text-white hover:border-primary hover:text-primary sm:inline-flex"
+            >
+              <Compass className="h-4 w-4" />
+              Diagnóstico gratuito
+            </Link>
             <a
               href="#contato"
               className="hidden items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 sm:inline-flex"
@@ -278,6 +310,15 @@ export default function LandingPage() {
                   <SheetClose asChild>
                     <Link to="/blog" className="rounded-xl px-3 py-3 transition hover:bg-white/10">
                       Blog
+                    </Link>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <Link
+                      to="/diagnostico"
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-3 transition hover:bg-white/10"
+                    >
+                      <Compass className="h-4 w-4 text-primary" />
+                      Diagnóstico gratuito
                     </Link>
                   </SheetClose>
 
@@ -798,10 +839,22 @@ export default function LandingPage() {
 
       {/* CTA FINAL */}
       <section id="contato" className="border-t border-white/10 bg-[#1e2022] text-[var(--paper)]">
-        <div className="relative mx-auto grid w-full max-w-6xl gap-12 overflow-hidden px-6 py-20 sm:py-28 md:grid-cols-[1fr_0.6fr] md:items-center">
-          <div
+        <div
+          ref={ctaStageRef}
+          className="relative mx-auto grid w-full max-w-6xl gap-12 overflow-hidden px-6 py-20 sm:py-28 md:grid-cols-[1fr_0.6fr] md:items-center"
+        >
+          <motion.div
+            ref={ctaGlowRef}
             aria-hidden
-            className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-primary/15 blur-3xl"
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(circle at var(--mx, 68%) var(--my, 28%), rgba(255,176,129,.32), rgba(252,124,52,.12) 40%, transparent 65%)",
+            }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: prefersReducedMotion ? 0.01 : 0.6, ease: [0.22, 1, 0.36, 1] }}
           />
           <div>
             <Eyebrow className="text-white/50">

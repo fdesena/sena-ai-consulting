@@ -844,7 +844,7 @@ function CaseDialog({
                 href={quoteRequestUrl(item.t)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex shrink-0 items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+                className="inline-flex shrink-0 items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90"
               >
                 Conversar sobre isso <ArrowUpRight className="h-4 w-4" />
               </a>
@@ -883,7 +883,7 @@ export default function TrackRecord() {
       document.querySelectorAll<HTMLElement>("[data-case-preview]").forEach((el) => {
         const r = el.getBoundingClientRect();
         if (r.bottom < 0 || r.top > vh) return;
-        const depth = Math.max(-8, Math.min(8, (r.top - vh * 0.4) * 0.025));
+        const depth = Math.max(-24, Math.min(24, (r.top - vh * 0.4) * 0.06));
         setPreviewTransform(el, { depth });
       });
     }

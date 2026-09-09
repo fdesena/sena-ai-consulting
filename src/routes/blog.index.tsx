@@ -56,6 +56,13 @@ const POSTS: Post[] = [
     description:
       "De onde vem o símbolo SL, o detalhe da bandeira de chegada e as cores da nova identidade visual.",
   },
+  {
+    slug: "/blog/diagnostico",
+    label: "06 / Diagnóstico",
+    title: "O que você recebe no diagnóstico de oportunidades.",
+    description:
+      "Um percurso de 8 minutos que prioriza uma oportunidade real no seu negócio — sem nota de maturidade e sem ROI inventado.",
+  },
 ];
 
 function BlogIndex() {
