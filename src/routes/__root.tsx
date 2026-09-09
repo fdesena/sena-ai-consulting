@@ -90,6 +90,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:site_name", content: "Sena Labs" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      // Verificação de propriedade do site no Bing Webmaster Tools — não remover.
+      { name: "msvalidate.01", content: "16C6E5B0DBC1A673ABDEB26884A12EB2" },
     ],
     links: [
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
