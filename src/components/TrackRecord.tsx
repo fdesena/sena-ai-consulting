@@ -112,6 +112,27 @@ function MockLMS() {
   );
 }
 
+function MockTraining() {
+  return (
+    <div className="space-y-2">
+      {[
+        ["Curso in company", "01"],
+        ["Mentoria individual", "02"],
+        ["Material sob medida", "03"],
+      ].map(([label, index]) => (
+        <div
+          key={index}
+          className="flex items-center gap-2 rounded-md border border-border bg-white px-2.5 py-2"
+        >
+          <span className="font-mono text-[9px] text-primary">{index}</span>
+          <span className="h-1.5 flex-1 rounded-full bg-foreground/15" />
+          <span className="font-mono text-[8px] text-muted-foreground">{label}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function MockWebsite() {
   return (
     <div className="space-y-1.5">
@@ -202,7 +223,7 @@ function MockWhatsAppFlow() {
 
 /* ---------- Card grid ---------- */
 
-type Filter = "software" | "automation" | "ai" | "data";
+type Filter = "software" | "automation" | "ai" | "data" | "training";
 
 type Item = {
   t: string;
@@ -227,6 +248,8 @@ type Item = {
   sites?: { url: string; screenshot?: string }[];
   /** Ferramentas já em produção, listadas com link direto pra testar. */
   tools?: { name: string; description: string; Icon: LucideIcon; to?: string; href?: string }[];
+  /** Materiais de apoio já preparados para um treinamento. */
+  materials?: { name: string; description: string; href: string }[];
   /** Comparativo animado de tempo (sem IA x com IA) quando não há vídeo/site/ferramenta pra mostrar. Estimativa ilustrativa, não métrica medida do cliente. */
   timeSaved?: { cadence: string; traditionalMinutes: number; aiMinutes: number };
 };
@@ -380,6 +403,38 @@ const items: Item[] = [
     resultado: "Mais engajamento e aprendizado mensurável, em ambiente próprio.",
     tags: ["Plataforma", "LMS", "Gamificação"],
     timeSaved: { cadence: "por novo colaborador treinado", traditionalMinutes: 360, aiMinutes: 30 },
+  },
+  {
+    t: "Treinamentos e materiais com IA",
+    d: "Cursos in company, mentoria e materiais sob medida.",
+    visualLabel: "Capacitação + IA",
+    category: "Treinamentos sob medida",
+    filter: "training",
+    Icon: GraduationCap,
+    Mock: MockTraining,
+    desafio:
+      "Treinamentos genéricos e apresentações reutilizadas não acompanham o contexto, o ritmo e as decisões que cada equipe precisa tomar.",
+    solucao:
+      "Cursos in company, mentoria individual e materiais customizados com IA, criados a partir dos desafios reais e das ferramentas que a equipe usa.",
+    resultado: "Aprendizado aplicado, com materiais que continuam úteis depois do encontro.",
+    tags: [
+      "Treinamento in company",
+      "Mentoria individual",
+      "Materiais customizados",
+      "IA aplicada",
+    ],
+    materials: [
+      {
+        name: "As 4 propriedades da IA",
+        description: "Material interativo sobre capacidades e limites dos modelos.",
+        href: "/materiais-customizados/four-properties-v2.html",
+      },
+      {
+        name: "Playbook de modelo e esforço",
+        description: "Guia prático para escolher modelo e nível de esforço em cada tarefa.",
+        href: "/materiais-customizados/model-effort-playbook-v2.html",
+      },
+    ],
   },
   {
     t: "Retenção de pacientes via WhatsApp",
@@ -613,6 +668,33 @@ function CaseMedia({ item }: { item: Item }) {
     );
   }
 
+  if (item.materials && item.materials.length > 0) {
+    return (
+      <div className="grid gap-3 sm:grid-cols-2">
+        {item.materials.map((material) => (
+          <a
+            key={material.href}
+            href={material.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group/material flex items-start gap-3 rounded-lg border border-border bg-white p-3 transition hover:border-primary/50 hover:shadow-sm"
+          >
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <FileText className="h-4 w-4" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h4 className="text-sm font-semibold">{material.name}</h4>
+              <p className="mt-0.5 text-xs text-muted-foreground">{material.description}</p>
+              <span className="mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-primary">
+                Abrir exemplo <ExternalLink className="h-3 w-3" />
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    );
+  }
+
   if (item.sites && item.sites.length > 0) {
     return (
       <div className="grid gap-4 sm:grid-cols-2">
@@ -695,6 +777,7 @@ function CaseMedia({ item }: { item: Item }) {
 
 const FILTERS: { key: "all" | Filter; label: string }[] = [
   { key: "all", label: "Todas" },
+  { key: "training", label: "Treinamento" },
   { key: "software", label: "Software" },
   { key: "automation", label: "Automação" },
   { key: "ai", label: "Inteligência artificial" },
