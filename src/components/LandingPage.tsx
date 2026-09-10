@@ -31,9 +31,23 @@ import {
 
 const EMAIL = "felipesmsena@gmail.com";
 const LINKEDIN = "https://linkedin.com/in/senafelipe";
+const DARK_GLOW =
+  "radial-gradient(680px circle at var(--glow-x, 68%) var(--glow-y, 28%), rgba(255,176,129,.24), rgba(252,124,52,.09) 42%, transparent 68%)";
 
 function Eyebrow({ children, className }: { children: React.ReactNode; className?: string }) {
   return <span className={cn("eyebrow", className)}>{children}</span>;
+}
+
+function moveDarkGlow(event: React.PointerEvent<HTMLElement>) {
+  const bounds = event.currentTarget.getBoundingClientRect();
+  event.currentTarget.style.setProperty(
+    "--glow-x",
+    `${((event.clientX - bounds.left) / bounds.width) * 100}%`,
+  );
+  event.currentTarget.style.setProperty(
+    "--glow-y",
+    `${((event.clientY - bounds.top) / bounds.height) * 100}%`,
+  );
 }
 
 /**
@@ -450,9 +464,15 @@ export default function LandingPage() {
       {/* DESAFIO */}
       <section
         id="desafio"
-        className="border-y border-white/10 bg-[var(--ink)] text-[var(--paper)]"
+        onPointerMove={moveDarkGlow}
+        className="relative overflow-hidden border-y border-white/10 bg-[var(--ink)] text-[var(--paper)]"
       >
-        <div className="mx-auto w-full max-w-6xl px-6 py-24 sm:py-32">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{ background: DARK_GLOW }}
+        />
+        <div className="relative mx-auto w-full max-w-6xl px-6 py-24 sm:py-32">
           <Eyebrow className="justify-center text-white/50">
             <span className="text-primary">02 /</span> O desafio
           </Eyebrow>
@@ -631,8 +651,17 @@ export default function LandingPage() {
       </Section>
 
       {/* SOBRE A SENA LABS */}
-      <section id="sobre" className="border-t border-white/10 bg-[var(--ink)] text-[var(--paper)]">
-        <div className="mx-auto w-full max-w-6xl px-6 pb-20 pt-20 sm:pb-28 sm:pt-28">
+      <section
+        id="sobre"
+        onPointerMove={moveDarkGlow}
+        className="relative overflow-hidden border-t border-white/10 bg-[var(--ink)] text-[var(--paper)]"
+      >
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{ background: DARK_GLOW }}
+        />
+        <div className="relative mx-auto w-full max-w-6xl px-6 pb-20 pt-20 sm:pb-28 sm:pt-28">
           <Eyebrow className="text-white/50">
             <span className="text-primary">06 /</span> Sobre a Sena Labs
           </Eyebrow>
@@ -668,7 +697,7 @@ export default function LandingPage() {
         </div>
 
         {/* FUNDADOR */}
-        <div id="fundador" className="border-t border-white/10">
+        <div id="fundador" className="relative border-t border-white/10">
           <div className="mx-auto grid w-full max-w-6xl gap-12 px-6 py-16 sm:grid-cols-[0.72fr_1.28fr] sm:gap-[72px] sm:py-20">
             <div>
               <Eyebrow className="text-white/50">
