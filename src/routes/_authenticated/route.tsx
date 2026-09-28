@@ -26,6 +26,7 @@ import {
   MessageCircle,
   Wrench,
   Gamepad2,
+  Receipt,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PainelHeader } from "@/components/PainelHeader";
@@ -39,6 +40,7 @@ const APP_ICONS: Record<string, any> = {
   whatsapp_admin: MessageCircle,
   alicerce_tools: Wrench,
   quiz: Gamepad2,
+  invoice: Receipt,
 };
 
 export const Route = createFileRoute("/_authenticated")({
