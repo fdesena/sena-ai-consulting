@@ -293,6 +293,84 @@ export type Database = {
         };
         Relationships: [];
       };
+      invoices: {
+        Row: {
+          amount: number;
+          created_at: string;
+          currency: string;
+          description: string;
+          due_date: string;
+          id: string;
+          issue_date: string;
+          language: string;
+          number: string;
+          payer: Json;
+          payment_details: string;
+          provider: Json;
+          user_id: string;
+        };
+        Insert: {
+          amount: number;
+          created_at?: string;
+          currency: string;
+          description: string;
+          due_date: string;
+          id?: string;
+          issue_date: string;
+          language: string;
+          number: string;
+          payer: Json;
+          payment_details?: string;
+          provider: Json;
+          user_id: string;
+        };
+        Update: {
+          amount?: number;
+          created_at?: string;
+          currency?: string;
+          description?: string;
+          due_date?: string;
+          id?: string;
+          issue_date?: string;
+          language?: string;
+          number?: string;
+          payer?: Json;
+          payment_details?: string;
+          provider?: Json;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      invoice_parties: {
+        Row: {
+          created_at: string;
+          data: Json;
+          id: string;
+          kind: string;
+          label: string;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          data: Json;
+          id?: string;
+          kind: string;
+          label: string;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          data?: Json;
+          id?: string;
+          kind?: string;
+          label?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       page_events: {
         Row: {
           created_at: string;

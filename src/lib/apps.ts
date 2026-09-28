@@ -35,6 +35,12 @@ export const APPS: AppDef[] = [
     to: "/painel/quiz",
     description: "Crie e apresente quizzes multiplayer em tempo real, estilo Kahoot.",
   },
+  {
+    slug: "invoice",
+    name: "Invoice",
+    to: "/painel/invoice",
+    description: "Gere invoices em PDF em português ou inglês.",
+  },
 ];
 
 export const APP_SLUGS = APPS.map((a) => a.slug) as [string, ...string[]];
